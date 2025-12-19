@@ -521,6 +521,73 @@
         });
     };
 
+    const initCopyEmail = () => {
+        const btn = qs('[data-copy-email]');
+        if (!btn) {
+            return;
+        }
+
+        const textEl = btn.querySelector('.copy-email-text');
+        const statusEl = btn.querySelector('.copy-status');
+        const originalText = textEl ? textEl.textContent : btn.textContent;
+
+        const setStatus = message => {
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        };
+
+        const copyText = async value => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(value);
+                return true;
+            }
+
+            const temp = document.createElement('textarea');
+            temp.value = value;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'absolute';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.select();
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (error) {
+                success = false;
+            }
+            document.body.removeChild(temp);
+            return success;
+        };
+
+        btn.addEventListener('click', async () => {
+            const email = btn.getAttribute('data-copy-email');
+            if (!email) {
+                return;
+            }
+
+            try {
+                const success = await copyText(email);
+                if (success) {
+                    if (textEl) {
+                        textEl.textContent = 'Copied!';
+                    }
+                    setStatus('Copied to clipboard');
+                    window.setTimeout(() => {
+                        if (textEl) {
+                            textEl.textContent = originalText;
+                        }
+                        setStatus('');
+                    }, 1500);
+                } else {
+                    setStatus('Copy failed');
+                }
+            } catch (error) {
+                setStatus('Copy failed');
+            }
+        });
+    };
+
     const bindActions = () => {
         if (dom.themeToggle) {
             dom.themeToggle.addEventListener('click', theme.toggle);
@@ -561,6 +628,7 @@
         initScrollTracking();
         initCommandPalette();
         initMobileMenu();
+        initCopyEmail();
         bindActions();
 
         window.addEventListener('load', () => {
