@@ -1,0 +1,99 @@
+# AGENTS.md
+
+Detailed guidance for working in this environment.
+
+## Overview
+- This is a static website served by Nginx from `/var/www/html`.
+- There is no build pipeline, bundler, or package manager in use.
+- Updates are done by editing files directly on disk.
+
+## Key Paths
+- Document root: `/var/www/html`
+- Primary pages:
+  - `/var/www/html/index.html`
+- Primary assets:
+  - `/var/www/html/styles.css`
+  - `/var/www/html/main.js`
+  - `/var/www/html/assets/`
+- Supporting files:
+  - `/var/www/html/index.nginx-debian.html` (default Nginx page)
+  - `/var/www/html/AGENTS.md` (this file)
+
+## Site Structure
+- Single-page portfolio layout in `index.html` with sections linked by anchor IDs.
+- Client-side behavior in `main.js` for:
+  - Theme toggle
+  - Scroll progress and back-to-top
+  - Command palette navigation
+  - Mobile menu
+  - Particle background
+  - Typing animation
+  - IntersectionObserver-based animations
+- Global styling and layout in `styles.css` with CSS variables for light/dark themes.
+
+## Editing Rules
+- Use ASCII by default. Only introduce Unicode when necessary and already present.
+- Keep changes minimal and focused; do not alter unrelated content.
+- Preserve existing formatting and indentation style.
+- Prefer surgical edits; avoid rewriting large blocks unless required.
+
+## Permissions
+- Files under `/var/www/html` are owned by root and require `sudo` to modify.
+- Read access is available without escalation; writes typically require `sudo`.
+
+## Validation
+- Manual browser verification is the primary check.
+- Suggested quick checks:
+  - Page loads correctly (desktop + mobile).
+  - Theme toggle works and persists.
+  - Mobile menu opens/closes and focus remains usable.
+  - Command palette opens with Cmd/Ctrl+K and closes with Escape.
+  - Scroll progress and back-to-top behave as expected.
+- If Nginx configuration is edited, run:
+  - `sudo nginx -t`
+
+## Nginx Context
+- Default config path: `/etc/nginx/sites-available/default`.
+- Enabled site symlink: `/etc/nginx/sites-enabled/default`.
+- Current server is set to serve from `/var/www/html`.
+- HTTPS is not configured yet; defer until domain DNS is pointed to this server.
+
+## Security / Hardening (Code-Level)
+- External links should include `rel="noopener noreferrer"` when `target="_blank"` is used.
+- For JS `window.open`, include `noopener` and set `win.opener = null`.
+- Favor strict referrer policy in HTML head:
+  - `<meta name="referrer" content="strict-origin-when-cross-origin">`
+
+## Accessibility Guidelines
+- Ensure all interactive elements have appropriate `aria-*` attributes.
+- Command palette:
+  - Keep `aria-expanded` in sync on the trigger.
+  - Focus should return to the trigger on close.
+  - Escape should close the modal.
+- Mobile menu:
+  - Update `aria-expanded` and `aria-hidden` when toggled.
+- Maintain `:focus-visible` styles for keyboard users.
+
+## Performance Notes
+- Avoid heavy JS changes; animations should respect `prefers-reduced-motion`.
+- Use lazy loading for non-critical images where possible.
+- Keep assets reasonably compressed; large images should be optimized.
+
+## Content Conventions
+- Dates are in short format (e.g., "Jan 2023 - Present").
+- Credentials and titles are written in Title Case.
+- Use consistent punctuation in bullet lists (no trailing periods unless needed).
+
+## Do/Do Not List
+- Do: keep HTML semantics intact and ensure new sections have IDs if linked.
+- Do: update Open Graph/Twitter meta if main branding changes.
+- Do not: add new dependencies or frameworks without explicit request.
+- Do not: remove the default Nginx file unless asked.
+
+## Useful Commands
+- List site files:
+  - `ls -la /var/www/html`
+- View current Nginx site config:
+  - `sudo sed -n '1,200p' /etc/nginx/sites-available/default`
+- Test Nginx config:
+  - `sudo nginx -t`
