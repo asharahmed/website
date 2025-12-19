@@ -30,7 +30,7 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          rsync -avz --delete --exclude=.git --exclude=.github ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
+          rsync -avz --delete --exclude=.git --exclude=.github -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
 
       - name: Deploy to web root
         env:
