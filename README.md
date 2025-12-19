@@ -2,6 +2,8 @@
 
 Local development copy of the static site served from `/var/www/html`.
 
+Deployment happens via GitHub Actions and syncs to `/home/ubuntu/website` before running the deploy script.
+
 ## Deploy
 Run:
 
