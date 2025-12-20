@@ -52,6 +52,15 @@
     transition: top 0.3s;
 }
 
+.skip-link:not(:focus) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .skip-link:focus {
     top: 0;
 }
@@ -73,12 +82,13 @@
     align-items: center;
     gap: 4px;
     box-shadow: var(--card-shadow);
+    display: none;
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-speed);
 }
 
-.nav.visible { opacity: 1; visibility: visible; }
+.nav.visible { display: flex; opacity: 1; visibility: visible; }
 
 .nav a {
     color: var(--text-secondary);
@@ -257,7 +267,7 @@ header {
 .mobile-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
 .mobile-nav {
-    display: flex;
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -275,7 +285,7 @@ header {
     transition: all 0.3s;
 }
 
-.mobile-nav.active { opacity: 1; visibility: visible; }
+.mobile-nav.active { display: flex; opacity: 1; visibility: visible; }
 
 .mobile-nav a {
     color: var(--text-primary);
