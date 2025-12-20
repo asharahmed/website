@@ -54,7 +54,23 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          rsync -avz --delete --exclude=.git --exclude=.github -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
+          rsync -az --delete --omit-dir-times --no-perms --no-owner --no-group \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=tests \
+            --exclude=ops \
+            --exclude=README.md \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=playwright.config.js \
+            --exclude=.htmlhintrc \
+            --exclude=.htmlhintignore \
+            --exclude=.stylelintrc.json \
+            --exclude=.stylelintignore \
+            --exclude=.gitignore \
+            --exclude=AGENTS.md \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
 
       - name: Deploy to web root
         env:
