@@ -38,6 +38,7 @@ if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT_DIR}/package.json" ]]; then
   fi
   (cd "${ROOT_DIR}" && npm run lint:html)
   (cd "${ROOT_DIR}" && npm run lint:css)
+  (cd "${ROOT_DIR}" && npm run lint:vibe)
   (cd "${ROOT_DIR}" && npm run test:links)
 fi
 

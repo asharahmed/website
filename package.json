@@ -4,15 +4,17 @@
   "scripts": {
     "lint:html": "htmlhint \"**/*.html\"",
     "lint:css": "stylelint \"**/*.css\"",
+    "lint:vibe": "vibechck",
     "test:links": "node scripts/check-links.mjs",
     "test:e2e": "playwright test",
-    "test": "npm run lint:html && npm run lint:css && npm run test:links && npm run test:e2e"
+    "test": "npm run lint:html && npm run lint:css && npm run lint:vibe && npm run test:links && npm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "^1.47.0",
     "cheerio": "^1.0.0-rc.12",
     "htmlhint": "^1.1.4",
     "stylelint": "^16.9.0",
-    "stylelint-config-recommended": "^14.0.0"
+    "stylelint-config-recommended": "^14.0.0",
+    "vibechck": "^0.2.7"
   }
 }
