@@ -36,6 +36,6 @@ if git -C "${SOURCE_DIR}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   fi
 fi
 
-sudo rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' "${SOURCE_DIR}/" "${TARGET_DIR}/"
+sudo rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' "${SOURCE_DIR}/" "${TARGET_DIR}/"
 
 echo "Deployed ${SOURCE_DIR} -> ${TARGET_DIR}"
