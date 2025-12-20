@@ -185,7 +185,7 @@
     }));
 
     let start = null;
-    const duration = 2200;
+    const duration = 3200;
 
     const animate = timestamp => {
       if (!start) {
@@ -193,10 +193,14 @@
       }
       const elapsed = timestamp - start;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let allBelow = true;
       pieces.forEach(p => {
         p.y += p.speed;
         p.x += p.drift;
         p.rotation += 0.06;
+        if (p.y < canvas.height + 40) {
+          allBelow = false;
+        }
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rotation);
@@ -205,7 +209,7 @@
         ctx.restore();
       });
 
-      if (elapsed < duration) {
+      if (elapsed < duration || !allBelow) {
         window.requestAnimationFrame(animate);
       } else {
         canvas.remove();
