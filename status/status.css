@@ -99,6 +99,16 @@
     padding-bottom: 80px;
 }
 
+.status-page #overview .stat-label {
+    font-size: 0.75em;
+    white-space: nowrap;
+}
+
+.status-page #overview .stat-number {
+    font-size: clamp(1.6rem, 2.1vw, 2.1rem);
+    white-space: nowrap;
+}
+
 .status-page .beta-banner__content {
     gap: 12px;
 }
