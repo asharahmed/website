@@ -81,7 +81,7 @@ If running the static site in a container:
 - Keep changes minimal and focused; do not alter unrelated content.
 - Preserve existing formatting and indentation style.
 - Prefer surgical edits; avoid rewriting large blocks unless required.
-- Commit messages must include a `Changelog:` footer with 1-3 short bullets.
+- Commit messages must include a `Changelog:` footer in the description body with 1-3 short bullets.
 
 ## Permissions
 - Files under `/var/www/html` are owned by root and require `sudo` to modify.

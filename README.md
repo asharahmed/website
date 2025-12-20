@@ -83,6 +83,22 @@ To bypass git safety checks during deploy:
 ./scripts/deploy.sh --force
 ```
 
+## Local Tests
+Install dev tooling:
+
+```bash
+npm install
+```
+
+Run checks:
+
+```bash
+npm run lint:html
+npm run lint:css
+npm run test:links
+npm run test:e2e
+```
+
 ## Operations
 - Metrics generator: `/usr/local/bin/status-metrics.sh`
 - Timer: `status-metrics.timer` (10-second interval)

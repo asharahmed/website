@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "stylelint-config-recommended"
+  ],
+  "rules": {
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        "ignorePseudoElements": [
+          "-webkit-scrollbar",
+          "-webkit-scrollbar-track",
+          "-webkit-scrollbar-thumb"
+        ]
+      }
+    ],
+    "property-no-vendor-prefix": null,
+    "value-no-vendor-prefix": null
+  }
+}
