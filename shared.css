@@ -90,10 +90,17 @@
     overflow-x: auto;
     scrollbar-width: none;
     white-space: nowrap;
+    scroll-snap-type: x proximity;
+    scroll-padding: 0 24px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .nav::-webkit-scrollbar {
     display: none;
+}
+
+.nav a {
+    scroll-snap-align: center;
 }
 
 .nav::before,
