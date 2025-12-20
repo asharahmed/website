@@ -104,9 +104,19 @@
     white-space: nowrap;
 }
 
+.status-page #overview .stat-card {
+    padding: 20px 14px;
+    overflow: visible;
+}
+
 .status-page #overview .stat-number {
-    font-size: clamp(1.6rem, 2.1vw, 2.1rem);
+    font-size: clamp(1.35rem, 1.9vw, 1.9rem);
+    line-height: 1.15;
     white-space: nowrap;
+}
+
+.status-page #overview .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
 }
 
 .status-page .beta-banner__content {
