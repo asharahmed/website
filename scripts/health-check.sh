@@ -21,8 +21,18 @@ require_json_key_from_file() {
   for attempt in {1..10}; do
     payload="$(cat "${file_path}")"
     if [[ -n "${payload}" ]]; then
-      printf '%s' "${payload}" | python3 -c 'import json,sys; key=sys.argv[1]; payload=sys.stdin.read(); if not payload.strip(): raise SystemExit("Empty JSON payload"); data=json.loads(payload); if key not in data: raise SystemExit(f"Missing key: {key}")' \
-        "${key}"
+      printf '%s' "${payload}" | python3 - "${key}" <<'PY'
+import json
+import sys
+
+key = sys.argv[1]
+payload = sys.stdin.read()
+if not payload.strip():
+    raise SystemExit("Empty JSON payload")
+data = json.loads(payload)
+if key not in data:
+    raise SystemExit(f"Missing key: {key}")
+PY
       return 0
     fi
     sleep 1
@@ -39,8 +49,18 @@ require_json_key() {
   for attempt in {1..10}; do
     payload="$(curl -fsS --retry 3 --retry-connrefused --retry-delay 1 "${url}")"
     if [[ -n "${payload}" ]]; then
-      printf '%s' "${payload}" | python3 -c 'import json,sys; key=sys.argv[1]; payload=sys.stdin.read(); if not payload.strip(): raise SystemExit("Empty JSON payload"); data=json.loads(payload); if key not in data: raise SystemExit(f"Missing key: {key}")' \
-        "${key}"
+      printf '%s' "${payload}" | python3 - "${key}" <<'PY'
+import json
+import sys
+
+key = sys.argv[1]
+payload = sys.stdin.read()
+if not payload.strip():
+    raise SystemExit("Empty JSON payload")
+data = json.loads(payload)
+if key not in data:
+    raise SystemExit(f"Missing key: {key}")
+PY
       return 0
     fi
     sleep 2
