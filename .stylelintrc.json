@@ -3,6 +3,7 @@
     "stylelint-config-recommended"
   ],
   "rules": {
+    "no-descending-specificity": null,
     "selector-pseudo-element-no-unknown": [
       true,
       {
