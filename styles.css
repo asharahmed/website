@@ -40,8 +40,8 @@
 
         [data-theme="dark"] {
             --bg-primary: #120a0a;
-            --bg-secondary: #111827;
-            --bg-tertiary: #1f2937;
+            --bg-secondary: #1a1010;
+            --bg-tertiary: #231414;
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
@@ -54,16 +54,16 @@
             --border-color: #2b3545;
             --card-shadow: 0 10px 18px -14px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
             --card-shadow-hover: 0 20px 30px -18px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.06) inset;
-            --card-bg: #131a26;
-            --card-border: #2b3646;
+            --card-bg: #1b0f0f;
+            --card-border: #3a1c1c;
             --skill-bg: #1f2937;
             --highlight-bg: #422006;
             --highlight-text: #fbbf24;
             --header-bg: #0b0505;
             --glass-bg: rgba(15,23,42,0.85);
             --glass-border: rgba(255,255,255,0.1);
-            --logo-well-bg: #1b2433;
-            --logo-well-border: #2f3a4d;
+            --logo-well-bg: #211414;
+            --logo-well-border: #3f1f1f;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
