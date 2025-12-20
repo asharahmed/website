@@ -304,9 +304,9 @@ header {
     top: calc(var(--sticky-top) + env(safe-area-inset-top));
     left: var(--sticky-left);
     z-index: 1004;
-    background: var(--glass-bg);
+    background: rgba(239, 68, 68, 0.12);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(239, 68, 68, 0.35);
     border-radius: 10px;
     width: var(--sticky-height);
     height: var(--sticky-height);
@@ -337,7 +337,7 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--glass-bg);
+    background: rgba(239, 68, 68, 0.12);
     backdrop-filter: blur(20px);
     z-index: 1000;
     flex-direction: column;
