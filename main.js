@@ -132,6 +132,21 @@
         window.scrollTo({ top: 0, behavior: state.scrollBehavior });
     };
 
+    const updateNavFade = () => {
+        if (!dom.nav) {
+            return;
+        }
+        const maxScroll = dom.nav.scrollWidth - dom.nav.clientWidth;
+        if (maxScroll <= 1) {
+            dom.nav.classList.remove('nav--fade-left', 'nav--fade-right');
+            return;
+        }
+        const scrolledLeft = dom.nav.scrollLeft > 4;
+        const scrolledRight = dom.nav.scrollLeft < maxScroll - 4;
+        dom.nav.classList.toggle('nav--fade-left', scrolledLeft);
+        dom.nav.classList.toggle('nav--fade-right', scrolledRight);
+    };
+
     const updateScroll = cache => {
         const st = window.scrollY;
         const dh = document.documentElement.scrollHeight - window.innerHeight;
@@ -158,6 +173,7 @@
                         if (cache.lastActive !== link) {
                             cache.lastActive = link;
                             link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                            window.requestAnimationFrame(updateNavFade);
                         }
                     } else {
                         link.removeAttribute('aria-current');
@@ -187,7 +203,12 @@
         };
 
         updateScroll(cache);
+        updateNavFade();
         window.addEventListener('scroll', onScroll, { passive: true });
+        if (dom.nav) {
+            dom.nav.addEventListener('scroll', updateNavFade, { passive: true });
+        }
+        window.addEventListener('resize', updateNavFade, { passive: true });
     };
 
     const initTyping = () => {
