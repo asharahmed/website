@@ -323,6 +323,15 @@ header {
 
 @media (max-width: 768px) {
     .mobile-menu-btn { display: flex; top: 72px; }
+    .nav {
+        top: 72px;
+        left: 16px;
+        right: 16px;
+        transform: none;
+        justify-content: center;
+        padding-left: 68px;
+        padding-right: 16px;
+    }
 }
 
 /* Page Transitions */
