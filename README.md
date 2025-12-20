@@ -83,6 +83,14 @@ To bypass git safety checks during deploy:
 ./scripts/deploy.sh --force
 ```
 
+## Branch Protection (Recommended)
+Use GitHub branch protection on `main` with required status checks for:
+- Lint (HTML/CSS)
+- Link check
+- Playwright smoke tests
+
+This prevents untested changes from reaching deploy.
+
 ## Local Tests
 Install dev tooling:
 
