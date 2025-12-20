@@ -152,6 +152,12 @@
     gap: 8px;
 }
 
+.status-alert[data-state="ok"] {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
 .status-alert[data-state="warn"] {
     color: #fef3c7;
     background: rgba(245, 158, 11, 0.2);
