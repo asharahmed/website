@@ -148,6 +148,19 @@
         dom.nav.classList.toggle('nav--fade-right', scrolledRight);
     };
 
+    let heroOutOfView = true;
+    let hasHeroObserver = false;
+    const hero = qs('header');
+
+    const updateNavVisibility = () => {
+        if (dom.nav) {
+            dom.nav.classList.toggle('visible', heroOutOfView);
+        }
+        if (dom.mobileBtn) {
+            dom.mobileBtn.classList.toggle('visible', heroOutOfView);
+        }
+    };
+
     const updateScroll = cache => {
         const st = window.scrollY;
         const dh = document.documentElement.scrollHeight - window.innerHeight;
@@ -156,9 +169,10 @@
         if (dom.scrollProgress) {
             dom.scrollProgress.style.width = `${progress}%`;
         }
-        if (dom.nav) {
-            dom.nav.classList.toggle('visible', st > window.innerHeight * 0.8);
+        if (hero && !hasHeroObserver) {
+            heroOutOfView = hero.getBoundingClientRect().bottom <= 0;
         }
+        updateNavVisibility();
         if (dom.backToTop) {
             dom.backToTop.classList.toggle('visible', st > 500);
         }
@@ -203,6 +217,17 @@
                 ticking = false;
             });
         };
+
+        if (hero && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(entries => {
+                heroOutOfView = !entries[0].isIntersecting;
+                updateNavVisibility();
+            }, {
+                threshold: 0.1
+            });
+            observer.observe(hero);
+            hasHeroObserver = true;
+        }
 
         updateScroll(cache);
         updateNavFade();
