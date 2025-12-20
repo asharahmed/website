@@ -33,6 +33,8 @@
             --logo-well-border: #e2e8f0;
             --sticky-top: 84px;
             --sticky-height: 48px;
+            --sticky-left: 20px;
+            --sticky-gap: 4px;
         }
 
         [data-theme="dark"] {

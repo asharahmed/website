@@ -296,7 +296,7 @@ header {
     display: none;
     position: fixed;
     top: calc(var(--sticky-top) + env(safe-area-inset-top));
-    left: 20px;
+    left: var(--sticky-left);
     z-index: 1004;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
@@ -365,7 +365,7 @@ header {
 @media (max-width: 768px) {
     .mobile-menu-btn { display: flex; }
     .nav {
-        left: 72px;
+        left: calc(var(--sticky-left) + var(--sticky-height) + var(--sticky-gap));
         right: 16px;
         transform: none;
         justify-content: flex-start;
