@@ -156,9 +156,6 @@
         if (dom.nav) {
             dom.nav.classList.toggle('visible', heroOutOfView);
         }
-        if (dom.mobileBtn) {
-            dom.mobileBtn.classList.toggle('visible', heroOutOfView);
-        }
     };
 
     const updateScroll = cache => {
