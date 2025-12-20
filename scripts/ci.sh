@@ -29,13 +29,16 @@ else
 fi
 
 if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT_DIR}/package.json" ]]; then
-  if [[ -d "${ROOT_DIR}/node_modules" ]]; then
-    (cd "${ROOT_DIR}" && npm run lint:html)
-    (cd "${ROOT_DIR}" && npm run lint:css)
-    (cd "${ROOT_DIR}" && npm run test:links)
-  else
-    echo "Skipping JS checks (node_modules missing). Run npm install to enable." >&2
+  if [[ ! -d "${ROOT_DIR}/node_modules" || ! -x "${ROOT_DIR}/node_modules/.bin/htmlhint" ]]; then
+    if [[ -f "${ROOT_DIR}/package-lock.json" ]]; then
+      (cd "${ROOT_DIR}" && npm ci)
+    else
+      (cd "${ROOT_DIR}" && npm install)
+    fi
   fi
+  (cd "${ROOT_DIR}" && npm run lint:html)
+  (cd "${ROOT_DIR}" && npm run lint:css)
+  (cd "${ROOT_DIR}" && npm run test:links)
 fi
 
 echo "CI checks passed."
