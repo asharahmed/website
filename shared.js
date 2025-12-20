@@ -132,7 +132,7 @@
     body.classList.add("is-leaving");
     setTimeout(() => {
       window.location.href = link.href;
-    }, 250);
+    }, 140);
   });
 })();
 
