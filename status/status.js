@@ -209,7 +209,7 @@ function updateServices(services) {
     total += 1;
     const stateValue = services && typeof services[key] === "string" ? services[key] : "unknown";
     element.dataset.state = stateValue;
-    setText(element, formatServiceLabel(stateValue));
+    utils.setText(element, formatServiceLabel(stateValue));
     if (stateValue === "active") {
       online += 1;
     }
