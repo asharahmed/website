@@ -155,6 +155,10 @@
                     link.classList.toggle('active', active);
                     if (active) {
                         link.setAttribute('aria-current', 'page');
+                        if (cache.lastActive !== link) {
+                            cache.lastActive = link;
+                            link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                        }
                     } else {
                         link.removeAttribute('aria-current');
                     }
@@ -166,7 +170,8 @@
     const initScrollTracking = () => {
         const cache = {
             navLinks: qsa('.nav a'),
-            sections: qsa('section[id]')
+            sections: qsa('section[id]'),
+            lastActive: null
         };
         let ticking = false;
 
