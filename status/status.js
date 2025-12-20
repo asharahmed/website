@@ -86,6 +86,28 @@ const fallbackUtils = {
 
 const utils = window.StatusUtils || fallbackUtils;
 
+
+if (statusAlert) {
+  statusAlert.dataset.state = "ok";
+  utils.setText(statusAlert, "Loading metrics...");
+}
+
+window.addEventListener("error", event => {
+  if (!statusAlert) {
+    return;
+  }
+  statusAlert.dataset.state = "error";
+  utils.setText(statusAlert, `Script error: ${event.message || "unknown"}`);
+});
+
+window.addEventListener("unhandledrejection", () => {
+  if (!statusAlert) {
+    return;
+  }
+  statusAlert.dataset.state = "error";
+  utils.setText(statusAlert, "Script error: unhandled promise rejection");
+});
+
 const fields = {
   httpStatus: document.getElementById("http-status"),
   responseTime: document.getElementById("response-time"),
@@ -474,10 +496,11 @@ function updateMetrics(data) {
 }
 
 async function checkStatus() {
-  const now = new Date();
-  utils.setText(fields.lastChecked, now.toLocaleTimeString());
+  try {
+    const now = new Date();
+    utils.setText(fields.lastChecked, now.toLocaleTimeString());
 
-  const results = await Promise.allSettled([fetchStubStatus(), fetchMetrics()]);
+    const results = await Promise.allSettled([fetchStubStatus(), fetchMetrics()]);
   const [stubResult, metricsResult] = results;
 
   let stubOk = false;
@@ -487,11 +510,11 @@ async function checkStatus() {
   if (stubResult.status === "fulfilled") {
     const metrics = stubResult.value;
     stubOk = true;
-    setText(fields.active, metrics.active ?? "--");
-    setText(fields.reading, metrics.reading ?? "--");
-    setText(fields.writing, metrics.writing ?? "--");
-    setText(fields.waiting, metrics.waiting ?? "--");
-    setText(fields.requests, metrics.requests ?? "--");
+    utils.setText(fields.active, metrics.active ?? "--");
+    utils.setText(fields.reading, metrics.reading ?? "--");
+    utils.setText(fields.writing, metrics.writing ?? "--");
+    utils.setText(fields.waiting, metrics.waiting ?? "--");
+    utils.setText(fields.requests, metrics.requests ?? "--");
     updateRate(metrics.requests);
   } else {
     utils.setText(fields.httpStatus, "--");
@@ -523,15 +546,15 @@ async function checkStatus() {
     setStatus("down", navigator.onLine ? "Offline" : "No Network");
   }
 
-  if (statusUpdated) {
-    statusUpdated.textContent = `Last update: ${now.toLocaleTimeString()}`;
-  }
+    if (statusUpdated) {
+      statusUpdated.textContent = `Last update: ${now.toLocaleTimeString()}`;
+    }
 
-  if (statusAlert) {
+    if (statusAlert) {
     const alerts = [];
     let alertState = "ok";
     if (state.lastMetricsAge !== null && state.lastMetricsAge > 30) {
-      alerts.push(`Metrics stale (${formatAge(state.lastMetricsAge)})`);
+      alerts.push(`Metrics stale (${utils.formatAge(state.lastMetricsAge)})`);
       alertState = "warn";
     }
     const serviceIssues = Object.entries(servicePills)
@@ -543,6 +566,13 @@ async function checkStatus() {
     }
     statusAlert.dataset.state = alertState === "ok" ? "ok" : alertState;
     statusAlert.textContent = alerts.length ? alerts.join(" | ") : "All systems nominal";
+    }
+  } catch (error) {
+    if (statusAlert) {
+      statusAlert.dataset.state = "error";
+      utils.setText(statusAlert, "Script error: status update failed");
+    }
+    setStatus("down", "Error");
   }
 }
 
