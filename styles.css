@@ -557,8 +557,8 @@
             margin-bottom: 10px;
         }
 
-        .company-name {
-            color: var(--accent-primary);
+.company-name {
+            color: #ef4444;
             font-weight: 500;
             font-size: 0.95em;
             flex: 1;
@@ -704,8 +704,8 @@
             margin-bottom: 5px;
         }
 
-        .education-school {
-            color: var(--accent-primary);
+.education-school {
+            color: #ef4444;
             margin-bottom: 6px;
             font-weight: 500;
             font-size: 0.9em;
@@ -1351,13 +1351,17 @@
         .tooltip:hover::after { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
         /* Animated Gradient Text */
-        .gradient-text {
+.gradient-text {
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary), var(--accent-primary));
             background-size: 300% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradientFlow 6s linear infinite;
+        }
+
+        .hero-title.gradient-text {
+            background: linear-gradient(90deg, #ef4444, #fb7185, #f43f5e, #ef4444);
         }
         @keyframes gradientFlow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
 
