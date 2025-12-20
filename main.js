@@ -174,6 +174,7 @@
                             cache.lastActive = link;
                             link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                             window.requestAnimationFrame(updateNavFade);
+                            window.setTimeout(updateNavFade, 220);
                         }
                     } else {
                         link.removeAttribute('aria-current');

@@ -72,6 +72,7 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
+    isolation: isolate;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -113,6 +114,7 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
+    z-index: 1;
 }
 
 .nav::before {
@@ -131,6 +133,12 @@
 
 .nav.nav--fade-right::after {
     opacity: 1;
+}
+
+.nav a,
+.nav .nav-cmd {
+    position: relative;
+    z-index: 2;
 }
 
 .beta-banner ~ .nav {
