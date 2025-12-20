@@ -193,37 +193,50 @@
     targetY: 0,
     currentX: 0,
     currentY: 0,
+    scrollOffset: 0,
     rafId: null,
     active: true,
-    orientationEnabled: false
+    orientationEnabled: false,
+    lastTime: null
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-  const applyTransforms = (x, y) => {
+  const applyTransforms = (x, y, driftX, driftY) => {
     const heroX = x * 26;
     const heroY = y * 20;
     const heroRotX = y * -7;
     const heroRotY = x * 7;
     hero.style.transform = `translate3d(${heroX}px, ${heroY}px, 0) rotateX(${heroRotX}deg) rotateY(${heroRotY}deg)`;
-    grid.style.transform = `translate3d(${x * 14}px, ${y * 12}px, 0) scale(1.02)`;
+    grid.style.transform = `translate3d(${x * 14 + driftX * 18}px, ${y * 12 + driftY * 10}px, 0) scale(1.02)`;
     if (particles) {
-      particles.style.transform = `translate3d(${x * 8}px, ${y * 6}px, 0)`;
+      particles.style.transform = `translate3d(${x * 8 + driftX * 30}px, ${y * 6 + driftY * 16}px, 0)`;
     }
   };
 
-  const tick = () => {
+  const tick = now => {
     if (!state.active) {
       state.rafId = null;
       return;
     }
-    state.currentX += (state.targetX - state.currentX) * 0.08;
-    state.currentY += (state.targetY - state.currentY) * 0.08;
-    applyTransforms(state.currentX, state.currentY);
+    if (state.lastTime === null) {
+      state.lastTime = now;
+    }
+    const delta = Math.min(0.05, (now - state.lastTime) / 1000);
+    state.lastTime = now;
+    const smoothing = 1 - Math.pow(0.001, delta);
+    state.currentX += (state.targetX - state.currentX) * smoothing;
+    state.currentY += (state.targetY - state.currentY) * smoothing;
+    const driftX = Math.sin(now / 4200) * 0.02;
+    const driftY = Math.cos(now / 5200) * 0.02;
+    const combinedX = state.currentX + driftX;
+    const combinedY = state.currentY + driftY + state.scrollOffset;
+    applyTransforms(combinedX, combinedY, driftX, driftY);
     state.rafId = window.requestAnimationFrame(tick);
   };
 
   const start = () => {
     if (state.rafId === null) {
+      state.lastTime = null;
       state.rafId = window.requestAnimationFrame(tick);
     }
   };
@@ -299,7 +312,8 @@
       reset();
       state.currentX = 0;
       state.currentY = 0;
-      applyTransforms(0, 0);
+      state.scrollOffset = 0;
+      applyTransforms(0, 0, 0, 0);
     } else {
       start();
     }
@@ -312,6 +326,12 @@
   header.addEventListener("touchmove", onTouchMove, { passive: true });
   header.addEventListener("mouseleave", reset);
   header.addEventListener("touchend", reset);
+  window.addEventListener("scroll", () => {
+    const rect = header.getBoundingClientRect();
+    const offset = clamp(rect.top * -0.002, -0.2, 0.2);
+    state.scrollOffset = offset;
+    start();
+  }, { passive: true });
 })();
 
 /* Easter egg: rapid beta tag clicks trigger confetti. */
