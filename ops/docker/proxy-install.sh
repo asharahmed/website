@@ -14,7 +14,7 @@ if ! [ -f "$CONF" ]; then
   exit 1
 fi
 
-if rg -q "proxy_pass http://127.0.0.1:8080" "$CONF"; then
+if grep -q "proxy_pass http://127.0.0.1:8080" "$CONF"; then
   echo "Proxy block already present. Skipping." >&2
 else
   cp "$CONF" "$BACKUP"
