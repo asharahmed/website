@@ -313,7 +313,7 @@ function drawSparkline(canvas, data, options) {
   const step = width / Math.max(data.length - 1, 1);
 
   ctx.lineWidth = 2;
-  ctx.strokeStyle = options.stroke || "rgba(59, 130, 246, 0.9)";
+  ctx.strokeStyle = options.stroke || "rgba(239, 68, 68, 0.9)";
   ctx.beginPath();
 
   let started = false;
@@ -336,7 +336,7 @@ function drawSparkline(canvas, data, options) {
   ctx.lineTo(width, height);
   ctx.lineTo(0, height);
   ctx.closePath();
-  ctx.fillStyle = options.fill || "rgba(59, 130, 246, 0.12)";
+  ctx.fillStyle = options.fill || "rgba(239, 68, 68, 0.12)";
   ctx.fill();
 }
 
