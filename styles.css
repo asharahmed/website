@@ -25,7 +25,7 @@
             --highlight-bg: #fef3c7;
             --highlight-text: #92400e;
             --success: #10b981;
-            --header-bg: #0f172a;
+            --header-bg: #2a0d0d;
             --glass-bg: rgba(255,255,255,0.85);
             --glass-border: rgba(255,255,255,0.3);
             --transition-speed: 0.3s;
@@ -39,7 +39,7 @@
         }
 
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
+            --bg-primary: #120a0a;
             --bg-secondary: #111827;
             --bg-tertiary: #1f2937;
             --text-primary: #f1f5f9;
@@ -59,7 +59,7 @@
             --skill-bg: #1f2937;
             --highlight-bg: #422006;
             --highlight-text: #fbbf24;
-            --header-bg: #020617;
+            --header-bg: #0b0505;
             --glass-bg: rgba(15,23,42,0.85);
             --glass-border: rgba(255,255,255,0.1);
             --logo-well-bg: #1b2433;
