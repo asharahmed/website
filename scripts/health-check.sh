@@ -12,13 +12,19 @@ require_json_key() {
   local url="$1"
   local key="$2"
   local payload
-  payload="$(curl -fsS "${url}")"
+  payload="$(curl -fsS --retry 5 --retry-connrefused --retry-delay 1 "${url}")"
+  if [[ -z "${payload}" ]]; then
+    echo "Empty response from ${url}" >&2
+    return 1
+  fi
   python3 - "${key}" <<'PY'
 import json
 import sys
 
 key = sys.argv[1]
 payload = sys.stdin.read()
+if not payload.strip():
+    raise SystemExit("Empty JSON payload")
 data = json.loads(payload)
 if key not in data:
     raise SystemExit(f"Missing key: {key}")
