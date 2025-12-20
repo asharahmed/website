@@ -13,16 +13,15 @@ require_json_key_from_file() {
   local file_path="$1"
   local key="$2"
   local payload
+  local attempt
   if [[ ! -f "${file_path}" ]]; then
     echo "Missing metrics file at ${file_path}" >&2
     return 1
   fi
-  payload="$(cat "${file_path}")"
-  if [[ -z "${payload}" ]]; then
-    echo "Empty response from ${file_path}" >&2
-    return 1
-  fi
-  python3 - "${key}" <<'PY'
+  for attempt in {1..10}; do
+    payload="$(cat "${file_path}")"
+    if [[ -n "${payload}" ]]; then
+      python3 - "${key}" <<'PY'
 import json
 import sys
 
@@ -34,6 +33,12 @@ data = json.loads(payload)
 if key not in data:
     raise SystemExit(f"Missing key: {key}")
 PY
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Empty response from ${file_path} after retries" >&2
+  return 1
 }
 
 require_json_key() {
