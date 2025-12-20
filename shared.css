@@ -325,12 +325,11 @@ header {
     .mobile-menu-btn { display: flex; top: 72px; }
     .nav {
         top: 72px;
-        left: 16px;
+        left: 72px;
         right: 16px;
         transform: none;
-        justify-content: center;
-        padding-left: 68px;
-        padding-right: 16px;
+        justify-content: flex-start;
+        padding: 8px 16px;
     }
 }
 
