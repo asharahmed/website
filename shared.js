@@ -135,3 +135,94 @@
     }, 250);
   });
 })();
+
+/* Easter egg: rapid beta tag clicks trigger confetti. */
+(() => {
+  const trigger = document.getElementById("betaEasterEgg");
+  if (!trigger) {
+    return;
+  }
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced) {
+    return;
+  }
+
+  let clicks = 0;
+  let timer = null;
+
+  const reset = () => {
+    clicks = 0;
+    if (timer) {
+      window.clearTimeout(timer);
+      timer = null;
+    }
+  };
+
+  const launchConfetti = () => {
+    const canvas = document.createElement("canvas");
+    canvas.className = "confetti-canvas";
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = "9999";
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+    const colors = ["#60a5fa", "#fbbf24", "#34d399", "#f472b6", "#a78bfa"];
+    const pieces = Array.from({ length: 140 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * canvas.height * 0.2,
+      size: 6 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * Math.PI,
+      speed: 1.5 + Math.random() * 3,
+      drift: (Math.random() - 0.5) * 1.2
+    }));
+
+    let start = null;
+    const duration = 2200;
+
+    const animate = timestamp => {
+      if (!start) {
+        start = timestamp;
+      }
+      const elapsed = timestamp - start;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.y += p.speed;
+        p.x += p.drift;
+        p.rotation += 0.06;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      });
+
+      if (elapsed < duration) {
+        window.requestAnimationFrame(animate);
+      } else {
+        canvas.remove();
+      }
+    };
+
+    window.requestAnimationFrame(animate);
+  };
+
+  trigger.addEventListener("click", () => {
+    clicks += 1;
+    if (!timer) {
+      timer = window.setTimeout(reset, 1800);
+    }
+    if (clicks >= 7) {
+      reset();
+      launchConfetti();
+    }
+  });
+})();
