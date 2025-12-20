@@ -75,6 +75,10 @@
     top: 72px;
 }
 
+.status-page .grid-pattern {
+    pointer-events: none;
+}
+
 .status-page .hero-content {
     padding-bottom: 80px;
 }
