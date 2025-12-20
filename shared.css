@@ -299,7 +299,7 @@ header {
 
 /* Mobile Menu */
 .mobile-menu-btn {
-    display: none;
+    display: flex;
     position: fixed;
     top: calc(var(--sticky-top) + env(safe-area-inset-top));
     left: var(--sticky-left);
@@ -369,7 +369,6 @@ header {
 }
 
 @media (max-width: 768px) {
-    .mobile-menu-btn { display: flex; }
     .nav {
         left: calc(var(--sticky-left) + var(--sticky-height) + var(--sticky-gap));
         right: 16px;
