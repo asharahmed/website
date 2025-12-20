@@ -91,10 +91,6 @@
     content: '\2192';
 }
 
-.status-page .mobile-menu-btn {
-    top: 72px;
-}
-
 .status-page .grid-pattern {
     pointer-events: none;
 }
