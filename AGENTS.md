@@ -11,9 +11,12 @@ Detailed guidance for working in this environment.
 - Document root: `/var/www/html`
 - Primary pages:
   - `/var/www/html/index.html`
+  - `/var/www/html/status/index.html`
 - Primary assets:
   - `/var/www/html/styles.css`
   - `/var/www/html/main.js`
+  - `/var/www/html/status/status.css`
+  - `/var/www/html/status/status.js`
   - `/var/www/html/assets/`
 - Supporting files:
   - `/var/www/html/index.nginx-debian.html` (default Nginx page)
@@ -29,7 +32,18 @@ Detailed guidance for working in this environment.
   - Particle background
   - Typing animation
   - IntersectionObserver-based animations
-- Global styling and layout in `styles.css` with CSS variables for light/dark themes.
+- Status portal under `/status` with system and service health metrics.
+
+## Status Portal
+- UI endpoint: `/status`
+- Metrics JSON: `/status/metrics.json`
+- Nginx stub_status: `/status/nginx`
+- Metrics generator: `/usr/local/bin/status-metrics.sh`
+- Systemd units:
+  - `/etc/systemd/system/status-metrics.service`
+  - `/etc/systemd/system/status-metrics.timer` (10-second interval)
+- Service health tracked in the UI: nginx, ssh, docker, status-metrics timer.
+- Disk usage uses a ring gauge; disk I/O uses a sparkline.
 
 ## Editing Rules
 - Use ASCII by default. Only introduce Unicode when necessary and already present.
@@ -49,14 +63,14 @@ Detailed guidance for working in this environment.
   - Mobile menu opens/closes and focus remains usable.
   - Command palette opens with Cmd/Ctrl+K and closes with Escape.
   - Scroll progress and back-to-top behave as expected.
+  - Status portal updates metrics and service pills every 10 seconds.
 - If Nginx configuration is edited, run:
   - `sudo nginx -t`
 
 ## Nginx Context
 - Default config path: `/etc/nginx/sites-available/default`.
 - Enabled site symlink: `/etc/nginx/sites-enabled/default`.
-- Current server is set to serve from `/var/www/html`.
-- HTTPS is not configured yet; defer until domain DNS is pointed to this server.
+- Current server is set to serve from `/var/www/html` over HTTPS.
 
 ## Security / Hardening (Code-Level)
 - External links should include `rel="noopener noreferrer"` when `target="_blank"` is used.
@@ -97,3 +111,5 @@ Detailed guidance for working in this environment.
   - `sudo sed -n '1,200p' /etc/nginx/sites-available/default`
 - Test Nginx config:
   - `sudo nginx -t`
+- Check status metrics timer:
+  - `systemctl status status-metrics.timer`
