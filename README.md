@@ -69,6 +69,7 @@ Run:
 ```
 
 This syncs the repo contents to `/var/www/html`.
+The deploy excludes `status/metrics.json` so host metrics aren't wiped.
 
 ## Pipeline
 Run CI checks and deploy in one step:
@@ -82,6 +83,15 @@ To bypass git safety checks during deploy:
 ```bash
 ./scripts/deploy.sh --force
 ```
+
+## GitHub Actions Deploy
+On pushes to `main`, the workflow:
+- Runs linting, link checks, and Playwright smoke tests.
+- Syncs runtime files to the server via rsync (non-runtime files excluded).
+- Runs a lightweight uptime check on `/` and `/status/`.
+- Runs a server-side health check to validate `/var/www/html/status/metrics.json`.
+
+On pull requests, a dry-run rsync preview is executed.
 
 ## Branch Protection (Recommended)
 Use GitHub branch protection on `main` with required status checks for:
