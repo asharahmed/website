@@ -106,43 +106,6 @@
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 4px; }
 
-        /* Beta Banner */
-        .beta-banner {
-            position: sticky;
-            top: 0;
-            z-index: 1003;
-            background: #0b1020;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-            color: #e2e8f0;
-        }
-
-        .beta-banner__content {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            text-align: center;
-            font-size: 0.9em;
-        }
-
-        .beta-banner__tag {
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-weight: 700;
-            font-size: 0.72em;
-            padding: 4px 8px;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(56, 189, 248, 0.5);
-            color: #e0f2fe;
-        }
-
-        .beta-banner__text {
-            color: #cbd5e1;
-        }
 
         /* Command Palette */
         .command-palette {
@@ -1624,10 +1587,6 @@
             transition: all 0.3s;
         }
         .mobile-nav a:hover { background: var(--accent-light); color: var(--accent-primary); }
-        .mobile-nav .is-current {
-            opacity: 0.6;
-            pointer-events: none;
-        }
 
         /* Print Styles */
         @media print {
