@@ -12,12 +12,11 @@ require_json_key() {
   local url="$1"
   local key="$2"
   local payload
-  payload="$(curl -fsS --retry 5 --retry-connrefused --retry-delay 1 "${url}")"
-  if [[ -z "${payload}" ]]; then
-    echo "Empty response from ${url}" >&2
-    return 1
-  fi
-  python3 - "${key}" <<'PY'
+  local attempt
+  for attempt in {1..10}; do
+    payload="$(curl -fsS --retry 3 --retry-connrefused --retry-delay 1 "${url}")"
+    if [[ -n "${payload}" ]]; then
+      python3 - "${key}" <<'PY'
 import json
 import sys
 
@@ -29,6 +28,12 @@ data = json.loads(payload)
 if key not in data:
     raise SystemExit(f"Missing key: {key}")
 PY
+      return 0
+    fi
+    sleep 2
+  done
+  echo "Empty response from ${url} after retries" >&2
+  return 1
 }
 
 echo "Health check: homepage"
