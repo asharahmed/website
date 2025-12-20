@@ -106,11 +106,6 @@
     gap: 12px;
 }
 
-.status-page .mobile-nav .is-current {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
 .status-metrics-grid {
     margin-top: 32px;
     gap: 20px;

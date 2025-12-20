@@ -1624,6 +1624,10 @@
             transition: all 0.3s;
         }
         .mobile-nav a:hover { background: var(--accent-light); color: var(--accent-primary); }
+        .mobile-nav .is-current {
+            opacity: 0.6;
+            pointer-events: none;
+        }
 
         /* Print Styles */
         @media print {
