@@ -568,6 +568,7 @@ async function checkStatus() {
     statusAlert.textContent = alerts.length ? alerts.join(" | ") : "All systems nominal";
     }
   } catch (error) {
+    console.error("Status update failed", error);
     if (statusAlert) {
       statusAlert.dataset.state = "error";
       const message = error && error.message ? error.message : "status update failed";

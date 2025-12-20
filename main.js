@@ -442,12 +442,144 @@
         animateCounters();
     };
 
+    const buildCommands = handlers => [
+        { icon: '&#128188;', title: 'Experience', desc: 'View work history', action: () => handlers.scrollToSection('experience') },
+        { icon: '&#127891;', title: 'Education', desc: 'View academic background', action: () => handlers.scrollToSection('education') },
+        { icon: '&#128272;', title: 'Certifications', desc: 'View credentials', action: () => handlers.scrollToSection('certifications') },
+        { icon: '&#128736;', title: 'Skills', desc: 'View expertise', action: () => handlers.scrollToSection('skills') },
+        { icon: '&#128214;', title: 'Publications', desc: 'View research', action: () => handlers.scrollToSection('publications') },
+        { icon: '&#128231;', title: 'Contact', desc: 'Get in touch', action: () => handlers.scrollToSection('contact') },
+        { icon: '&#128421;', title: 'Status', desc: 'View server status', action: () => { window.location.href = '/status'; } },
+        { icon: '&#128203;', title: 'Copy Email', desc: 'Copy email address', action: handlers.handleCopyEmail },
+        { icon: '&#127769;', title: 'Toggle Theme', desc: 'Switch light/dark mode', action: handlers.toggleTheme },
+        { icon: '&#128196;', title: 'Download Resume', desc: 'Get PDF resume', action: () => handlers.openExternal('https://files.aahmed.ca/resume.pdf') },
+        { icon: '&#128195;', title: 'Download CV', desc: 'Get full CV', action: () => handlers.openExternal('https://files.aahmed.ca/cv.pdf') }
+    ];
+
+    const filterCommands = (commands, filter) => {
+        const normalized = filter.toLowerCase();
+        return commands.filter(cmd =>
+            cmd.title.toLowerCase().includes(normalized) || cmd.desc.toLowerCase().includes(normalized)
+        );
+    };
+
+    const renderCommandList = (listEl, commands, selectedIndex, onSelect) => {
+        if (!commands.length) {
+            listEl.innerHTML = '<div class="command-empty">No matches</div>';
+            return;
+        }
+
+        listEl.innerHTML = commands.map((cmd, index) => `
+            <div class="command-item ${index === selectedIndex ? 'selected' : ''}" data-index="${index}">
+                <div class="command-item-icon">${cmd.icon}</div>
+                <div class="command-item-text">
+                    <div class="command-item-title">${cmd.title}</div>
+                    <div class="command-item-desc">${cmd.desc}</div>
+                </div>
+            </div>
+        `).join('');
+
+        qsa('.command-item', listEl).forEach((el, index) => {
+            el.addEventListener('click', () => {
+                onSelect(commands[index]);
+            });
+        });
+    };
+
+    const setPaletteState = (paletteEl, navCmd, open) => {
+        paletteEl.classList.toggle('active', open);
+        paletteEl.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (navCmd) {
+            navCmd.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+    };
+
+    const renderCommands = (domRef, commands, state, filter = '') => {
+        const filtered = filterCommands(commands, filter);
+        renderCommandList(domRef.commandList, filtered, state.selectedCmd, cmd => {
+            cmd.action();
+            closeCommandPalette(domRef, state);
+        });
+    };
+
+    const openCommandPalette = (domRef, state, commands) => {
+        if (domRef.commandPalette.classList.contains('active')) {
+            closeCommandPalette(domRef, state);
+            return;
+        }
+        state.lastFocus = document.activeElement;
+        setPaletteState(domRef.commandPalette, domRef.navCmd, true);
+        domRef.commandInput.value = '';
+        domRef.commandInput.focus();
+        state.selectedCmd = 0;
+        renderCommands(domRef, commands, state);
+    };
+
+    const closeCommandPalette = (domRef, state) => {
+        if (!domRef.commandPalette.classList.contains('active')) {
+            return;
+        }
+        setPaletteState(domRef.commandPalette, domRef.navCmd, false);
+        if (state.lastFocus && typeof state.lastFocus.focus === 'function') {
+            state.lastFocus.focus();
+        }
+    };
+
+    const handleCommandInput = (event, domRef, commands, state) => {
+        state.selectedCmd = 0;
+        renderCommands(domRef, commands, state, event.target.value);
+    };
+
+    const handleCommandInputKeydown = (event, domRef, commands, state) => {
+        const items = qsa('.command-item', domRef.commandList);
+        if (!items.length) {
+            if (event.key === 'Escape') {
+                closeCommandPalette(domRef, state);
+            }
+            return;
+        }
+        if (event.key === 'ArrowDown') {
+            state.selectedCmd = (state.selectedCmd + 1) % items.length;
+            renderCommands(domRef, commands, state, domRef.commandInput.value);
+        } else if (event.key === 'ArrowUp') {
+            state.selectedCmd = (state.selectedCmd - 1 + items.length) % items.length;
+            renderCommands(domRef, commands, state, domRef.commandInput.value);
+        } else if (event.key === 'Enter') {
+            items[state.selectedCmd]?.click();
+        } else if (event.key === 'Escape') {
+            closeCommandPalette(domRef, state);
+        }
+    };
+
+    const handlePaletteClick = (event, domRef, state) => {
+        if (event.target === domRef.commandPalette) {
+            closeCommandPalette(domRef, state);
+        }
+    };
+
+    const handlePaletteKeydown = (event, domRef) => {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            domRef.commandInput.focus();
+        }
+    };
+
+    const handleCommandGlobalKeydown = (event, domRef, state, commands) => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            openCommandPalette(domRef, state, commands);
+            return;
+        }
+        if (domRef.commandPalette.classList.contains('active') && event.key === 'Escape') {
+            event.preventDefault();
+            closeCommandPalette(domRef, state);
+        }
+    };
+
     const initCommandPalette = () => {
         if (!dom.commandPalette || !dom.commandInput || !dom.commandList) {
             return;
         }
-
-        let lastFocus = null;
 
         const openExternal = url => {
             const win = window.open(url, '_blank', 'noopener');
@@ -458,135 +590,35 @@
 
         dom.commandInput.setAttribute('aria-controls', 'commandList');
 
-        const commands = [
-            { icon: '&#128188;', title: 'Experience', desc: 'View work history', action: () => scrollToSection('experience') },
-            { icon: '&#127891;', title: 'Education', desc: 'View academic background', action: () => scrollToSection('education') },
-            { icon: '&#128272;', title: 'Certifications', desc: 'View credentials', action: () => scrollToSection('certifications') },
-            { icon: '&#128736;', title: 'Skills', desc: 'View expertise', action: () => scrollToSection('skills') },
-            { icon: '&#128214;', title: 'Publications', desc: 'View research', action: () => scrollToSection('publications') },
-            { icon: '&#128231;', title: 'Contact', desc: 'Get in touch', action: () => scrollToSection('contact') },
-            { icon: '&#128421;', title: 'Status', desc: 'View server status', action: () => { window.location.href = '/status'; } },
-            { icon: '&#128203;', title: 'Copy Email', desc: 'Copy email address', action: handleCopyEmail },
-            { icon: '&#127769;', title: 'Toggle Theme', desc: 'Switch light/dark mode', action: theme.toggle },
-            { icon: '&#128196;', title: 'Download Resume', desc: 'Get PDF resume', action: () => openExternal('https://files.aahmed.ca/resume.pdf') },
-            { icon: '&#128195;', title: 'Download CV', desc: 'Get full CV', action: () => openExternal('https://files.aahmed.ca/cv.pdf') }
-        ];
+        const commands = buildCommands({
+            scrollToSection,
+            handleCopyEmail,
+            toggleTheme: theme.toggle,
+            openExternal
+        });
 
-        let selectedCmd = 0;
-
-        const renderCommands = (filter = '') => {
-            const normalized = filter.toLowerCase();
-            const filtered = commands.filter(cmd =>
-                cmd.title.toLowerCase().includes(normalized) || cmd.desc.toLowerCase().includes(normalized)
-            );
-
-            if (!filtered.length) {
-                dom.commandList.innerHTML = '<div class="command-empty">No matches</div>';
-                return;
-            }
-
-            dom.commandList.innerHTML = filtered.map((cmd, index) => `
-                <div class="command-item ${index === selectedCmd ? 'selected' : ''}" data-index="${index}">
-                    <div class="command-item-icon">${cmd.icon}</div>
-                    <div class="command-item-text">
-                        <div class="command-item-title">${cmd.title}</div>
-                        <div class="command-item-desc">${cmd.desc}</div>
-                    </div>
-                </div>
-            `).join('');
-
-            qsa('.command-item', dom.commandList).forEach((el, index) => {
-                el.addEventListener('click', () => {
-                    filtered[index].action();
-                    closeCommandPalette();
-                });
-            });
-        };
-
-        const setPaletteState = open => {
-            dom.commandPalette.classList.toggle('active', open);
-            dom.commandPalette.setAttribute('aria-hidden', open ? 'false' : 'true');
-            if (dom.navCmd) {
-                dom.navCmd.setAttribute('aria-expanded', open ? 'true' : 'false');
-            }
-        };
-
-        const openCommandPalette = () => {
-            if (dom.commandPalette.classList.contains('active')) {
-                closeCommandPalette();
-                return;
-            }
-            lastFocus = document.activeElement;
-            setPaletteState(true);
-            dom.commandInput.value = '';
-            dom.commandInput.focus();
-            selectedCmd = 0;
-            renderCommands();
-        };
-
-        const closeCommandPalette = () => {
-            if (!dom.commandPalette.classList.contains('active')) {
-                return;
-            }
-            setPaletteState(false);
-            if (lastFocus && typeof lastFocus.focus === 'function') {
-                lastFocus.focus();
-            }
-        };
+        const state = { selectedCmd: 0, lastFocus: null };
 
         dom.commandInput.addEventListener('input', event => {
-            selectedCmd = 0;
-            renderCommands(event.target.value);
+            handleCommandInput(event, dom, commands, state);
         });
-
         dom.commandInput.addEventListener('keydown', event => {
-            const items = qsa('.command-item', dom.commandList);
-            if (!items.length) {
-                if (event.key === 'Escape') {
-                    closeCommandPalette();
-                }
-                return;
-            }
-            if (event.key === 'ArrowDown') {
-                selectedCmd = (selectedCmd + 1) % items.length;
-                renderCommands(dom.commandInput.value);
-            } else if (event.key === 'ArrowUp') {
-                selectedCmd = (selectedCmd - 1 + items.length) % items.length;
-                renderCommands(dom.commandInput.value);
-            } else if (event.key === 'Enter') {
-                items[selectedCmd]?.click();
-            } else if (event.key === 'Escape') {
-                closeCommandPalette();
-            }
+            handleCommandInputKeydown(event, dom, commands, state);
         });
-
         dom.commandPalette.addEventListener('click', event => {
-            if (event.target === dom.commandPalette) {
-                closeCommandPalette();
-            }
+            handlePaletteClick(event, dom, state);
         });
-
         dom.commandPalette.addEventListener('keydown', event => {
-            if (event.key === 'Tab') {
-                event.preventDefault();
-                dom.commandInput.focus();
-            }
+            handlePaletteKeydown(event, dom);
         });
-
         document.addEventListener('keydown', event => {
-            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-                event.preventDefault();
-                openCommandPalette();
-                return;
-            }
-            if (dom.commandPalette.classList.contains('active') && event.key === 'Escape') {
-                event.preventDefault();
-                closeCommandPalette();
-            }
+            handleCommandGlobalKeydown(event, dom, state, commands);
         });
 
         if (dom.navCmd) {
-            dom.navCmd.addEventListener('click', openCommandPalette);
+            dom.navCmd.addEventListener('click', () => {
+                openCommandPalette(dom, state, commands);
+            });
         }
     };
 

@@ -1,5 +1,8 @@
 /* Shared helpers for status UI. */
 (() => {
+  const BYTES_PER_UNIT = 1024;
+  const PAGE_TRANSITION_MS = 140;
+  const CONFETTI_PIECES = 140;
   const clampPercent = value => {
     if (!Number.isFinite(value)) {
       return 0;
@@ -34,8 +37,8 @@
     const units = ["B", "KB", "MB", "GB", "TB"];
     let size = bytes;
     let unitIndex = 0;
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024;
+    while (size >= BYTES_PER_UNIT && unitIndex < units.length - 1) {
+      size /= BYTES_PER_UNIT;
       unitIndex += 1;
     }
     return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
@@ -48,8 +51,8 @@
     const units = ["B/s", "KB/s", "MB/s", "GB/s"];
     let size = bps;
     let unitIndex = 0;
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024;
+    while (size >= BYTES_PER_UNIT && unitIndex < units.length - 1) {
+      size /= BYTES_PER_UNIT;
       unitIndex += 1;
     }
     return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
@@ -132,7 +135,7 @@
     body.classList.add("is-leaving");
     setTimeout(() => {
       window.location.href = link.href;
-    }, 140);
+    }, PAGE_TRANSITION_MS);
   });
 })();
 
@@ -296,7 +299,9 @@
             window.addEventListener("deviceorientation", handleOrientation, true);
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          state.orientationEnabled = false;
+        });
     } else {
       window.addEventListener("deviceorientation", handleOrientation, true);
     }
@@ -372,7 +377,7 @@
 
     const ctx = canvas.getContext("2d");
     const colors = ["#60a5fa", "#fbbf24", "#34d399", "#f472b6", "#a78bfa"];
-    const pieces = Array.from({ length: 140 }, () => ({
+    const pieces = Array.from({ length: CONFETTI_PIECES }, () => ({
       x: Math.random() * canvas.width,
       y: -20 - Math.random() * canvas.height * 0.2,
       size: 6 + Math.random() * 6,
