@@ -266,7 +266,7 @@
 
 .service-header {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: minmax(12ch, 1fr) max-content;
     align-items: center;
     column-gap: 12px;
     row-gap: 6px;
@@ -355,5 +355,14 @@
     .disk-ring {
         width: 104px;
         height: 104px;
+    }
+
+    .service-header {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .service-pill {
+        justify-self: start;
     }
 }

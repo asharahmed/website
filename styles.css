@@ -1295,7 +1295,7 @@
 
 
         @media (max-width: 768px) {
-            .nav { display: none; }
+            .nav { display: flex; }
             .theme-toggle { bottom: 15px; left: 15px; width: 42px; height: 42px; }
             .hero-content { padding: 30px 15px; }
             .hero-avatar { width: 100px; height: 100px; font-size: 2.5em; }
