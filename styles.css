@@ -956,6 +956,10 @@
             display: block;
         }
 
+        [data-theme="dark"] .cert-invert-dark {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
         .cert-info { flex: 1; min-width: 0; }
 
         .cert-name {
