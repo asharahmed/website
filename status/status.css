@@ -71,6 +71,10 @@
     top: 72px;
 }
 
+.status-page .hero-content {
+    padding-bottom: 80px;
+}
+
 .status-page .beta-banner__content {
     gap: 12px;
 }
@@ -167,7 +171,7 @@
 
 .status-alert {
     margin-top: 18px;
-    margin-bottom: 22px;
+    margin-bottom: 32px;
     min-height: 20px;
     font-size: 0.95em;
     color: #e2e8f0;
