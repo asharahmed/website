@@ -21,7 +21,7 @@ require_json_key_from_file() {
   for attempt in {1..10}; do
     payload="$(cat "${file_path}")"
     if [[ -n "${payload}" ]]; then
-      python3 - "${key}" <<<"${payload}" <<'PY'
+      printf '%s' "${payload}" | python3 - "${key}" <<'PY'
 import json
 import sys
 
@@ -49,7 +49,7 @@ require_json_key() {
   for attempt in {1..10}; do
     payload="$(curl -fsS --retry 3 --retry-connrefused --retry-delay 1 "${url}")"
     if [[ -n "${payload}" ]]; then
-      python3 - "${key}" <<<"${payload}" <<'PY'
+      printf '%s' "${payload}" | python3 - "${key}" <<'PY'
 import json
 import sys
 
