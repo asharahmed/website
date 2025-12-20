@@ -1,0 +1,11 @@
+[Unit]
+Description=Run status metrics generator every 10 seconds
+
+[Timer]
+OnBootSec=10s
+OnUnitActiveSec=10s
+AccuracySec=1s
+Unit=status-metrics.service
+
+[Install]
+WantedBy=timers.target

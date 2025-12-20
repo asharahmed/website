@@ -1,0 +1,6 @@
+[Unit]
+Description=Generate status metrics snapshot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/status-metrics.sh
