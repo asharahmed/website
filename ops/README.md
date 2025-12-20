@@ -21,6 +21,12 @@ This will:
 - Install systemd unit files and enable the timer.
 - Run a one-shot metrics update.
 
+
+## Docker (Optional)
+A hybrid container setup is available under `ops/docker`.
+It runs the static site in an Nginx container while keeping metrics on the host.
+See `ops/docker/README.md` for steps.
+
 ## Nginx
 If you use a different Nginx config, ensure a stub_status location is present:
 
