@@ -778,7 +778,7 @@
         }
 
         .cert-issuer {
-            color: var(--text-secondary);
+            color: #ef4444;
             font-size: 0.8em;
         }
 
