@@ -10,6 +10,7 @@ const fields = {
   lastChecked: document.getElementById("last-checked"),
   metricsUpdated: document.getElementById("metrics-updated"),
   metricsAge: document.getElementById("metrics-age"),
+  hostname: document.getElementById("hostname"),
   servicesOnline: document.getElementById("services-online"),
   cpuUsage: document.getElementById("cpu-usage"),
   cpuDetail: document.getElementById("cpu-detail"),
@@ -375,6 +376,7 @@ function updateMetrics(data) {
   if (!data) {
     setText(fields.metricsUpdated, "--");
     setText(fields.metricsAge, "--");
+    setText(fields.hostname, "--");
     setText(fields.loadDetail, "--");
     setText(fields.ioDetail, "--");
     setDiskRing(null);
@@ -387,6 +389,7 @@ function updateMetrics(data) {
   const metricsAge = updated ? (Date.now() - updated.getTime()) / 1000 : null;
   state.lastMetricsAge = metricsAge;
   setText(fields.metricsAge, formatAge(metricsAge));
+  setText(fields.hostname, data.hostname || "--");
 
   setText(fields.cpuUsage, formatPercent(data.cpu?.usage_percent));
   setText(fields.cpuDetail, data.cpu?.cores ? `${data.cpu.cores} cores` : "--");
