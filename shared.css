@@ -79,7 +79,6 @@
     border: 1px solid var(--glass-border);
     border-radius: 50px;
     height: var(--sticky-height);
-    padding: 0 16px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -89,6 +88,14 @@
     visibility: hidden;
     transition: all var(--transition-speed);
     max-width: calc(100vw - 32px);
+}
+
+.nav-scroller {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    padding: 0 16px;
     overflow-x: auto;
     scrollbar-width: none;
     white-space: nowrap;
@@ -97,49 +104,36 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.nav::-webkit-scrollbar {
+.nav-scroller::-webkit-scrollbar {
     display: none;
 }
 
-.nav a {
+.nav-scroller a {
     scroll-snap-align: center;
 }
 
-.nav::before,
-.nav::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 24px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    z-index: 1;
+.nav.nav--fade-left .nav-scroller {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 100%);
 }
 
-.nav::before {
-    left: 0;
-    background: linear-gradient(90deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0));
+.nav.nav--fade-right .nav-scroller {
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 24px), transparent 100%);
 }
 
-.nav::after {
-    right: 0;
-    background: linear-gradient(270deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0));
+.nav.nav--fade-left.nav--fade-right .nav-scroller {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 
-.nav.nav--fade-left::before {
-    opacity: 1;
-}
-
-.nav.nav--fade-right::after {
-    opacity: 1;
-}
-
-.nav a,
-.nav .nav-cmd {
-    position: relative;
-    z-index: 2;
+.nav.nav--fade-left .nav-scroller,
+.nav.nav--fade-right .nav-scroller,
+.nav.nav--fade-left.nav--fade-right .nav-scroller {
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
 }
 
 .beta-banner ~ .nav {

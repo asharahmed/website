@@ -23,6 +23,7 @@
         mobileBtn: qs('#mobileMenuBtn'),
         mobileNav: qs('#mobileNav'),
         particlesCanvas: qs('#particles-canvas'),
+        navScroller: qs('.nav-scroller'),
         copyEmailBtn: qs('[data-copy-email]'),
         copyToast: qs('#copyToast')
     };
@@ -133,16 +134,16 @@
     };
 
     const updateNavFade = () => {
-        if (!dom.nav) {
+        if (!dom.nav || !dom.navScroller) {
             return;
         }
-        const maxScroll = dom.nav.scrollWidth - dom.nav.clientWidth;
+        const maxScroll = dom.navScroller.scrollWidth - dom.navScroller.clientWidth;
         if (maxScroll <= 1) {
             dom.nav.classList.remove('nav--fade-left', 'nav--fade-right');
             return;
         }
-        const scrolledLeft = dom.nav.scrollLeft > 4;
-        const scrolledRight = dom.nav.scrollLeft < maxScroll - 4;
+        const scrolledLeft = dom.navScroller.scrollLeft > 4;
+        const scrolledRight = dom.navScroller.scrollLeft < maxScroll - 4;
         dom.nav.classList.toggle('nav--fade-left', scrolledLeft);
         dom.nav.classList.toggle('nav--fade-right', scrolledRight);
     };
@@ -206,8 +207,8 @@
         updateScroll(cache);
         updateNavFade();
         window.addEventListener('scroll', onScroll, { passive: true });
-        if (dom.nav) {
-            dom.nav.addEventListener('scroll', updateNavFade, { passive: true });
+        if (dom.navScroller) {
+            dom.navScroller.addEventListener('scroll', updateNavFade, { passive: true });
         }
         window.addEventListener('resize', updateNavFade, { passive: true });
     };
