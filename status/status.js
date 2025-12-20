@@ -1,6 +1,7 @@
 const statusPill = document.getElementById("overall-status");
 const statusLabel = document.getElementById("overall-label");
 const statusUpdated = document.getElementById("status-updated");
+const statusAlert = document.getElementById("status-alert");
 
 const fields = {
   httpStatus: document.getElementById("http-status"),
@@ -8,6 +9,8 @@ const fields = {
   serverTime: document.getElementById("server-time"),
   lastChecked: document.getElementById("last-checked"),
   metricsUpdated: document.getElementById("metrics-updated"),
+  metricsAge: document.getElementById("metrics-age"),
+  servicesOnline: document.getElementById("services-online"),
   cpuUsage: document.getElementById("cpu-usage"),
   cpuDetail: document.getElementById("cpu-detail"),
   memoryUsage: document.getElementById("memory-usage"),
@@ -51,6 +54,7 @@ const sparklines = {
 const state = {
   lastRequests: null,
   lastTimestamp: null,
+  lastMetricsAge: null,
   history: {
     cpu: [],
     memory: [],
@@ -136,6 +140,18 @@ function formatUptime(seconds) {
   return parts.join(" ");
 }
 
+function formatAge(seconds) {
+  if (!Number.isFinite(seconds)) {
+    return "--";
+  }
+  if (seconds < 60) {
+    return `${Math.round(seconds)}s`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainder = Math.round(seconds % 60);
+  return `${minutes}m ${remainder}s`;
+}
+
 function formatServiceLabel(state) {
   switch (state) {
     case "active":
@@ -156,14 +172,23 @@ function formatServiceLabel(state) {
 }
 
 function updateServices(services) {
+  let total = 0;
+  let online = 0;
   Object.entries(servicePills).forEach(([key, element]) => {
     if (!element) {
       return;
     }
+    total += 1;
     const stateValue = services && typeof services[key] === "string" ? services[key] : "unknown";
     element.dataset.state = stateValue;
     setText(element, formatServiceLabel(stateValue));
+    if (stateValue === "active") {
+      online += 1;
+    }
   });
+  if (fields.servicesOnline) {
+    fields.servicesOnline.textContent = total ? `${online}/${total}` : "--";
+  }
 }
 
 function parseStubStatus(text) {
@@ -349,6 +374,7 @@ function updateRate(requests) {
 function updateMetrics(data) {
   if (!data) {
     setText(fields.metricsUpdated, "--");
+    setText(fields.metricsAge, "--");
     setText(fields.loadDetail, "--");
     setText(fields.ioDetail, "--");
     setDiskRing(null);
@@ -358,6 +384,9 @@ function updateMetrics(data) {
 
   const updated = data.generated_at ? new Date(data.generated_at) : null;
   setText(fields.metricsUpdated, updated ? updated.toLocaleTimeString() : "--");
+  const metricsAge = updated ? (Date.now() - updated.getTime()) / 1000 : null;
+  state.lastMetricsAge = metricsAge;
+  setText(fields.metricsAge, formatAge(metricsAge));
 
   setText(fields.cpuUsage, formatPercent(data.cpu?.usage_percent));
   setText(fields.cpuDetail, data.cpu?.cores ? `${data.cpu.cores} cores` : "--");
@@ -495,6 +524,24 @@ async function checkStatus() {
 
   if (statusUpdated) {
     statusUpdated.textContent = `Last update: ${now.toLocaleTimeString()}`;
+  }
+
+  if (statusAlert) {
+    const alerts = [];
+    let alertState = "ok";
+    if (state.lastMetricsAge !== null && state.lastMetricsAge > 30) {
+      alerts.push(`Metrics stale (${formatAge(state.lastMetricsAge)})`);
+      alertState = "warn";
+    }
+    const serviceIssues = Object.entries(servicePills)
+      .map(([key, element]) => ({ key, state: element ? element.dataset.state : "unknown" }))
+      .filter(item => item.state !== "active");
+    if (serviceIssues.length) {
+      alerts.push(`Service issues: ${serviceIssues.map(item => item.key).join(", ")}`);
+      alertState = "error";
+    }
+    statusAlert.dataset.state = alertState === "ok" ? "ok" : alertState;
+    statusAlert.textContent = alerts.length ? alerts.join(" | ") : "All systems nominal";
   }
 }
 

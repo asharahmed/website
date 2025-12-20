@@ -72,6 +72,7 @@
                 <span>Endpoint: /status</span>
                 <span id="status-updated">Last update: --</span>
             </div>
+            <div class="status-alert" id="status-alert" role="status" aria-live="polite"></div>
         </div>
 
         <button class="scroll-indicator" id="scrollIndicator" type="button" aria-label="Scroll to main content">
@@ -107,6 +108,14 @@
                     <div class="stat-card">
                         <div class="stat-number" id="metrics-updated">--</div>
                         <div class="stat-label">Metrics Updated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="metrics-age">--</div>
+                        <div class="stat-label">Metrics Age</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="services-online">--</div>
+                        <div class="stat-label">Services Online</div>
                     </div>
                 </div>
             </section>

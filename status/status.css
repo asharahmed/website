@@ -138,6 +138,41 @@
     color: var(--text-secondary);
 }
 
+.status-alert {
+    margin-top: 18px;
+    min-height: 20px;
+    font-size: 0.95em;
+    color: #e2e8f0;
+    background: rgba(15, 23, 42, 0.35);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 999px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-alert[data-state="warn"] {
+    color: #fef3c7;
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.status-alert[data-state="error"] {
+    color: #fee2e2;
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.status-alert::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+}
+
 .services-grid {
     gap: 18px;
 }
