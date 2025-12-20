@@ -96,3 +96,42 @@
     formatAge
   };
 })();
+
+/* Page transition helpers. */
+(() => {
+  const body = document.body;
+  if (!body) {
+    return;
+  }
+
+  body.classList.add("page-fade");
+  window.addEventListener("DOMContentLoaded", () => {
+    body.classList.add("is-loaded");
+  });
+
+  document.addEventListener("click", event => {
+    const link = event.target.closest("a");
+    if (!link) {
+      return;
+    }
+    if (link.target === "_blank" || link.hasAttribute("download")) {
+      return;
+    }
+    const href = link.getAttribute("href") || "";
+    if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      return;
+    }
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin) {
+      return;
+    }
+    if (url.pathname === window.location.pathname && url.hash) {
+      return;
+    }
+    event.preventDefault();
+    body.classList.add("is-leaving");
+    setTimeout(() => {
+      window.location.href = link.href;
+    }, 250);
+  });
+})();

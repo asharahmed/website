@@ -297,3 +297,17 @@ header {
 @media (max-width: 768px) {
     .mobile-menu-btn { display: flex; top: 72px; }
 }
+
+/* Page Transitions */
+body.page-fade {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+body.page-fade.is-loaded {
+    opacity: 1;
+}
+
+body.page-fade.is-leaving {
+    opacity: 0;
+}
