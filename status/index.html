@@ -72,6 +72,7 @@
             <div class="status-meta">
                 <span>Endpoint: /status</span>
                 <span id="status-updated">Last update: --</span>
+                <button class="status-refresh" id="refresh-now" type="button">Refresh now</button>
             </div>
             <div class="status-alert" id="status-alert" role="status" aria-live="polite"></div>
         </div>
@@ -248,12 +249,6 @@
             </section>
         </div>
     </main>
-
-    <footer class="status-footer">
-        <div class="container">
-            <p>For alerting, pair this page with an external uptime monitor.</p>
-        </div>
-    </footer>
 
     <script src="/main.js" defer></script>
     <script src="/status/status.js" defer></script>

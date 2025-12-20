@@ -56,6 +56,25 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+.status-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(15, 23, 42, 0.4);
+    color: #e2e8f0;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.status-refresh:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(96, 165, 250, 0.6);
+}
+
 .beta-banner__link {
     margin-left: auto;
     display: inline-flex;
@@ -295,15 +314,6 @@
     color: var(--text-secondary);
 }
 
-.status-footer {
-    padding: 40px 0 60px;
-    color: var(--text-muted);
-    text-align: center;
-}
-
-.status-footer p {
-    margin: 0;
-}
 
 @media (max-width: 720px) {
     .status-page header {

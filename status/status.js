@@ -2,6 +2,7 @@ const statusPill = document.getElementById("overall-status");
 const statusLabel = document.getElementById("overall-label");
 const statusUpdated = document.getElementById("status-updated");
 const statusAlert = document.getElementById("status-alert");
+const refreshButton = document.getElementById("refresh-now");
 
 const fields = {
   httpStatus: document.getElementById("http-status"),
@@ -558,3 +559,9 @@ setInterval(checkStatus, 10000);
 window.addEventListener("focus", () => {
   checkStatus();
 });
+
+if (refreshButton) {
+  refreshButton.addEventListener("click", () => {
+    checkStatus();
+  });
+}
