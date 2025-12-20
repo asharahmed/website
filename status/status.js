@@ -3,6 +3,7 @@ const statusLabel = document.getElementById("overall-label");
 const statusUpdated = document.getElementById("status-updated");
 const statusAlert = document.getElementById("status-alert");
 const refreshButton = document.getElementById("refresh-now");
+const utils = window.StatusUtils;
 
 const fields = {
   httpStatus: document.getElementById("http-status"),
@@ -69,89 +70,11 @@ const state = {
 const MAX_POINTS = 60;
 const IO_CAP_BPS = 100 * 1024 * 1024;
 
-function setText(element, value) {
-  if (element) {
-    element.textContent = value;
-  }
-}
-
 function setStatus(stateLabel, text) {
   if (statusPill) {
     statusPill.dataset.state = stateLabel;
   }
-  setText(statusLabel, text);
-}
-
-function formatDuration(ms) {
-  if (!Number.isFinite(ms)) {
-    return "--";
-  }
-  return `${Math.round(ms)} ms`;
-}
-
-function formatPercent(value) {
-  if (!Number.isFinite(value)) {
-    return "--";
-  }
-  return `${value.toFixed(1)}%`;
-}
-
-function formatBytes(bytes) {
-  if (!Number.isFinite(bytes)) {
-    return "--";
-  }
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let size = bytes;
-  let unitIndex = 0;
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex += 1;
-  }
-  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
-function formatThroughput(bps) {
-  if (!Number.isFinite(bps)) {
-    return "--";
-  }
-  const units = ["B/s", "KB/s", "MB/s", "GB/s"];
-  let size = bps;
-  let unitIndex = 0;
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex += 1;
-  }
-  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
-function formatUptime(seconds) {
-  if (!Number.isFinite(seconds)) {
-    return "--";
-  }
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const parts = [];
-  if (days > 0) {
-    parts.push(`${days}d`);
-  }
-  if (hours > 0 || days > 0) {
-    parts.push(`${hours}h`);
-  }
-  parts.push(`${minutes}m`);
-  return parts.join(" ");
-}
-
-function formatAge(seconds) {
-  if (!Number.isFinite(seconds)) {
-    return "--";
-  }
-  if (seconds < 60) {
-    return `${Math.round(seconds)}s`;
-  }
-  const minutes = Math.floor(seconds / 60);
-  const remainder = Math.round(seconds % 60);
-  return `${minutes}m ${remainder}s`;
+  utils.setText(statusLabel, text);
 }
 
 function formatServiceLabel(state) {
@@ -209,18 +132,11 @@ function parseStubStatus(text) {
   };
 }
 
-function clampPercent(value) {
-  if (!Number.isFinite(value)) {
-    return 0;
-  }
-  return Math.max(0, Math.min(100, value));
-}
-
 function setBar(element, value) {
   if (!element) {
     return;
   }
-  const percent = clampPercent(value);
+  const percent = utils.clampPercent(value);
   element.style.width = `${percent}%`;
 }
 
@@ -228,10 +144,10 @@ function setDiskRing(value) {
   if (!fields.diskRing) {
     return;
   }
-  const percent = clampPercent(value);
+  const percent = utils.clampPercent(value);
   const degrees = `${(percent / 100) * 360}deg`;
   fields.diskRing.style.setProperty("--disk-percent", degrees);
-  setText(fields.diskRingValue, `${percent.toFixed(0)}%`);
+  utils.setText(fields.diskRingValue, `${percent.toFixed(0)}%`);
 }
 
 function pushHistory(key, value) {
@@ -333,11 +249,11 @@ async function fetchStubStatus() {
   const response = await fetch("/status/nginx", { cache: "no-store" });
   const elapsed = performance.now() - started;
 
-  setText(fields.httpStatus, `${response.status} ${response.statusText || ""}`.trim());
-  setText(fields.responseTime, formatDuration(elapsed));
+  utils.setText(fields.httpStatus, `${response.status} ${response.statusText || ""}`.trim());
+  utils.setText(fields.responseTime, utils.formatDuration(elapsed));
 
   const serverDate = response.headers.get("Date");
-  setText(fields.serverTime, serverDate ? new Date(serverDate).toLocaleString() : "--");
+  utils.setText(fields.serverTime, serverDate ? new Date(serverDate).toLocaleString() : "--");
 
   if (!response.ok) {
     throw new Error("stub_status unavailable");
@@ -357,7 +273,7 @@ async function fetchMetrics() {
 
 function updateRate(requests) {
   if (!Number.isFinite(requests)) {
-    setText(fields.requestsRate, "--");
+    utils.setText(fields.requestsRate, "--");
     return;
   }
   const timestamp = Date.now();
@@ -365,9 +281,9 @@ function updateRate(requests) {
     const deltaRequests = requests - state.lastRequests;
     const deltaSeconds = (timestamp - state.lastTimestamp) / 1000;
     const rate = deltaSeconds > 0 ? deltaRequests / deltaSeconds : null;
-    setText(fields.requestsRate, Number.isFinite(rate) ? `${rate.toFixed(2)} r/s` : "--");
+    utils.setText(fields.requestsRate, Number.isFinite(rate) ? `${rate.toFixed(2)} r/s` : "--");
   } else {
-    setText(fields.requestsRate, "--");
+    utils.setText(fields.requestsRate, "--");
   }
   state.lastRequests = requests;
   state.lastTimestamp = timestamp;
@@ -375,40 +291,40 @@ function updateRate(requests) {
 
 function updateMetrics(data) {
   if (!data) {
-    setText(fields.metricsUpdated, "--");
-    setText(fields.metricsAge, "--");
-    setText(fields.hostname, "--");
-    setText(fields.loadDetail, "--");
-    setText(fields.ioDetail, "--");
+    utils.setText(fields.metricsUpdated, "--");
+    utils.setText(fields.metricsAge, "--");
+    utils.setText(fields.hostname, "--");
+    utils.setText(fields.loadDetail, "--");
+    utils.setText(fields.ioDetail, "--");
     setDiskRing(null);
     updateServices(null);
     return { loadScale: 1 };
   }
 
   const updated = data.generated_at ? new Date(data.generated_at) : null;
-  setText(fields.metricsUpdated, updated ? updated.toLocaleTimeString() : "--");
+  utils.setText(fields.metricsUpdated, updated ? updated.toLocaleTimeString() : "--");
   const metricsAge = updated ? (Date.now() - updated.getTime()) / 1000 : null;
   state.lastMetricsAge = metricsAge;
-  setText(fields.metricsAge, formatAge(metricsAge));
-  setText(fields.hostname, data.hostname || "--");
+  utils.setText(fields.metricsAge, utils.formatAge(metricsAge));
+  utils.setText(fields.hostname, data.hostname || "--");
 
-  setText(fields.cpuUsage, formatPercent(data.cpu?.usage_percent));
-  setText(fields.cpuDetail, data.cpu?.cores ? `${data.cpu.cores} cores` : "--");
+  utils.setText(fields.cpuUsage, utils.formatPercent(data.cpu?.usage_percent));
+  utils.setText(fields.cpuDetail, data.cpu?.cores ? `${data.cpu.cores} cores` : "--");
   setBar(fields.cpuBar, data.cpu?.usage_percent);
 
-  setText(fields.memoryUsage, formatPercent(data.memory?.usage_percent));
+  utils.setText(fields.memoryUsage, utils.formatPercent(data.memory?.usage_percent));
   if (Number.isFinite(data.memory?.used_bytes) && Number.isFinite(data.memory?.total_bytes)) {
-    setText(fields.memoryDetail, `${formatBytes(data.memory.used_bytes)} / ${formatBytes(data.memory.total_bytes)}`);
+    utils.setText(fields.memoryDetail, `${utils.formatBytes(data.memory.used_bytes)} / ${utils.formatBytes(data.memory.total_bytes)}`);
   } else {
-    setText(fields.memoryDetail, "--");
+    utils.setText(fields.memoryDetail, "--");
   }
   setBar(fields.memoryBar, data.memory?.usage_percent);
 
-  setText(fields.diskUsage, formatPercent(data.disk?.usage_percent));
+  utils.setText(fields.diskUsage, utils.formatPercent(data.disk?.usage_percent));
   if (Number.isFinite(data.disk?.used_bytes) && Number.isFinite(data.disk?.total_bytes)) {
-    setText(fields.diskDetail, `${formatBytes(data.disk.used_bytes)} / ${formatBytes(data.disk.total_bytes)}`);
+    utils.setText(fields.diskDetail, `${utils.formatBytes(data.disk.used_bytes)} / ${utils.formatBytes(data.disk.total_bytes)}`);
   } else {
-    setText(fields.diskDetail, "--");
+    utils.setText(fields.diskDetail, "--");
   }
   setBar(fields.diskBar, data.disk?.usage_percent);
   setDiskRing(data.disk?.usage_percent);
@@ -419,38 +335,38 @@ function updateMetrics(data) {
     ? (Number.isFinite(readBps) ? readBps : 0) + (Number.isFinite(writeBps) ? writeBps : 0)
     : null;
 
-  setText(fields.ioRate, formatThroughput(totalBps));
+  utils.setText(fields.ioRate, utils.formatThroughput(totalBps));
   if (Number.isFinite(readBps) || Number.isFinite(writeBps)) {
-    setText(
+    utils.setText(
       fields.ioDetail,
-      `R ${formatThroughput(readBps)} | W ${formatThroughput(writeBps)}`
+      `R ${utils.formatThroughput(readBps)} | W ${utils.formatThroughput(writeBps)}`
     );
   } else {
-    setText(fields.ioDetail, "--");
+    utils.setText(fields.ioDetail, "--");
   }
   setBar(fields.ioBar, totalBps !== null ? (totalBps / IO_CAP_BPS) * 100 : null);
 
   let loadScale = 1;
   if (Array.isArray(data.load_average)) {
-    setText(fields.loadAverage, data.load_average.map(val => Number(val).toFixed(2)).join(" / "));
+    utils.setText(fields.loadAverage, data.load_average.map(val => Number(val).toFixed(2)).join(" / "));
     const cores = Number(data.cpu?.cores) || 1;
     const load1 = Number(data.load_average[0]);
     if (Number.isFinite(load1)) {
       loadScale = Math.max(1, cores);
       const loadPercent = (load1 / loadScale) * 100;
-      setText(fields.loadDetail, `${load1.toFixed(2)} of ${loadScale} cores`);
+      utils.setText(fields.loadDetail, `${load1.toFixed(2)} of ${loadScale} cores`);
       setBar(fields.loadBar, loadPercent);
     } else {
-      setText(fields.loadDetail, "--");
+      utils.setText(fields.loadDetail, "--");
       setBar(fields.loadBar, null);
     }
   } else {
-    setText(fields.loadAverage, "--");
-    setText(fields.loadDetail, "--");
+    utils.setText(fields.loadAverage, "--");
+    utils.setText(fields.loadDetail, "--");
     setBar(fields.loadBar, null);
   }
 
-  setText(fields.uptime, formatUptime(Number(data.uptime_seconds)));
+  utils.setText(fields.uptime, utils.formatUptime(Number(data.uptime_seconds)));
   updateServices(data.services);
 
   if (data.history) {
@@ -478,7 +394,7 @@ function updateMetrics(data) {
 
 async function checkStatus() {
   const now = new Date();
-  setText(fields.lastChecked, now.toLocaleTimeString());
+  utils.setText(fields.lastChecked, now.toLocaleTimeString());
 
   const results = await Promise.allSettled([fetchStubStatus(), fetchMetrics()]);
   const [stubResult, metricsResult] = results;
@@ -497,15 +413,15 @@ async function checkStatus() {
     setText(fields.requests, metrics.requests ?? "--");
     updateRate(metrics.requests);
   } else {
-    setText(fields.httpStatus, "--");
-    setText(fields.responseTime, "--");
-    setText(fields.serverTime, "--");
-    setText(fields.active, "--");
-    setText(fields.reading, "--");
-    setText(fields.writing, "--");
-    setText(fields.waiting, "--");
-    setText(fields.requests, "--");
-    setText(fields.requestsRate, "--");
+    utils.setText(fields.httpStatus, "--");
+    utils.setText(fields.responseTime, "--");
+    utils.setText(fields.serverTime, "--");
+    utils.setText(fields.active, "--");
+    utils.setText(fields.reading, "--");
+    utils.setText(fields.writing, "--");
+    utils.setText(fields.waiting, "--");
+    utils.setText(fields.requests, "--");
+    utils.setText(fields.requestsRate, "--");
   }
 
   if (metricsResult.status === "fulfilled") {
