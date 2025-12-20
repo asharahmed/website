@@ -83,7 +83,10 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: |
+          if [ ! -d "$HOME/.cache/ms-playwright" ]; then
+            npx playwright install --with-deps
+          fi
 
       - name: Run tests
         run: npm test
