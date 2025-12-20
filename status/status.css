@@ -265,15 +265,17 @@
 }
 
 .service-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: 12px;
+    row-gap: 8px;
 }
 
 .service-name {
     font-weight: 600;
     color: var(--text-primary);
+    min-width: 0;
 }
 
 .service-meta {
@@ -295,6 +297,8 @@
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
+    justify-self: end;
+    white-space: nowrap;
 }
 
 .service-pill::before {
