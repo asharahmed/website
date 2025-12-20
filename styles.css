@@ -311,6 +311,16 @@
             transition: all var(--transition-speed);
         }
 
+        button.contact-link {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .contact-link--copy {
+            border-style: dashed;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
         .contact-link:hover {
             background: rgba(255,255,255,0.1);
             border-color: var(--accent-primary);
@@ -321,6 +331,21 @@
         .contact-link svg { width: 18px; height: 18px; }
 
         .contact-link .btn-text { display: inline-block; }
+
+        .copy-toast {
+            min-height: 20px;
+            font-size: 0.85em;
+            color: #93c5fd;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .copy-toast.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Hero Buttons */
         .hero-buttons {
@@ -1354,4 +1379,3 @@
             .timeline-content, .education-card, .cert-card, .skill-category { box-shadow: none !important; border: 1px solid #ddd !important; }
             a { color: inherit !important; text-decoration: none !important; }
         }
-

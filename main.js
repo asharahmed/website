@@ -22,7 +22,9 @@
         commandList: qs('#commandList'),
         mobileBtn: qs('#mobileMenuBtn'),
         mobileNav: qs('#mobileNav'),
-        particlesCanvas: qs('#particles-canvas')
+        particlesCanvas: qs('#particles-canvas'),
+        copyEmailBtn: qs('[data-copy-email]'),
+        copyToast: qs('#copyToast')
     };
 
     const media = {
@@ -47,6 +49,53 @@
     };
 
     let particleController = null;
+    let toastTimer = null;
+
+    const copyToClipboard = async value => {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(value);
+            return;
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    };
+
+    const showToast = message => {
+        if (!dom.copyToast) {
+            return;
+        }
+        dom.copyToast.textContent = message;
+        dom.copyToast.classList.add('is-visible');
+        if (toastTimer) {
+            window.clearTimeout(toastTimer);
+        }
+        toastTimer = window.setTimeout(() => {
+            dom.copyToast.classList.remove('is-visible');
+        }, 1800);
+    };
+
+    const handleCopyEmail = async () => {
+        if (!dom.copyEmailBtn) {
+            return;
+        }
+        const email = dom.copyEmailBtn.dataset.copyEmail;
+        if (!email) {
+            return;
+        }
+        try {
+            await copyToClipboard(email);
+            showToast('Email copied to clipboard');
+        } catch (error) {
+            showToast('Copy failed');
+        }
+    };
 
     const theme = {
         get() {
@@ -365,9 +414,9 @@
             { icon: '&#128272;', title: 'Certifications', desc: 'View credentials', action: () => scrollToSection('certifications') },
             { icon: '&#128736;', title: 'Skills', desc: 'View expertise', action: () => scrollToSection('skills') },
             { icon: '&#128214;', title: 'Publications', desc: 'View research', action: () => scrollToSection('publications') },
-            { icon: '&#128188;', title: 'Projects', desc: 'View case work', action: () => scrollToSection('projects') },
-            { icon: '&#128172;', title: 'Testimonials', desc: 'Read client notes', action: () => scrollToSection('testimonials') },
             { icon: '&#128231;', title: 'Contact', desc: 'Get in touch', action: () => scrollToSection('contact') },
+            { icon: '&#128421;', title: 'Status', desc: 'View server status', action: () => { window.location.href = '/status'; } },
+            { icon: '&#128203;', title: 'Copy Email', desc: 'Copy email address', action: handleCopyEmail },
             { icon: '&#127769;', title: 'Toggle Theme', desc: 'Switch light/dark mode', action: theme.toggle },
             { icon: '&#128196;', title: 'Download Resume', desc: 'Get PDF resume', action: () => openExternal('https://files.aahmed.ca/resume.pdf') },
             { icon: '&#128195;', title: 'Download CV', desc: 'Get full CV', action: () => openExternal('https://files.aahmed.ca/cv.pdf') }
@@ -530,6 +579,9 @@
         }
         if (dom.scrollIndicator) {
             dom.scrollIndicator.addEventListener('click', () => scrollToSection('main-content'));
+        }
+        if (dom.copyEmailBtn) {
+            dom.copyEmailBtn.addEventListener('click', handleCopyEmail);
         }
     };
 
