@@ -15,8 +15,8 @@
 }
 
 .status-hero-badge {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
 }
 
 .status-hero-badge[data-state="up"] {
@@ -72,8 +72,8 @@
 }
 
 .status-refresh:hover {
-    background: rgba(59, 130, 246, 0.25);
-    border-color: rgba(96, 165, 250, 0.6);
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(248, 113, 113, 0.6);
 }
 
 .beta-banner__link {
