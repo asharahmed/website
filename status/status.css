@@ -64,7 +64,7 @@
 }
 
 .beta-banner__link::after {
-    content: '\u2192';
+    content: '\2192';
 }
 
 .status-page .mobile-menu-btn {
