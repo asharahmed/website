@@ -88,6 +88,10 @@
     transition: all var(--transition-speed);
 }
 
+.beta-banner ~ .nav {
+    top: 60px;
+}
+
 .nav.visible { display: flex; opacity: 1; visibility: visible; }
 
 .nav a {
