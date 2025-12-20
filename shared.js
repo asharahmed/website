@@ -174,7 +174,7 @@
   document.addEventListener("touchstart", handler, { passive: true });
 })();
 
-/* Subtle hero parallax. */
+/* Advanced hero parallax with inertial layers + device orientation. */
 (() => {
   const header = document.querySelector("header");
   const hero = document.querySelector(".hero-content");
@@ -188,52 +188,130 @@
     return;
   }
 
-  let ticking = false;
-  const getPoint = event => {
-    if (event.touches && event.touches[0]) {
-      return { x: event.touches[0].clientX, y: event.touches[0].clientY };
-    }
-    return { x: event.clientX, y: event.clientY };
+  const state = {
+    targetX: 0,
+    targetY: 0,
+    currentX: 0,
+    currentY: 0,
+    rafId: null,
+    active: true,
+    orientationEnabled: false
   };
 
-  const onMove = event => {
-    if (ticking) {
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const applyTransforms = (x, y) => {
+    const heroX = x * 26;
+    const heroY = y * 20;
+    const heroRotX = y * -7;
+    const heroRotY = x * 7;
+    hero.style.transform = `translate3d(${heroX}px, ${heroY}px, 0) rotateX(${heroRotX}deg) rotateY(${heroRotY}deg)`;
+    grid.style.transform = `translate3d(${x * 14}px, ${y * 12}px, 0) scale(1.02)`;
+    if (particles) {
+      particles.style.transform = `translate3d(${x * 8}px, ${y * 6}px, 0)`;
+    }
+  };
+
+  const tick = () => {
+    if (!state.active) {
+      state.rafId = null;
       return;
     }
-    ticking = true;
-    window.requestAnimationFrame(() => {
-      const rect = header.getBoundingClientRect();
-      const point = getPoint(event);
-      const x = (point.x - rect.left) / rect.width - 0.5;
-      const y = (point.y - rect.top) / rect.height - 0.5;
-      const translateX = x * 16;
-      const translateY = y * 12;
-      hero.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
-      grid.style.transform = `translate3d(${translateX * 0.5}px, ${translateY * 0.5}px, 0)`;
-      if (particles) {
-        particles.style.transform = `translate3d(${translateX * 0.2}px, ${translateY * 0.2}px, 0)`;
-      }
-      ticking = false;
-    });
+    state.currentX += (state.targetX - state.currentX) * 0.08;
+    state.currentY += (state.targetY - state.currentY) * 0.08;
+    applyTransforms(state.currentX, state.currentY);
+    state.rafId = window.requestAnimationFrame(tick);
   };
 
-  header.addEventListener("mousemove", onMove, { passive: true });
-  header.addEventListener("touchstart", onMove, { passive: true });
-  header.addEventListener("touchmove", onMove, { passive: true });
-  header.addEventListener("mouseleave", () => {
-    hero.style.transform = "";
-    grid.style.transform = "";
-    if (particles) {
-      particles.style.transform = "";
+  const start = () => {
+    if (state.rafId === null) {
+      state.rafId = window.requestAnimationFrame(tick);
     }
-  });
-  header.addEventListener("touchend", () => {
-    hero.style.transform = "";
-    grid.style.transform = "";
-    if (particles) {
-      particles.style.transform = "";
+  };
+
+  const setTarget = (x, y) => {
+    state.targetX = clamp(x, -0.5, 0.5);
+    state.targetY = clamp(y, -0.5, 0.5);
+    start();
+  };
+
+  const getNormalizedPoint = (clientX, clientY) => {
+    const rect = header.getBoundingClientRect();
+    const x = (clientX - rect.left) / rect.width - 0.5;
+    const y = (clientY - rect.top) / rect.height - 0.5;
+    return { x, y };
+  };
+
+  const onPointerMove = event => {
+    if (event.pointerType === "touch") {
+      return;
     }
-  });
+    const point = getNormalizedPoint(event.clientX, event.clientY);
+    setTarget(point.x, point.y);
+  };
+
+  const onTouchMove = event => {
+    if (!event.touches || !event.touches[0]) {
+      return;
+    }
+    const touch = event.touches[0];
+    const point = getNormalizedPoint(touch.clientX, touch.clientY);
+    setTarget(point.x, point.y);
+  };
+
+  const reset = () => {
+    setTarget(0, 0);
+  };
+
+  const handleOrientation = event => {
+    if (event.beta === null && event.gamma === null) {
+      return;
+    }
+    const x = clamp((event.gamma || 0) / 50, -0.5, 0.5);
+    const y = clamp((event.beta || 0) / 50, -0.5, 0.5);
+    setTarget(x, y);
+  };
+
+  const enableOrientation = () => {
+    if (state.orientationEnabled || !("DeviceOrientationEvent" in window)) {
+      return;
+    }
+    state.orientationEnabled = true;
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+      DeviceOrientationEvent.requestPermission()
+        .then(result => {
+          if (result === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation, true);
+          }
+        })
+        .catch(() => {});
+    } else {
+      window.addEventListener("deviceorientation", handleOrientation, true);
+    }
+  };
+
+  const observer = new IntersectionObserver(entries => {
+    const entry = entries[0];
+    if (!entry) {
+      return;
+    }
+    state.active = entry.isIntersecting;
+    if (!state.active) {
+      reset();
+      state.currentX = 0;
+      state.currentY = 0;
+      applyTransforms(0, 0);
+    } else {
+      start();
+    }
+  }, { threshold: 0.2 });
+
+  observer.observe(header);
+
+  header.addEventListener("pointermove", onPointerMove, { passive: true });
+  header.addEventListener("touchstart", enableOrientation, { passive: true });
+  header.addEventListener("touchmove", onTouchMove, { passive: true });
+  header.addEventListener("mouseleave", reset);
+  header.addEventListener("touchend", reset);
 })();
 
 /* Easter egg: rapid beta tag clicks trigger confetti. */
