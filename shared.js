@@ -174,6 +174,51 @@
   document.addEventListener("touchstart", handler, { passive: true });
 })();
 
+/* Subtle hero parallax. */
+(() => {
+  const header = document.querySelector("header");
+  const hero = document.querySelector(".hero-content");
+  const grid = document.querySelector(".grid-pattern");
+  const particles = document.getElementById("particles-canvas");
+  if (!header || !hero || !grid) {
+    return;
+  }
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reduceMotion.matches) {
+    return;
+  }
+
+  let ticking = false;
+  const onMove = event => {
+    if (ticking) {
+      return;
+    }
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      const rect = header.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      const translateX = x * 16;
+      const translateY = y * 12;
+      hero.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+      grid.style.transform = `translate3d(${translateX * 0.5}px, ${translateY * 0.5}px, 0)`;
+      if (particles) {
+        particles.style.transform = `translate3d(${translateX * 0.2}px, ${translateY * 0.2}px, 0)`;
+      }
+      ticking = false;
+    });
+  };
+
+  header.addEventListener("mousemove", onMove, { passive: true });
+  header.addEventListener("mouseleave", () => {
+    hero.style.transform = "";
+    grid.style.transform = "";
+    if (particles) {
+      particles.style.transform = "";
+    }
+  });
+})();
+
 /* Easter egg: rapid beta tag clicks trigger confetti. */
 (() => {
   const trigger = document.getElementById("betaEasterEgg");
