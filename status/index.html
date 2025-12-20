@@ -39,12 +39,21 @@
     <div class="loading-overlay"><div class="loader"></div></div>
     <div class="scroll-progress" id="scrollProgress"></div>
 
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="command-palette-box">
+            <input type="text" class="command-input" id="commandInput" placeholder="Type a command or search..." aria-label="Command palette" autocomplete="off" autocapitalize="none" spellcheck="false">
+            <div class="command-list" id="commandList"></div>
+        </div>
+    </div>
+
     <nav class="nav" id="nav" aria-label="Primary">
         <div class="nav-scroller">
             <a href="#overview">Overview</a>
             <a href="#metrics">System</a>
             <a href="#services">Services</a>
             <a href="#nginx">Nginx</a>
+            <button type="button" class="nav-cmd" aria-label="Open command palette" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false">⌘K</button>
         </div>
     </nav>
 
