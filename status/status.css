@@ -2,6 +2,13 @@
     min-height: 65vh;
 }
 
+.status-page {
+    --nav-gap: 8px;
+    --nav-padding: 0 20px;
+    --nav-link-padding: 8px 14px;
+    --nav-justify: center;
+}
+
 .status-page .hero-avatar.status-avatar {
     background: rgba(15, 23, 42, 0.4);
     color: #f8fafc;
