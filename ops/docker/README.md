@@ -13,8 +13,17 @@ sudo docker compose up -d
 
 The container listens on `127.0.0.1:8080` and serves `/var/www/html`.
 
-## Host Nginx Proxy (example)
-Add a proxy location to your host Nginx site:
+## Host Nginx Proxy (script)
+Use the helper to replace the host Nginx `location /` block with a reverse proxy:
+
+```bash
+sudo ./ops/docker/proxy-install.sh
+```
+
+This creates a timestamped backup of `/etc/nginx/sites-available/default`.
+
+## Host Nginx Proxy (manual)
+If you prefer manual edits, add:
 
 ```
 location / {
@@ -36,3 +45,6 @@ Validate with:
 ```bash
 sudo nginx -t
 ```
+
+## Healthcheck
+The container exposes `/healthz` which returns `200 ok` and is used by Docker healthchecks.
