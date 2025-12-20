@@ -6,6 +6,7 @@ Detailed guidance for working in this environment.
 - This is a static website served by Nginx from `/var/www/html`.
 - There is no build pipeline, bundler, or package manager in use.
 - Updates are done by editing files directly on disk.
+- A status portal lives at `/status` and pulls host metrics.
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -44,6 +45,36 @@ Detailed guidance for working in this environment.
   - `/etc/systemd/system/status-metrics.timer` (10-second interval)
 - Service health tracked in the UI: nginx, ssh, docker, status-metrics timer.
 - Disk usage uses a ring gauge; disk I/O uses a sparkline.
+
+## Agent Setup Checklist
+Use this to configure a new server from the repo:
+1) Sync repo contents to `/var/www/html`:
+   - `sudo ./ops/install.sh`
+2) Ensure Nginx serves `/var/www/html` and exposes stub_status:
+
+```
+location = /status/nginx {
+    stub_status;
+    access_log off;
+}
+```
+
+3) Validate Nginx:
+   - `sudo nginx -t`
+4) Confirm metrics timer:
+   - `systemctl status status-metrics.timer`
+5) Open `/status` and confirm metrics + service pills update every 10 seconds.
+
+### Hybrid Docker Option
+If running the static site in a container:
+1) Run the host install first:
+   - `sudo ./ops/install.sh`
+2) Start the container:
+   - `make status-up`
+3) Proxy host Nginx to the container:
+   - `sudo ./ops/docker/proxy-install.sh`
+4) Validate Nginx:
+   - `sudo nginx -t`
 
 ## Editing Rules
 - Use ASCII by default. Only introduce Unicode when necessary and already present.
