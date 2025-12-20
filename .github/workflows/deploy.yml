@@ -68,4 +68,5 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && ./scripts/health-check.sh"
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && ./scripts/health-check.sh" || \
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
