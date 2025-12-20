@@ -542,6 +542,8 @@
 
         .contact-link svg { width: 18px; height: 18px; }
 
+        .contact-link .btn-text { display: inline-block; }
+
         /* Hero Buttons */
         .hero-buttons {
             display: flex;
@@ -1489,6 +1491,8 @@
             .timeline-content { padding: 18px 20px; }
             .timeline-header { flex-direction: column; }
             .contact-row { flex-direction: column; align-items: center; }
+            .contact-link { width: 56px; height: 56px; justify-content: center; padding: 0; }
+            .contact-link svg { width: 22px; height: 22px; }
             .hero-buttons { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 40px; }
             .btn { position: relative; width: 56px; height: 56px; padding: 0; justify-content: center; }
             .btn svg { width: 22px; height: 22px; }
