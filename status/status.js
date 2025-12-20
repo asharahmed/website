@@ -570,7 +570,8 @@ async function checkStatus() {
   } catch (error) {
     if (statusAlert) {
       statusAlert.dataset.state = "error";
-      utils.setText(statusAlert, "Script error: status update failed");
+      const message = error && error.message ? error.message : "status update failed";
+      utils.setText(statusAlert, `Script error: ${message}`);
     }
     setStatus("down", "Error");
   }
