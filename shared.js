@@ -189,6 +189,13 @@
   }
 
   let ticking = false;
+  const getPoint = event => {
+    if (event.touches && event.touches[0]) {
+      return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    }
+    return { x: event.clientX, y: event.clientY };
+  };
+
   const onMove = event => {
     if (ticking) {
       return;
@@ -196,8 +203,9 @@
     ticking = true;
     window.requestAnimationFrame(() => {
       const rect = header.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      const point = getPoint(event);
+      const x = (point.x - rect.left) / rect.width - 0.5;
+      const y = (point.y - rect.top) / rect.height - 0.5;
       const translateX = x * 16;
       const translateY = y * 12;
       hero.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
@@ -210,7 +218,16 @@
   };
 
   header.addEventListener("mousemove", onMove, { passive: true });
+  header.addEventListener("touchstart", onMove, { passive: true });
+  header.addEventListener("touchmove", onMove, { passive: true });
   header.addEventListener("mouseleave", () => {
+    hero.style.transform = "";
+    grid.style.transform = "";
+    if (particles) {
+      particles.style.transform = "";
+    }
+  });
+  header.addEventListener("touchend", () => {
     hero.style.transform = "";
     grid.style.transform = "";
     if (particles) {
