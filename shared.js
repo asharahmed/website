@@ -117,6 +117,9 @@
     if (!link) {
       return;
     }
+    if (link.closest(".nav, .mobile-nav")) {
+      return;
+    }
     if (link.target === "_blank" || link.hasAttribute("download")) {
       return;
     }
