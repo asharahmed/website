@@ -35,6 +35,7 @@
             --sticky-height: 48px;
             --sticky-left: 20px;
             --sticky-gap: 4px;
+            --nav-max-width: 920px;
         }
 
         [data-theme="dark"] {

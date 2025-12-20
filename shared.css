@@ -87,6 +87,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-speed);
+    width: min(100%, var(--nav-max-width, 920px));
     max-width: calc(100vw - 32px);
 }
 
@@ -372,6 +373,7 @@ header {
         transform: none;
         justify-content: flex-start;
         padding: 0 16px;
+        width: auto;
     }
 }
 
