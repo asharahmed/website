@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Status | Ashar S. Ahmed</title>
+    <meta name="description" content="Live server status and system metrics.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/status/status.css">
+    <noscript><style>.loading-overlay{display:none}</style></noscript>
+</head>
+<body class="status-page">
+    <div class="beta-banner" role="status" aria-label="Status notice">
+        <div class="beta-banner__content">
+            <span class="beta-banner__tag">Status</span>
+            <span class="beta-banner__text">Public uptime and system metrics for this server.</span>
+        </div>
+    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-controls="mobileNav" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+
+    <nav class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Mobile">
+        <a href="#overview">Overview</a>
+        <a href="#metrics">System</a>
+        <a href="#services">Services</a>
+        <a href="#nginx">Nginx</a>
+    </nav>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="loading-overlay"><div class="loader"></div></div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+        <a href="#overview">Overview</a>
+        <a href="#metrics">System</a>
+        <a href="#services">Services</a>
+        <a href="#nginx">Nginx</a>
+    </nav>
+
+    <button class="theme-toggle" aria-label="Toggle theme" aria-pressed="false">
+        <span id="themeIcon">&#9790;</span>
+    </button>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+    <header>
+        <canvas id="particles-canvas"></canvas>
+        <div class="grid-pattern"></div>
+
+        <div class="hero-content">
+            <div class="hero-avatar status-avatar">OK</div>
+
+            <div class="hero-badge status-hero-badge" id="overall-status" data-state="loading">
+                <span class="dot" aria-hidden="true"></span>
+                <span id="overall-label">Checking</span>
+            </div>
+
+            <h1 class="hero-title gradient-text">Server Status</h1>
+            <p class="hero-subtitle">Live readout of uptime, core system metrics, and Nginx activity. Updates every 10 seconds.</p>
+
+            <div class="status-meta">
+                <span>Endpoint: /status</span>
+                <span id="status-updated">Last update: --</span>
+            </div>
+        </div>
+
+        <button class="scroll-indicator" id="scrollIndicator" type="button" aria-label="Scroll to main content">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </button>
+    </header>
+
+    <main id="main-content">
+        <div class="container">
+            <section id="overview">
+                <div class="section-header">
+                    <span class="section-label">Status</span>
+                    <h2 class="section-title">Overview</h2>
+                    <p class="section-subtitle">Edge check against the Nginx status endpoint.</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="http-status">--</div>
+                        <div class="stat-label">HTTP Status</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="response-time">--</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="server-time">--</div>
+                        <div class="stat-label">Server Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="last-checked">--</div>
+                        <div class="stat-label">Last Checked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="metrics-updated">--</div>
+                        <div class="stat-label">Metrics Updated</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metrics">
+                <div class="section-header">
+                    <span class="section-label">System</span>
+                    <h2 class="section-title">Core Metrics</h2>
+                    <p class="section-subtitle">CPU, memory, disk, and load with quick visual trends.</p>
+                </div>
+                <div class="stats-grid status-metrics-grid">
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="cpu-usage">--</div>
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="stat-meta" id="cpu-detail">--</div>
+                        <div class="metric-bar"><span id="cpu-bar"></span></div>
+                        <canvas class="sparkline" id="cpu-spark" width="300" height="80" aria-hidden="true"></canvas>
+                    </div>
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="memory-usage">--</div>
+                        <div class="stat-label">Memory Usage</div>
+                        <div class="stat-meta" id="memory-detail">--</div>
+                        <div class="metric-bar"><span id="memory-bar"></span></div>
+                        <canvas class="sparkline" id="memory-spark" width="300" height="80" aria-hidden="true"></canvas>
+                    </div>
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="disk-usage">--</div>
+                        <div class="stat-label">Disk Usage</div>
+                        <div class="stat-meta" id="disk-detail">--</div>
+                        <div class="metric-bar"><span id="disk-bar"></span></div>
+                        <div class="disk-ring" id="disk-ring" aria-hidden="true"><span id="disk-ring-value">--</span></div>
+                    </div>
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="io-rate">--</div>
+                        <div class="stat-label">Disk I/O</div>
+                        <div class="stat-meta" id="io-detail">--</div>
+                        <div class="metric-bar"><span id="io-bar"></span></div>
+                        <canvas class="sparkline" id="io-spark" width="300" height="80" aria-hidden="true"></canvas>
+                    </div>
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="load-average">--</div>
+                        <div class="stat-label">Load (1/5/15m)</div>
+                        <div class="stat-meta" id="load-detail">--</div>
+                        <div class="metric-bar"><span id="load-bar"></span></div>
+                        <canvas class="sparkline" id="load-spark" width="300" height="80" aria-hidden="true"></canvas>
+                    </div>
+                    <div class="stat-card status-metric-card">
+                        <div class="stat-number status-value" id="uptime">--</div>
+                        <div class="stat-label">Uptime</div>
+                        <div class="stat-meta">Since last reboot</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="services">
+                <div class="section-header">
+                    <span class="section-label">Services</span>
+                    <h2 class="section-title">Service Health</h2>
+                    <p class="section-subtitle">Systemd units tracked for this server.</p>
+                </div>
+                <div class="stats-grid services-grid">
+                    <div class="stat-card service-card">
+                        <div class="service-header">
+                            <span class="service-name">Nginx</span>
+                            <span class="service-pill" id="service-nginx" data-state="unknown">Unknown</span>
+                        </div>
+                        <div class="service-meta">Unit: nginx.service</div>
+                    </div>
+                    <div class="stat-card service-card">
+                        <div class="service-header">
+                            <span class="service-name">SSH</span>
+                            <span class="service-pill" id="service-ssh" data-state="unknown">Unknown</span>
+                        </div>
+                        <div class="service-meta">Unit: ssh.service</div>
+                    </div>
+                    <div class="stat-card service-card">
+                        <div class="service-header">
+                            <span class="service-name">Docker</span>
+                            <span class="service-pill" id="service-docker" data-state="unknown">Unknown</span>
+                        </div>
+                        <div class="service-meta">Unit: docker.service</div>
+                    </div>
+                    <div class="stat-card service-card">
+                        <div class="service-header">
+                            <span class="service-name">Status Metrics</span>
+                            <span class="service-pill" id="service-status-metrics" data-state="unknown">Unknown</span>
+                        </div>
+                        <div class="service-meta">Unit: status-metrics.timer</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nginx">
+                <div class="section-header">
+                    <span class="section-label">Services</span>
+                    <h2 class="section-title">Nginx Activity</h2>
+                    <p class="section-subtitle">Connection counters from the local Nginx worker.</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="active-connections">--</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="reading">--</div>
+                        <div class="stat-label">Reading</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="writing">--</div>
+                        <div class="stat-label">Writing</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="waiting">--</div>
+                        <div class="stat-label">Waiting</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="requests">--</div>
+                        <div class="stat-label">Requests</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="requests-rate">--</div>
+                        <div class="stat-label">Req/Sec</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="status-footer">
+        <div class="container">
+            <p>For alerting, pair this page with an external uptime monitor.</p>
+        </div>
+    </footer>
+
+    <script src="/main.js" defer></script>
+    <script src="/status/status.js" defer></script>
+</body>
+</html>
