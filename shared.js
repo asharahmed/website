@@ -136,6 +136,44 @@
   });
 })();
 
+/* Speculative prefetch on hover/touch. */
+(() => {
+  const prefetched = new Set();
+  const addPrefetch = href => {
+    if (!href || prefetched.has(href)) {
+      return;
+    }
+    prefetched.add(href);
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = href;
+    link.as = "document";
+    document.head.appendChild(link);
+  };
+
+  const handler = event => {
+    const target = event.target.closest("a");
+    if (!target) {
+      return;
+    }
+    if (target.target === "_blank" || target.hasAttribute("download")) {
+      return;
+    }
+    const href = target.getAttribute("href") || "";
+    if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      return;
+    }
+    const url = new URL(target.href, window.location.href);
+    if (url.origin !== window.location.origin) {
+      return;
+    }
+    addPrefetch(url.href);
+  };
+
+  document.addEventListener("pointerover", handler, { passive: true });
+  document.addEventListener("touchstart", handler, { passive: true });
+})();
+
 /* Easter egg: rapid beta tag clicks trigger confetti. */
 (() => {
   const trigger = document.getElementById("betaEasterEgg");
