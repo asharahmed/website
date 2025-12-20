@@ -9,6 +9,10 @@
     letter-spacing: 0.08em;
 }
 
+.status-avatar-link {
+    text-decoration: none;
+}
+
 .status-hero-badge {
     background: rgba(59, 130, 246, 0.2);
     border-color: rgba(59, 130, 246, 0.4);
