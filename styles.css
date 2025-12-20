@@ -1570,7 +1570,7 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            z-index: 1001;
+            z-index: 1004;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
@@ -1640,5 +1640,5 @@
 
 
         @media (max-width: 768px) {
-            .mobile-menu-btn { display: flex; }
+            .mobile-menu-btn { display: flex; top: 72px; }
         }
