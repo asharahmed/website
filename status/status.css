@@ -265,17 +265,18 @@
 }
 
 .service-header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    column-gap: 12px;
-    row-gap: 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .service-name {
     font-weight: 600;
     color: var(--text-primary);
     min-width: 0;
+    flex: 1 1 0;
 }
 
 .service-meta {
@@ -297,7 +298,8 @@
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
-    justify-self: end;
+    flex: 0 0 auto;
+    margin-left: auto;
     white-space: nowrap;
 }
 
