@@ -116,6 +116,10 @@
     scroll-snap-align: center;
 }
 
+.nav:not(.nav--fade-left):not(.nav--fade-right) .nav-scroller {
+    justify-content: center;
+}
+
 .nav.nav--fade-left .nav-scroller {
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 100%);
     mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 100%);
