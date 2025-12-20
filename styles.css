@@ -940,18 +940,21 @@
             width: 44px;
             height: 44px;
             border-radius: 10px;
+            border: 1px solid var(--logo-well-border);
+            background: var(--logo-well-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            padding: 4px;
         }
 
-        .cert-icon svg { width: 24px; height: 24px; }
-
-        .cert-icon.aws { background: rgba(255,153,0,0.15); color: #ff9900; }
-        .cert-icon.comptia { background: rgba(200,32,47,0.15); color: #c8202f; }
-        .cert-icon.isc2 { background: rgba(0,166,81,0.15); color: #00a651; }
-        .cert-icon.csa { background: rgba(0,180,216,0.15); color: #00b4d8; }
+        .cert-icon img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            display: block;
+        }
 
         .cert-info { flex: 1; min-width: 0; }
 
