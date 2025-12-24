@@ -22,3 +22,16 @@ test("status page loads core widgets", async ({ page }) => {
   await expect(page.locator("#overall-status")).toBeVisible();
   await expect(page.locator("#status-updated")).toBeVisible();
 });
+
+test("status refresh updates timestamp and cards render", async ({ page }) => {
+  await page.goto("/status/");
+  const updated = page.locator("#status-updated");
+  await expect(page.locator("#http-status")).toBeVisible();
+  await expect(page.locator("#cpu-usage")).toBeVisible();
+  await expect(page.locator("#services-online")).toBeVisible();
+  await expect(updated).toContainText("Last update:");
+  const before = await updated.textContent();
+  await page.waitForTimeout(1100);
+  await page.locator("#refresh-now").click();
+  await expect.poll(async () => updated.textContent()).not.toBe(before);
+});

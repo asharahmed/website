@@ -3,6 +3,16 @@
   const BYTES_PER_UNIT = 1024;
   const PAGE_TRANSITION_MS = 140;
   const CONFETTI_PIECES = 140;
+  const safeStorage = (() => {
+    try {
+      const testKey = "__storage_test__";
+      window.localStorage.setItem(testKey, testKey);
+      window.localStorage.removeItem(testKey);
+      return window.localStorage;
+    } catch (error) {
+      return null;
+    }
+  })();
   const clampPercent = value => {
     if (!Number.isFinite(value)) {
       return 0;
@@ -97,6 +107,64 @@
     formatThroughput,
     formatUptime,
     formatAge
+  };
+
+  const getStoredTheme = () => (safeStorage ? safeStorage.getItem("theme") : null);
+  const setStoredTheme = value => {
+    if (safeStorage) {
+      safeStorage.setItem("theme", value);
+    }
+  };
+
+  const createPoller = (task, intervalMs) => {
+    let timer = null;
+    let running = false;
+    let inflight = false;
+
+    const run = async () => {
+      if (document.hidden || inflight) {
+        return;
+      }
+      inflight = true;
+      try {
+        await task();
+      } finally {
+        inflight = false;
+      }
+    };
+
+    const start = () => {
+      if (running) {
+        return;
+      }
+      running = true;
+      if (!document.hidden) {
+        run();
+      }
+      timer = window.setInterval(run, intervalMs);
+    };
+
+    const stop = () => {
+      running = false;
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && running) {
+        run();
+      }
+    });
+
+    return { start, stop, trigger: run };
+  };
+
+  window.SiteUtils = {
+    getStoredTheme,
+    setStoredTheme,
+    createPoller
   };
 })();
 

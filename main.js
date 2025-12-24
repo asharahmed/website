@@ -33,6 +33,8 @@
         prefersDark: window.matchMedia('(prefers-color-scheme: dark)')
     };
 
+    const siteUtils = window.SiteUtils || {};
+
     const state = {
         scrollBehavior: media.reducedMotion.matches ? 'auto' : 'smooth',
         typing: {
@@ -100,11 +102,14 @@
 
     const theme = {
         get() {
-            return localStorage.getItem('theme') || (media.prefersDark.matches ? 'dark' : 'light');
+            const stored = siteUtils.getStoredTheme ? siteUtils.getStoredTheme() : null;
+            return stored || (media.prefersDark.matches ? 'dark' : 'light');
         },
         set(value) {
             dom.root.setAttribute('data-theme', value);
-            localStorage.setItem('theme', value);
+            if (siteUtils.setStoredTheme) {
+                siteUtils.setStoredTheme(value);
+            }
             if (dom.themeIcon) {
                 dom.themeIcon.innerHTML = value === 'dark' ? '&#9788;' : '&#9790;';
             }
