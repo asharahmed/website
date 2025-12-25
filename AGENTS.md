@@ -42,6 +42,7 @@ Detailed guidance for working in this environment.
   - `/home/ubuntu/website/scripts/pipeline.sh`
   - `/home/ubuntu/website/scripts/health-check.sh`
   - `/home/ubuntu/website/scripts/check-links.mjs`
+  - `/home/ubuntu/website/scripts/cf-dns.sh` (Cloudflare DNS helper)
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -113,6 +114,8 @@ Detailed guidance for working in this environment.
   - `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY_B64` (beta)
   - `PROD_DEPLOY_KEY_B64` (prod)
 - The prod host IP is hardcoded in workflow; update `.github/workflows/deploy.yml` if it changes.
+- Local Cloudflare token (root-only):
+  - `/etc/website/env` with `CF_API_TOKEN=...`
 
 ## Agent Setup Checklist
 Use this to configure a new server from the repo:
@@ -291,3 +294,5 @@ If running the static site in a container:
   - `git push origin beta`
 - Trigger a prod deploy:
   - `git push origin main`
+- Update Cloudflare DNS record:
+  - `./scripts/cf-dns.sh set <zone> <name> <type> <content> [ttl] [proxied]`
