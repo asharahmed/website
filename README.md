@@ -92,6 +92,10 @@ On pushes to `main`, the workflow:
 - Runs a server-side health check to validate `/var/www/html/status/metrics.json`.
 - Deploys to prod only after beta health checks pass.
 
+Required secrets:
+- `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY_B64` (beta)
+- `PROD_DEPLOY_KEY_B64` (prod)
+
 On pull requests, a dry-run rsync preview is executed.
 
 ## Branch Protection (Recommended)
