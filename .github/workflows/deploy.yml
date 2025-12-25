@@ -178,7 +178,7 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
 
-      - name: Sync files to server
+      - name: Sync files to beta server
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -201,24 +201,61 @@ jobs:
             --exclude=AGENTS.md \
             -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
 
-      - name: Deploy to web root
+      - name: Deploy to beta web root
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && ./scripts/deploy.sh --force"
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
 
-      - name: Post-deploy uptime check
+      - name: Post-deploy uptime check (beta)
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
           curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/" >/dev/null
           curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/status/" >/dev/null
 
-      - name: Post-deploy health check
+      - name: Post-deploy health check (beta)
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
           ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
           ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
+
+      - name: Sync files to prod server
+        env:
+          PROD_HOST: 159.203.35.5
+          PROD_USER: ubuntu
+        run: |
+          rsync -az --delete --omit-dir-times --no-perms --no-owner --no-group \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=tests \
+            --exclude=ops \
+            --exclude=README.md \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=playwright.config.js \
+            --exclude=.htmlhintrc \
+            --exclude=.htmlhintignore \
+            --exclude=.stylelintrc.json \
+            --exclude=.stylelintignore \
+            --exclude=.gitignore \
+            --exclude=AGENTS.md \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${PROD_USER}@${PROD_HOST}:/home/ubuntu/website/"
+
+      - name: Deploy to prod web root
+        env:
+          PROD_HOST: 159.203.35.5
+          PROD_USER: ubuntu
+        run: |
+          ssh -i ~/.ssh/deploy_key "${PROD_USER}@${PROD_HOST}" "sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
+
+      - name: Post-deploy uptime check (prod)
+        env:
+          PROD_HOST: 159.203.35.5
+        run: |
+          curl -fsS --retry 3 --retry-delay 2 "http://${PROD_HOST}/" >/dev/null
+          curl -fsS --retry 3 --retry-delay 2 "http://${PROD_HOST}/status/" >/dev/null
