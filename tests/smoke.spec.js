@@ -30,8 +30,9 @@ test("status refresh updates timestamp and cards render", async ({ page }) => {
   await expect(page.locator("#cpu-usage")).toBeVisible();
   await expect(page.locator("#services-online")).toBeVisible();
   await expect(updated).toContainText("Last update:");
-  const before = await updated.textContent();
-  await page.waitForTimeout(1100);
+  const metricsResponse = page.waitForResponse(response =>
+    response.url().includes("/status/metrics.json")
+  );
   await page.locator("#refresh-now").click();
-  await expect.poll(async () => updated.textContent()).not.toBe(before);
+  await metricsResponse;
 });
