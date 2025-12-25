@@ -10,6 +10,7 @@
       window.localStorage.removeItem(testKey);
       return window.localStorage;
     } catch (error) {
+      console.error("Local storage unavailable:", error);
       return null;
     }
   })();
@@ -377,8 +378,9 @@
             window.addEventListener("deviceorientation", handleOrientation, true);
           }
         })
-        .catch(() => {
+        .catch(error => {
           state.orientationEnabled = false;
+          console.error("Device orientation permission failed:", error);
         });
     } else {
       window.addEventListener("deviceorientation", handleOrientation, true);
