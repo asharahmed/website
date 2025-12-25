@@ -337,6 +337,11 @@
         let accumulator = 0;
         const fixedStep = 1 / 60;
         const maxSteps = 3;
+        let qualityLevel = 2;
+        let qualityScale = 1;
+        let frameCount = 0;
+        let lastFpsSample = null;
+        let lastQualityChange = 0;
         const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
         const bounds = { margin: 90, force: 0.00085 };
         const trail = [];
@@ -377,7 +382,7 @@
             const baseCount = Math.floor((window.innerWidth * window.innerHeight) / 15000);
             const capped = Math.min(baseCount, 120);
             const scaled = window.innerWidth < 768 ? Math.floor(capped * 0.6) : capped;
-            return Math.max(20, scaled);
+            return Math.max(18, Math.floor(scaled * qualityScale));
         };
 
         const createParticles = () => {
@@ -389,6 +394,7 @@
                 const size = layer === 0 ? Math.random() * 1.6 + 0.6 : layer === 1 ? Math.random() * 1.6 + 0.9 : Math.random() * 1.8 + 1.2;
                 const color = layer === 0 ? palette.muted : layer === 1 ? palette.accentSecondary : palette.accentPrimary;
                 const baseAlpha = layer === 0 ? 0.2 : layer === 1 ? 0.32 : 0.45;
+                const rangeBase = layer === 0 ? 140 : layer === 1 ? 130 : 110;
                 particles.push({
                     x: Math.random() * window.innerWidth,
                     y: Math.random() * window.innerHeight,
@@ -399,7 +405,7 @@
                     layer,
                     color,
                     baseAlpha,
-                    linkRange: layer === 0 ? 140 : layer === 1 ? 130 : 110,
+                    linkRange: rangeBase * (qualityLevel === 0 ? 0.75 : qualityLevel === 1 ? 0.9 : 1),
                     flowOffset: Math.random() * Math.PI * 2,
                     flowStrength: layer === 0 ? 0.004 : layer === 1 ? 0.005 : 0.006,
                     twinkleSpeed: Math.random() * 1.5 + 0.6,
@@ -541,7 +547,8 @@
             ctx.lineWidth = 1;
             resetGrid();
             particles.forEach((p, index) => addToGrid(p, index));
-            for (let i = 0; i < particles.length; i++) {
+            const stride = qualityLevel === 2 ? 1 : 2;
+            for (let i = 0; i < particles.length; i += stride) {
                 const p = particles[i];
                 const neighbors = getNeighborIndices(p);
                 neighbors.forEach(j => {
@@ -555,7 +562,7 @@
                     const distSq = dx * dx + dy * dy;
                     if (distSq < range * range) {
                         const dist = Math.sqrt(distSq);
-                        ctx.globalAlpha = (1 - dist / range) * 0.35;
+                        ctx.globalAlpha = (1 - dist / range) * (qualityLevel === 2 ? 0.35 : 0.24);
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(other.x, other.y);
@@ -564,7 +571,7 @@
                 });
             }
 
-            if (trail.length > 1) {
+            if (qualityLevel > 0 && trail.length > 1) {
                 ctx.lineWidth = 2;
                 for (let i = 0; i < trail.length - 1; i++) {
                     const a = trail[i];
@@ -580,6 +587,34 @@
             }
 
             ctx.globalAlpha = 1;
+        };
+
+        const updateQuality = now => {
+            frameCount += 1;
+            if (lastFpsSample === null) {
+                lastFpsSample = now;
+                return;
+            }
+            if (now - lastFpsSample < 1200) {
+                return;
+            }
+            const fps = frameCount / ((now - lastFpsSample) / 1000);
+            frameCount = 0;
+            lastFpsSample = now;
+            if (now - lastQualityChange < 2000) {
+                return;
+            }
+            if (fps < 45 && qualityLevel > 0) {
+                qualityLevel -= 1;
+            } else if (fps > 58 && qualityLevel < 2 && now > scrollUntil) {
+                qualityLevel += 1;
+            } else {
+                return;
+            }
+            lastQualityChange = now;
+            qualityScale = qualityLevel === 0 ? 0.6 : qualityLevel === 1 ? 0.8 : 1;
+            createParticles();
+            trail.length = 0;
         };
 
         const animate = now => {
@@ -605,6 +640,7 @@
                 accumulator = 0;
             }
             const lowQuality = now < scrollUntil;
+            updateQuality(now);
             if (lowQuality) {
                 frameSkip = !frameSkip;
                 if (frameSkip) {
