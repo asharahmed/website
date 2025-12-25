@@ -109,6 +109,7 @@ location = /status/nginx {
   - Sync repo to `/home/ubuntu/website` on the beta host.
   - Rsync to `/var/www/html` (excludes `.github`, `tests`, `node_modules`, `ops`).
   - Post-deploy uptime and health checks.
+- CI requires `contents: write` permissions to merge `main` into `beta`.
 - PRs run a dry-run rsync to validate deploy diff.
 
 ### Hybrid Docker Option
