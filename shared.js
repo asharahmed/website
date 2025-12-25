@@ -171,13 +171,15 @@
 /* Page transition helpers. */
 (() => {
   const body = document.body;
-  if (!body) {
+  const root = document.documentElement;
+  if (!body || !root) {
     return;
   }
 
   const host = window.location.hostname.toLowerCase();
   if (host === "asharahmed.com" || host === "www.asharahmed.com") {
     body.classList.add("is-prod");
+    root.classList.add("is-prod");
   }
 
   body.classList.add("page-fade");
