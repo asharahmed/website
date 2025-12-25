@@ -35,7 +35,13 @@ const run = async () => {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 
   try {
-    await page.addStyleTag({ content: '*{animation:none !important; transition:none !important;}' });
+    await page.addStyleTag({
+      content: [
+        '*{animation:none !important; transition:none !important;}',
+        'section{content-visibility:visible !important; contain-intrinsic-size:auto !important;}',
+        'html{scroll-behavior:auto !important;}'
+      ].join('\n')
+    });
     const homeUrl = mode === 'live'
       ? baseUrl
       : `file://${path.resolve('/tmp/site-screenshot/index.html')}`;
@@ -44,6 +50,7 @@ const run = async () => {
       : `file://${path.resolve('/tmp/site-screenshot/status/index.html')}`;
 
     await capture(page, homeUrl, 'header', path.join(outputDir, 'home.png'));
+    await page.waitForSelector('.timeline-item', { timeout: 15000 });
     await capture(page, statusUrl, '.status-metrics-grid', path.join(outputDir, 'status.png'));
   } finally {
     await browser.close();
