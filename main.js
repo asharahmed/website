@@ -704,21 +704,38 @@
             pointer.active = false;
         };
 
+        let pointerQueued = false;
+        let pointerQueuedX = 0;
+        let pointerQueuedY = 0;
+
+        const schedulePointerUpdate = (x, y) => {
+            pointerQueuedX = x;
+            pointerQueuedY = y;
+            if (pointerQueued) {
+                return;
+            }
+            pointerQueued = true;
+            window.requestAnimationFrame(() => {
+                pointerQueued = false;
+                updatePointer(pointerQueuedX, pointerQueuedY);
+            });
+        };
+
         window.addEventListener('pointermove', event => {
-            updatePointer(event.clientX, event.clientY);
+            schedulePointerUpdate(event.clientX, event.clientY);
         }, { passive: true });
         window.addEventListener('pointerleave', deactivatePointer);
         window.addEventListener('blur', deactivatePointer);
         window.addEventListener('touchstart', event => {
             const touch = event.touches[0];
             if (touch) {
-                updatePointer(touch.clientX, touch.clientY);
+                schedulePointerUpdate(touch.clientX, touch.clientY);
             }
         }, { passive: true });
         window.addEventListener('touchmove', event => {
             const touch = event.touches[0];
             if (touch) {
-                updatePointer(touch.clientX, touch.clientY);
+                schedulePointerUpdate(touch.clientX, touch.clientY);
             }
         }, { passive: true });
         window.addEventListener('touchend', deactivatePointer);
