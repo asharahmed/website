@@ -589,21 +589,39 @@
             }
         };
 
-        window.addEventListener('pointermove', event => {
-            pointer.x = event.clientX;
-            pointer.y = event.clientY;
+        const updatePointer = (x, y) => {
+            pointer.x = x;
+            pointer.y = y;
             pointer.active = true;
-            trail.push({ x: pointer.x, y: pointer.y });
+            trail.push({ x, y });
             if (trail.length > trailMax) {
                 trail.shift();
             }
+        };
+
+        const deactivatePointer = () => {
+            pointer.active = false;
+        };
+
+        window.addEventListener('pointermove', event => {
+            updatePointer(event.clientX, event.clientY);
         }, { passive: true });
-        window.addEventListener('pointerleave', () => {
-            pointer.active = false;
-        });
-        window.addEventListener('blur', () => {
-            pointer.active = false;
-        });
+        window.addEventListener('pointerleave', deactivatePointer);
+        window.addEventListener('blur', deactivatePointer);
+        window.addEventListener('touchstart', event => {
+            const touch = event.touches[0];
+            if (touch) {
+                updatePointer(touch.clientX, touch.clientY);
+            }
+        }, { passive: true });
+        window.addEventListener('touchmove', event => {
+            const touch = event.touches[0];
+            if (touch) {
+                updatePointer(touch.clientX, touch.clientY);
+            }
+        }, { passive: true });
+        window.addEventListener('touchend', deactivatePointer);
+        window.addEventListener('touchcancel', deactivatePointer);
         window.addEventListener('click', event => {
             if (burstTimer) {
                 window.clearTimeout(burstTimer);
