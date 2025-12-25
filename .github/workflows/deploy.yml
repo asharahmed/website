@@ -3,10 +3,10 @@ name: Deploy
 on:
   push:
     branches:
-      - beta
+      - main
   pull_request:
     branches:
-      - beta
+      - main
   workflow_dispatch:
 
 permissions:
@@ -170,20 +170,21 @@ jobs:
             sudo apt-get update && sudo apt-get install -y rsync
           fi
 
-      - name: Setup SSH key
+      - name: Setup prod SSH key
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_KEY_B64: ${{ secrets.DEPLOY_KEY_B64 }}
+          PROD_HOST: 159.203.35.5
+          PROD_KEY_B64: ${{ secrets.PROD_DEPLOY_KEY_B64 }}
         run: |
           mkdir -p ~/.ssh
-          echo "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+          printf '%s' "${PROD_KEY_B64}" | base64 -d > ~/.ssh/prod_deploy_key
+          chmod 600 ~/.ssh/prod_deploy_key
+          ssh-keygen -lf ~/.ssh/prod_deploy_key
+          ssh-keyscan -H "${PROD_HOST}" >> ~/.ssh/known_hosts
 
-      - name: Sync files to beta server
+      - name: Sync files to prod server
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PROD_HOST: 159.203.35.5
+          PROD_USER: ubuntu
         run: |
           rsync -az --delete --omit-dir-times --no-perms --no-owner --no-group \
             --exclude=.git \
@@ -201,26 +202,26 @@ jobs:
             --exclude=.stylelintignore \
             --exclude=.gitignore \
             --exclude=AGENTS.md \
-            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
+            -e "ssh -i ~/.ssh/prod_deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts" ./ "${PROD_USER}@${PROD_HOST}:/home/ubuntu/website/"
 
-      - name: Deploy to beta web root
+      - name: Deploy to prod web root
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PROD_HOST: 159.203.35.5
+          PROD_USER: ubuntu
         run: |
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
+          ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
 
-      - name: Post-deploy uptime check (beta)
+      - name: Post-deploy uptime check (prod)
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          PROD_HOST: 159.203.35.5
         run: |
-          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/" >/dev/null
-          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/status/" >/dev/null
+          curl -fsS --retry 3 --retry-delay 2 "http://${PROD_HOST}/" >/dev/null
+          curl -fsS --retry 3 --retry-delay 2 "http://${PROD_HOST}/status/" >/dev/null
 
-      - name: Post-deploy health check (beta)
+      - name: Post-deploy health check (prod)
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PROD_HOST: 159.203.35.5
+          PROD_USER: ubuntu
         run: |
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
+          ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
+          ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && (test -f /var/www/html/status/metrics.json || sudo /usr/local/bin/status-metrics.sh) && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"

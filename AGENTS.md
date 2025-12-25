@@ -7,8 +7,7 @@ Detailed guidance for working in this environment.
 - There is no build pipeline, bundler, or package manager in use.
 - Updates are done by editing files directly on disk.
 - A status portal lives at `/status` and pulls host metrics.
-- Deployments are gated to the `beta` branch; push to `beta` to trigger the GitHub Actions deploy.
-- `main` auto-merges into `beta` (beta wins conflicts) to keep beta updated without blocking on conflicts.
+- Deployments run on `main` pushes and deploy only to production.
 - Beta environment: `beta.aahmed.ca`. Production environment: `asharahmed.com`.
 
 ## Repository Layout
@@ -92,17 +91,15 @@ location = /status/nginx {
 5) Open `/status` and confirm metrics + service pills update every 10 seconds.
 
 ## Branching and Deployments
-- `main` is the primary development branch.
-- `beta` is the deployment branch; CI deploys run only on `beta` pushes.
-- `main` auto-merges into `beta` via workflow `.github/workflows/sync-beta.yml`.
-- Deployment workflow: `.github/workflows/deploy.yml` (beta-only).
+- `main` is the primary development branch and deploy target.
+- Deployment workflow: `.github/workflows/deploy.yml` (prod-only).
 
 ## CI/CD Workflow Summary
 - Lint jobs: HTML (`htmlhint`), CSS (`stylelint`), and vibe (`vibechck`).
 - Tests: Playwright E2E plus link checks.
 - Cache: npm + Playwright browsers for faster runs.
-- Deploy flow (beta):
-  - Sync repo to `/home/ubuntu/website` on the beta host.
+- Deploy flow (prod):
+  - Sync repo to `/home/ubuntu/website` on the prod host.
   - Rsync to `/var/www/html` (excludes `.github`, `tests`, `node_modules`, `ops`).
   - Post-deploy uptime and health checks.
 - PRs run a dry-run rsync to validate deploy diff.
