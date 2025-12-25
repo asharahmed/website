@@ -16,6 +16,8 @@ Detailed guidance for working in this environment.
 - Root HTML: `/home/ubuntu/website/index.html`
 - Shared styles and scripts: `/home/ubuntu/website/shared.css`, `/home/ubuntu/website/shared.js`
 - Home page styles and scripts: `/home/ubuntu/website/styles.css`, `/home/ubuntu/website/main.js`
+- Global assets:
+  - `/home/ubuntu/website/assets/` (images, logos, favicons, OG image)
 - Status page:
   - `/home/ubuntu/website/status/index.html`
   - `/home/ubuntu/website/status/status.css`
@@ -34,6 +36,12 @@ Detailed guidance for working in this environment.
   - `/home/ubuntu/website/scripts/hooks/pre-commit`
   - `/home/ubuntu/website/scripts/hooks/pre-push`
   - `/home/ubuntu/website/scripts/install-hooks.sh`
+- Automation scripts:
+  - `/home/ubuntu/website/scripts/ci.sh`
+  - `/home/ubuntu/website/scripts/deploy.sh`
+  - `/home/ubuntu/website/scripts/pipeline.sh`
+  - `/home/ubuntu/website/scripts/health-check.sh`
+  - `/home/ubuntu/website/scripts/check-links.mjs`
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -65,6 +73,9 @@ Detailed guidance for working in this environment.
   - Page transitions
   - Prefetch on hover
   - Adds `is-prod` class based on hostname for prod-only styling
+- Command palette:
+  - Triggered via Cmd/Ctrl+K (button in nav).
+  - Markup lives in `index.html` and `status/index.html`.
 
 ## Status Portal
 - UI endpoint: `/status`
@@ -80,6 +91,9 @@ Detailed guidance for working in this environment.
   - `/usr/local/bin/status-metrics.sh` writes `/var/www/html/status/metrics.json`.
   - `/status/status.js` polls and renders data.
   - `scripts/health-check.sh` validates JSON payload and key presence.
+- Health check behavior:
+  - Reads the metrics JSON from disk.
+  - Fails if JSON is empty or missing required keys.
 
 ## Environments and Hosts
 - Beta:
@@ -93,6 +107,12 @@ Detailed guidance for working in this environment.
 - UI environment toggle:
   - `shared.js` adds `is-prod` class on `asharahmed.com` and `www.asharahmed.com`.
   - `.is-prod` hides the beta banner and adjusts sticky offsets.
+
+## Secrets and Variables
+- GitHub Actions secrets expected:
+  - `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY_B64` (beta)
+  - `PROD_DEPLOY_KEY_B64` (prod)
+- The prod host IP is hardcoded in workflow; update `.github/workflows/deploy.yml` if it changes.
 
 ## Agent Setup Checklist
 Use this to configure a new server from the repo:
@@ -196,6 +216,18 @@ If running the static site in a container:
 - Enabled site symlink: `/etc/nginx/sites-enabled/default`.
 - Current server is set to serve from `/var/www/html` over HTTPS.
 - Status stub endpoint should be defined at `/status/nginx`.
+
+## Troubleshooting
+- Deploy failed with SSH errors:
+  - Confirm the correct key secret and that the public key exists in `~/.ssh/authorized_keys` on the host.
+  - Ensure the host is reachable and in `~/.ssh/known_hosts`.
+- Deploy failed with HTML/CSS lint:
+  - Run `npm run lint:html` or `npm run lint:css` locally and fix errors.
+- Playwright failures locally:
+  - Run `npm run deps:playwright` to install system deps.
+- Metrics JSON missing:
+  - Verify `status-metrics.timer` is active and the service is running cleanly.
+  - Check permissions for `/var/www/html/status/metrics.json`.
 
 ## Security / Hardening (Code-Level)
 - External links should include `rel="noopener noreferrer"` when `target="_blank"` is used.
