@@ -131,6 +131,7 @@ If running the static site in a container:
 - Commit messages must include a `Changelog:` footer in the description body with 1-3 short bullets.
 - Avoid adding new dependencies unless explicitly requested.
 - If editing CSS for navigation or banners, verify both light and dark themes.
+- Install local git hooks with `npm run hooks:install` to enforce linting and tests before commits/pushes.
 
 ## Permissions
 - Files under `/var/www/html` are owned by root and require `sudo` to modify.
@@ -207,3 +208,8 @@ If running the static site in a container:
   - `sudo /usr/local/bin/status-metrics.sh`
 - Run the repo health check locally on a server:
   - `./scripts/health-check.sh`
+- Install local dev hooks:
+  - `npm run hooks:install`
+- Skip hooks temporarily:
+  - `SKIP_HOOKS=1 git commit ...`
+  - `SKIP_E2E=1 git push ...`
