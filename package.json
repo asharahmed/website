@@ -5,6 +5,7 @@
     "hooks:install": "bash scripts/install-hooks.sh",
     "hooks:pre-commit": "bash scripts/hooks/pre-commit",
     "hooks:pre-push": "bash scripts/hooks/pre-push",
+    "deps:playwright": "npx playwright install --with-deps",
     "lint": "npm run lint:html && npm run lint:css && npm run lint:vibe",
     "lint:html": "htmlhint \"**/*.html\"",
     "lint:css": "stylelint \"**/*.css\"",
