@@ -43,6 +43,7 @@ Detailed guidance for working in this environment.
   - `/home/ubuntu/website/scripts/health-check.sh`
   - `/home/ubuntu/website/scripts/check-links.mjs`
   - `/home/ubuntu/website/scripts/cf-dns.sh` (Cloudflare DNS helper)
+  - `/home/ubuntu/website/scripts/screenshot.js` (README screenshots)
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -288,6 +289,10 @@ If running the static site in a container:
   - `npm run verify:quick`
 - Install Playwright system deps (optional):
   - `npm run deps:playwright`
+- Capture screenshots (live):
+  - `npm run screenshot:live`
+- Capture screenshots (local file render):
+  - `npm run screenshot:local`
 - Pre-push skips E2E if Playwright system dependencies are missing.
 - Skip hooks temporarily:
   - `SKIP_HOOKS=1 git commit ...`
