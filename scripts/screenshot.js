@@ -12,6 +12,19 @@ const outputDir = outputDirFlag ? outputDirFlag.split('=')[1] : path.resolve('as
 
 const waitForStable = async page => {
   await page.waitForFunction(() => document.readyState === 'complete', null, { timeout: 30000 });
+  await page.evaluate(() => {
+    const overlay = document.querySelector('.loading-overlay');
+    if (overlay) {
+      overlay.classList.add('hidden');
+    }
+  });
+  await page.waitForFunction(() => {
+    const body = document.body;
+    const overlay = document.querySelector('.loading-overlay');
+    const bodyReady = !body || !body.classList.contains('page-fade') || body.classList.contains('is-loaded');
+    const overlayReady = !overlay || overlay.classList.contains('hidden');
+    return bodyReady && overlayReady;
+  }, null, { timeout: 15000 });
   await page.evaluate(async () => {
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
