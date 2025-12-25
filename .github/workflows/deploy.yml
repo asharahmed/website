@@ -124,8 +124,9 @@ jobs:
           DEPLOY_KEY_B64: ${{ secrets.DEPLOY_KEY_B64 }}
         run: |
           mkdir -p ~/.ssh
-          echo "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
+          printf '%s' "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+          ssh-keygen -lf ~/.ssh/deploy_key
           ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
           ssh-keyscan -H 159.203.35.5 >> ~/.ssh/known_hosts
 
@@ -229,8 +230,9 @@ jobs:
           PROD_HOST: 159.203.35.5
           PROD_KEY_B64: ${{ secrets.PROD_DEPLOY_KEY_B64 }}
         run: |
-          echo "${PROD_KEY_B64}" | base64 -d > ~/.ssh/prod_deploy_key
+          printf '%s' "${PROD_KEY_B64}" | base64 -d > ~/.ssh/prod_deploy_key
           chmod 600 ~/.ssh/prod_deploy_key
+          ssh-keygen -lf ~/.ssh/prod_deploy_key
           ssh-keyscan -H "${PROD_HOST}" >> ~/.ssh/known_hosts
 
       - name: Sync files to prod server
