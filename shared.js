@@ -175,6 +175,11 @@
     return;
   }
 
+  const host = window.location.hostname.toLowerCase();
+  if (host === "asharahmed.com" || host === "www.asharahmed.com") {
+    body.classList.add("is-prod");
+  }
+
   body.classList.add("page-fade");
   window.addEventListener("DOMContentLoaded", () => {
     body.classList.add("is-loaded");
