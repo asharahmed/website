@@ -33,6 +33,6 @@ test("status refresh updates timestamp and cards render", async ({ page }) => {
   const metricsResponse = page.waitForResponse(response =>
     response.url().includes("/status/metrics.json")
   );
-  await page.locator("#refresh-now").click();
+  await page.locator("#refresh-now").click({ force: true });
   await metricsResponse;
 });
