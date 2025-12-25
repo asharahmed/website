@@ -42,8 +42,8 @@ cf_api() {
 }
 
 json_field() {
-  python3 - <<'PY'
-import json, sys
+  local path=$1
+  python3 -c 'import json, sys
 data = json.load(sys.stdin)
 path = sys.argv[1].split(".")
 cur = data
@@ -56,8 +56,7 @@ for part in path:
         cur = cur.get(part) if isinstance(cur, dict) else None
     if cur is None:
         break
-print("" if cur is None else cur)
-PY
+print("" if cur is None else cur)' "$path"
 }
 
 command=${1:-}
