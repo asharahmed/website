@@ -127,6 +127,7 @@ jobs:
           echo "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H 159.203.35.5 >> ~/.ssh/known_hosts
 
       - name: Dry-run deploy sync
         env:
