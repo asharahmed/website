@@ -1,0 +1,32 @@
+name: Sync Beta
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  merge-main-into-beta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into beta (beta wins conflicts)
+        run: |
+          git fetch origin main beta
+          git checkout -B beta origin/beta
+          git merge -X ours origin/main
+          git push origin beta

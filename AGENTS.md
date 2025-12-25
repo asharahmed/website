@@ -8,6 +8,7 @@ Detailed guidance for working in this environment.
 - Updates are done by editing files directly on disk.
 - A status portal lives at `/status` and pulls host metrics.
 - Deployments are gated to the `beta` branch; push to `beta` to trigger the GitHub Actions deploy.
+- `main` auto-merges into `beta` (beta wins conflicts) to keep beta updated without blocking on conflicts.
 
 ## Key Paths
 - Document root: `/var/www/html`
