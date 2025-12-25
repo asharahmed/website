@@ -1,5 +1,14 @@
 /* Shared helpers for status UI. */
 (() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("screenshot")) {
+    document.documentElement.classList.add("screenshot-mode");
+    const overlay = document.querySelector(".loading-overlay");
+    if (overlay) {
+      overlay.remove();
+    }
+  }
+
   const BYTES_PER_UNIT = 1024;
   const PAGE_TRANSITION_MS = 140;
   const CONFETTI_PIECES = 140;
