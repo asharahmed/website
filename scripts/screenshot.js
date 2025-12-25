@@ -38,8 +38,9 @@ const run = async () => {
     await page.addStyleTag({
       content: [
         '*{animation:none !important; transition:none !important;}',
-        'section{content-visibility:visible !important; contain-intrinsic-size:auto !important;}',
-        'html{scroll-behavior:auto !important;}'
+        'html{scroll-behavior:auto !important;}',
+        'section,.timeline{content-visibility:visible !important; contain:none !important; contain-intrinsic-size:auto !important;}',
+        '.timeline-item,.education-card,.cert-card,.skill-category,.publication-card{opacity:1 !important; transform:none !important;}'
       ].join('\n')
     });
     const homeUrl = mode === 'live'
