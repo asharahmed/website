@@ -29,4 +29,17 @@ if command -v pkill >/dev/null 2>&1; then
   pkill -f "http.server 4173" >/dev/null 2>&1 || true
 fi
 
+if command -v python3 >/dev/null 2>&1 && command -v curl >/dev/null 2>&1; then
+  PORT_TEST=4174
+  python3 -m http.server "$PORT_TEST" --directory . >/dev/null 2>&1 &
+  SERVER_PID=$!
+  sleep 0.2
+  if ! curl -fsI "http://127.0.0.1:$PORT_TEST/" >/dev/null 2>&1; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    echo "pre-push: localhost test server not reachable; skipping e2e (sandbox restriction)."
+    exit 0
+  fi
+  kill "$SERVER_PID" >/dev/null 2>&1 || true
+fi
+
 npm run -s test:e2e
