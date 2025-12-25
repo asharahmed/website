@@ -5,11 +5,13 @@
     "hooks:install": "bash scripts/install-hooks.sh",
     "hooks:pre-commit": "bash scripts/hooks/pre-commit",
     "hooks:pre-push": "bash scripts/hooks/pre-push",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:vibe",
     "lint:html": "htmlhint \"**/*.html\"",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:vibe": "vibechck --module=laziness,security,architecture --severity=high,medium",
     "test:links": "node scripts/check-links.mjs",
     "test:e2e": "playwright test",
+    "verify:quick": "npm run lint && npm run test:links",
     "test": "npm run lint:html && npm run lint:css && npm run lint:vibe && npm run test:links && npm run test:e2e"
   },
   "devDependencies": {
