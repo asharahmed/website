@@ -178,9 +178,19 @@
   }
 
   const host = window.location.hostname.toLowerCase();
-  if (host === "asharahmed.com" || host === "www.asharahmed.com") {
+  const isProdHost = [
+    "aahmed.ca",
+    "www.aahmed.ca",
+    "asharahmed.com",
+    "www.asharahmed.com"
+  ].includes(host);
+  if (isProdHost) {
     body.classList.add("is-prod");
     root.classList.add("is-prod");
+    const betaBanner = document.querySelector(".beta-banner");
+    if (betaBanner) {
+      betaBanner.hidden = true;
+    }
   }
 
   body.classList.add("page-fade");
