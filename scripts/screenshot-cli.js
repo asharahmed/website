@@ -58,8 +58,8 @@ const runShot = (url, outputPath) => {
 
 const normalizeUrl = url => url.replace(/\/$/, '');
 
-const homeUrl = normalizeUrl(baseUrl);
-const statusUrl = `${normalizeUrl(baseUrl)}/status/`;
+const homeUrl = `${normalizeUrl(baseUrl)}/?screenshot=1`;
+const statusUrl = `${normalizeUrl(baseUrl)}/status/?screenshot=1`;
 
 runShot(homeUrl, path.join(outputDir, 'home.png'));
 runShot(statusUrl, path.join(outputDir, 'status.png'));

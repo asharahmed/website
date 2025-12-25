@@ -440,6 +440,32 @@
             contain-intrinsic-size: 1000px;
         }
 
+        html.screenshot-mode * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        html.screenshot-mode section {
+            content-visibility: visible;
+            contain: none;
+            contain-intrinsic-size: auto;
+        }
+
+        html.screenshot-mode .timeline-item,
+        html.screenshot-mode .education-card,
+        html.screenshot-mode .cert-card,
+        html.screenshot-mode .skill-category,
+        html.screenshot-mode .publication-card {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        html.screenshot-mode .loading-overlay {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
         .section-header { text-align: center; margin-bottom: 50px; }
 
         .section-label {
