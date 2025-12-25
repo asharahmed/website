@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - beta
   pull_request:
     branches:
       - main
+      - beta
   workflow_dispatch:
 
 permissions:
@@ -153,8 +155,81 @@ jobs:
             --exclude=AGENTS.md \
             -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
 
-  deploy:
-    if: github.event_name != 'pull_request'
+  deploy-beta:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install rsync
+        run: |
+          if ! command -v rsync >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y rsync
+          fi
+
+      - name: Setup beta SSH key
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KEY_B64: ${{ secrets.DEPLOY_KEY_B64 }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keygen -lf ~/.ssh/deploy_key
+          ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+
+      - name: Sync files to beta server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          rsync -az --delete --omit-dir-times --no-perms --no-owner --no-group \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=tests \
+            --exclude=ops \
+            --exclude=README.md \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=playwright.config.js \
+            --exclude=.htmlhintrc \
+            --exclude=.htmlhintignore \
+            --exclude=.stylelintrc.json \
+            --exclude=.stylelintignore \
+            --exclude=.gitignore \
+            --exclude=AGENTS.md \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
+
+      - name: Deploy to beta web root
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
+
+      - name: Post-deploy uptime check (beta)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/" >/dev/null
+          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/status/" >/dev/null
+
+      - name: Post-deploy health check (beta)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
+
+  deploy-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: [lint, test]
     timeout-minutes: 15
@@ -225,3 +300,111 @@ jobs:
         run: |
           ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
           ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && (test -f /var/www/html/status/metrics.json || sudo /usr/local/bin/status-metrics.sh) && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
+
+  sync-beta:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [deploy-prod]
+    timeout-minutes: 5
+    outputs:
+      merged: ${{ steps.merge.outputs.merged }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into beta when clean
+        id: merge
+        run: |
+          git fetch origin main beta
+          git checkout -B beta origin/beta
+          set +e
+          git merge --no-ff --no-edit origin/main
+          merge_status=$?
+          set -e
+          if [ $merge_status -ne 0 ]; then
+            git merge --abort || true
+            echo "merged=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+          git push origin beta
+
+  deploy-beta-from-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.sync-beta.outputs.merged == 'true'
+    runs-on: ubuntu-latest
+    needs: [lint, test, deploy-prod, sync-beta]
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install rsync
+        run: |
+          if ! command -v rsync >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y rsync
+          fi
+
+      - name: Setup beta SSH key
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KEY_B64: ${{ secrets.DEPLOY_KEY_B64 }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${DEPLOY_KEY_B64}" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keygen -lf ~/.ssh/deploy_key
+          ssh-keyscan -H "${DEPLOY_HOST}" >> ~/.ssh/known_hosts
+
+      - name: Sync files to beta server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          rsync -az --delete --omit-dir-times --no-perms --no-owner --no-group \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=tests \
+            --exclude=ops \
+            --exclude=README.md \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=playwright.config.js \
+            --exclude=.htmlhintrc \
+            --exclude=.htmlhintignore \
+            --exclude=.stylelintrc.json \
+            --exclude=.stylelintignore \
+            --exclude=.gitignore \
+            --exclude=AGENTS.md \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/website/"
+
+      - name: Deploy to beta web root
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "cd /home/ubuntu/website && sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
+
+      - name: Post-deploy uptime check (beta)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/" >/dev/null
+          curl -fsS --retry 3 --retry-delay 2 "http://${DEPLOY_HOST}/status/" >/dev/null
+
+      - name: Post-deploy health check (beta)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
+          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
