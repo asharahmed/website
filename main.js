@@ -334,6 +334,11 @@
         const grid = new Map();
         const gridSize = 140;
         let lastTime = null;
+        const pointer = { x: 0, y: 0, active: false };
+        const bounds = { margin: 90, force: 0.00085 };
+        const trail = [];
+        const trailMax = 22;
+        let burstTimer = null;
         let palette = {
             muted: '#94a3b8',
             accentPrimary: '#ef4444',
@@ -381,12 +386,14 @@
                 particles.push({
                     x: Math.random() * window.innerWidth,
                     y: Math.random() * window.innerHeight,
-                    vx: (Math.random() - 0.5) * 0.55,
-                    vy: (Math.random() - 0.5) * 0.55,
+                    vx: (Math.random() - 0.5) * 0.45,
+                    vy: (Math.random() - 0.5) * 0.45,
                     size,
                     speed,
+                    layer,
                     color,
                     baseAlpha,
+                    linkRange: layer === 0 ? 140 : layer === 1 ? 130 : 110,
                     twinkleSpeed: Math.random() * 1.5 + 0.6,
                     twinkleOffset: Math.random() * Math.PI * 2
                 });
@@ -423,8 +430,53 @@
             return neighbors;
         };
 
-        const stepParticles = delta => {
+        const stepParticles = (delta, now) => {
+            const t = now / 1000;
+            const driftX = Math.sin(t * 0.6) * 0.004;
+            const driftY = Math.cos(t * 0.5) * 0.004;
+            const maxSpeed = 1.15;
+            const friction = 0.986;
             particles.forEach(p => {
+                if (pointer.active) {
+                    const dx = p.x - pointer.x;
+                    const dy = p.y - pointer.y;
+                    const distSq = dx * dx + dy * dy;
+                    if (distSq < 36000 && distSq > 0.01) {
+                        const dist = Math.sqrt(distSq);
+                        const force = (1 - dist / 190) * 0.04;
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        p.vx += nx * force;
+                        p.vy += ny * force;
+                        const swirl = (1 - dist / 190) * 0.05;
+                        p.vx += -ny * swirl;
+                        p.vy += nx * swirl;
+                    }
+                }
+
+                p.vx += driftX;
+                p.vy += driftY;
+                p.vx *= friction;
+                p.vy *= friction;
+
+                if (p.x < bounds.margin) {
+                    p.vx += (bounds.margin - p.x) * bounds.force;
+                } else if (p.x > window.innerWidth - bounds.margin) {
+                    p.vx -= (p.x - (window.innerWidth - bounds.margin)) * bounds.force;
+                }
+                if (p.y < bounds.margin) {
+                    p.vy += (bounds.margin - p.y) * bounds.force;
+                } else if (p.y > window.innerHeight - bounds.margin) {
+                    p.vy -= (p.y - (window.innerHeight - bounds.margin)) * bounds.force;
+                }
+
+                const speedSq = p.vx * p.vx + p.vy * p.vy;
+                if (speedSq > maxSpeed * maxSpeed) {
+                    const scale = maxSpeed / Math.sqrt(speedSq);
+                    p.vx *= scale;
+                    p.vy *= scale;
+                }
+
                 p.x += p.vx * delta * p.speed;
                 p.y += p.vy * delta * p.speed;
                 if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
@@ -444,7 +496,10 @@
                 ctx.fill();
             });
 
-            ctx.strokeStyle = palette.muted;
+            const lineGradient = ctx.createLinearGradient(0, 0, window.innerWidth, window.innerHeight);
+            lineGradient.addColorStop(0, palette.accentSecondary);
+            lineGradient.addColorStop(1, palette.accentPrimary);
+            ctx.strokeStyle = lineGradient;
             ctx.lineWidth = 1;
             resetGrid();
             particles.forEach((p, index) => addToGrid(p, index));
@@ -458,16 +513,32 @@
                     const other = particles[j];
                     const dx = p.x - other.x;
                     const dy = p.y - other.y;
+                    const range = Math.min(p.linkRange, other.linkRange);
                     const distSq = dx * dx + dy * dy;
-                    if (distSq < 14400) {
+                    if (distSq < range * range) {
                         const dist = Math.sqrt(distSq);
-                        ctx.globalAlpha = (1 - dist / 120) * 0.4;
+                        ctx.globalAlpha = (1 - dist / range) * 0.35;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(other.x, other.y);
                         ctx.stroke();
                     }
                 });
+            }
+
+            if (trail.length > 1) {
+                ctx.lineWidth = 2;
+                for (let i = 0; i < trail.length - 1; i++) {
+                    const a = trail[i];
+                    const b = trail[i + 1];
+                    const alpha = i / trail.length;
+                    ctx.globalAlpha = alpha * 0.35;
+                    ctx.strokeStyle = palette.accentSecondary;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
             }
 
             ctx.globalAlpha = 1;
@@ -482,7 +553,7 @@
             }
             const delta = Math.min(2, (now - lastTime) / 16.67);
             lastTime = now;
-            stepParticles(delta);
+            stepParticles(delta, now);
             renderParticles(now);
             animationFrame = window.requestAnimationFrame(animate);
         };
@@ -512,10 +583,46 @@
             resizeCanvas();
             syncColors();
             createParticles();
+            trail.length = 0;
             if (media.reducedMotion.matches) {
                 renderStatic();
             }
         };
+
+        window.addEventListener('pointermove', event => {
+            pointer.x = event.clientX;
+            pointer.y = event.clientY;
+            pointer.active = true;
+            trail.push({ x: pointer.x, y: pointer.y });
+            if (trail.length > trailMax) {
+                trail.shift();
+            }
+        }, { passive: true });
+        window.addEventListener('pointerleave', () => {
+            pointer.active = false;
+        });
+        window.addEventListener('blur', () => {
+            pointer.active = false;
+        });
+        window.addEventListener('click', event => {
+            if (burstTimer) {
+                window.clearTimeout(burstTimer);
+            }
+            particles.forEach(p => {
+                const dx = p.x - event.clientX;
+                const dy = p.y - event.clientY;
+                const distSq = dx * dx + dy * dy;
+                if (distSq < 65000 && distSq > 1) {
+                    const dist = Math.sqrt(distSq);
+                    const force = (1 - dist / 255) * 0.35;
+                    p.vx += (dx / dist) * force;
+                    p.vy += (dy / dist) * force;
+                }
+            });
+            burstTimer = window.setTimeout(() => {
+                burstTimer = null;
+            }, 320);
+        });
 
         syncColors();
         resizeCanvas();
