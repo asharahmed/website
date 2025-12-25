@@ -27,6 +27,13 @@ Detailed guidance for working in this environment.
   - `/home/ubuntu/website/ops/nginx/default.conf`
 - CI/CD definitions: `/home/ubuntu/website/.github/workflows/`
 - Contributor guide: `/home/ubuntu/website/CONTRIBUTING.md`
+- Repo hygiene:
+  - `/home/ubuntu/website/.editorconfig`
+  - `/home/ubuntu/website/.github/pull_request_template.md`
+- Dev hooks:
+  - `/home/ubuntu/website/scripts/hooks/pre-commit`
+  - `/home/ubuntu/website/scripts/hooks/pre-push`
+  - `/home/ubuntu/website/scripts/install-hooks.sh`
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -74,6 +81,19 @@ Detailed guidance for working in this environment.
   - `/status/status.js` polls and renders data.
   - `scripts/health-check.sh` validates JSON payload and key presence.
 
+## Environments and Hosts
+- Beta:
+  - Hostname: `beta.aahmed.ca`
+  - Deploy secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY_B64`
+- Production:
+  - Hostname: `asharahmed.com` (www redirects to same site)
+  - Host IP: `159.203.35.5`
+  - Deploy secrets: `PROD_DEPLOY_KEY_B64`
+  - SSH user: `ubuntu`
+- UI environment toggle:
+  - `shared.js` adds `is-prod` class on `asharahmed.com` and `www.asharahmed.com`.
+  - `.is-prod` hides the beta banner and adjusts sticky offsets.
+
 ## Agent Setup Checklist
 Use this to configure a new server from the repo:
 1) Sync repo contents to `/var/www/html`:
@@ -97,6 +117,10 @@ location = /status/nginx {
 - `main` is the primary development branch and deploy target for production.
 - `beta` is the staging branch and deploy target for beta.
 - Deployment workflow: `.github/workflows/deploy.yml` (prod + conditional beta).
+- Deploy behavior:
+  - Push to `beta` deploys only to beta.
+  - Push to `main` deploys to prod, then attempts a clean merge into `beta`.
+  - If the merge is clean, a beta deploy runs from `main` push.
 
 ## CI/CD Workflow Summary
 - Lint jobs: HTML (`htmlhint`), CSS (`stylelint`), and vibe (`vibechck`).
@@ -112,6 +136,14 @@ location = /status/nginx {
   - Post-deploy uptime and health checks.
 - CI requires `contents: write` permissions to merge `main` into `beta`.
 - PRs run a dry-run rsync to validate deploy diff.
+- Jobs in `.github/workflows/deploy.yml`:
+  - `lint`, `test`, `dry-run`
+  - `deploy-beta` (beta push)
+  - `deploy-prod` (main push)
+  - `sync-beta` (clean merge gate)
+  - `deploy-beta-from-main` (conditional)
+- Repo settings:
+  - GitHub Actions workflow permissions must be set to Read and write.
 
 ### Hybrid Docker Option
 If running the static site in a container:
@@ -133,6 +165,9 @@ If running the static site in a container:
 - Avoid adding new dependencies unless explicitly requested.
 - If editing CSS for navigation or banners, verify both light and dark themes.
 - Install local git hooks with `npm run hooks:install` to enforce linting and tests before commits/pushes.
+- Hook behavior:
+  - Pre-commit runs `lint:html`, `lint:css`, `lint:vibe`, `test:links`.
+  - Pre-push runs `test:e2e` and auto-skips if Playwright system deps are missing.
 
 ## Permissions
 - Files under `/var/www/html` are owned by root and require `sudo` to modify.
@@ -154,6 +189,7 @@ If running the static site in a container:
 - If status metrics fail:
   - Confirm `/var/www/html/status/metrics.json` exists and is non-empty.
   - Check the systemd timer and service logs.
+  - Run `sudo /usr/local/bin/status-metrics.sh` to regenerate the JSON.
 
 ## Nginx Context
 - Default config path: `/etc/nginx/sites-available/default`.
@@ -219,3 +255,7 @@ If running the static site in a container:
 - Skip hooks temporarily:
   - `SKIP_HOOKS=1 git commit ...`
   - `SKIP_E2E=1 git push ...`
+- Trigger a beta deploy:
+  - `git push origin beta`
+- Trigger a prod deploy:
+  - `git push origin main`
