@@ -293,6 +293,8 @@ If running the static site in a container:
   - `npm run screenshot:live`
 - Capture screenshots (local file render):
   - `npm run screenshot:local`
+- Capture screenshots (Chromium CLI):
+  - `npm run screenshot:cli`
 - Pre-push skips E2E if Playwright system dependencies are missing.
 - Skip hooks temporarily:
   - `SKIP_HOOKS=1 git commit ...`

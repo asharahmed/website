@@ -8,6 +8,7 @@
     "deps:playwright": "npx playwright install --with-deps",
     "screenshot:live": "node scripts/screenshot.js --live",
     "screenshot:local": "node scripts/screenshot.js --local",
+    "screenshot:cli": "node scripts/screenshot-cli.js",
     "lint": "npm run lint:html && npm run lint:css && npm run lint:vibe",
     "lint:html": "htmlhint \"**/*.html\"",
     "lint:css": "stylelint \"**/*.css\"",
