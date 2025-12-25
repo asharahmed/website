@@ -10,6 +10,7 @@
       window.localStorage.removeItem(testKey);
       return window.localStorage;
     } catch (error) {
+      console.error("Local storage unavailable:", error);
       return null;
     }
   })();
