@@ -25,4 +25,8 @@ if command -v ldconfig >/dev/null 2>&1; then
   fi
 fi
 
+if command -v pkill >/dev/null 2>&1; then
+  pkill -f "http.server 4173" >/dev/null 2>&1 || true
+fi
+
 npm run -s test:e2e
