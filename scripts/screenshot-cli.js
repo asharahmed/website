@@ -10,9 +10,33 @@ const baseUrl = baseUrlFlag ? baseUrlFlag.split('=')[1] : 'https://asharahmed.co
 const outputDirFlag = args.find(arg => arg.startsWith('--out-dir='));
 const outputDir = outputDirFlag ? outputDirFlag.split('=')[1] : path.resolve('assets/screenshots');
 const windowSizeFlag = args.find(arg => arg.startsWith('--window-size='));
-const windowSize = windowSizeFlag ? windowSizeFlag.split('=')[1] : '1400,900';
+const windowSize = windowSizeFlag ? windowSizeFlag.split('=')[1] : '1280,720';
+const resizeFlag = args.find(arg => arg.startsWith('--resize='));
+const resize = resizeFlag ? resizeFlag.split('=')[1] : '1280x720';
 
 const chromiumPath = process.env.CHROMIUM_BIN || chromium.executablePath();
+
+const resizeImage = outputPath => {
+  if (!resize) {
+    return;
+  }
+  const [width, height] = resize.split('x').map(Number);
+  if (!Number.isFinite(width) || !Number.isFinite(height)) {
+    return;
+  }
+  const script = `
+from PIL import Image
+path = r"${outputPath}"
+img = Image.open(path)
+img = img.resize((${width}, ${height}), Image.LANCZOS)
+img.save(path)
+`;
+  try {
+    execFileSync('python3', ['-c', script], { stdio: 'ignore' });
+  } catch (error) {
+    console.warn('screenshot: resize skipped (Pillow missing).');
+  }
+};
 
 const runShot = (url, outputPath) => {
   execFileSync(chromiumPath, [
@@ -22,12 +46,14 @@ const runShot = (url, outputPath) => {
     '--disable-dev-shm-usage',
     '--no-sandbox',
     '--disable-setuid-sandbox',
+    '--force-device-scale-factor=1',
     '--run-all-compositor-stages-before-draw',
     `--window-size=${windowSize}`,
     '--virtual-time-budget=12000',
     `--screenshot=${outputPath}`,
     url
   ], { stdio: 'inherit' });
+  resizeImage(outputPath);
 };
 
 const normalizeUrl = url => url.replace(/\/$/, '');
