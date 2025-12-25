@@ -182,7 +182,8 @@
     "aahmed.ca",
     "www.aahmed.ca",
     "asharahmed.com",
-    "www.asharahmed.com"
+    "www.asharahmed.com",
+    "159.203.35.5"
   ].includes(host);
   if (isProdHost) {
     body.classList.add("is-prod");
