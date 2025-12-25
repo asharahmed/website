@@ -382,6 +382,10 @@ header {
     pointer-events: none;
 }
 
+[data-theme="light"] .mobile-nav a {
+    color: #f8fafc;
+}
+
 @media (max-width: 768px) {
     .nav {
         left: calc(var(--sticky-left) + var(--sticky-height) + var(--sticky-gap));
