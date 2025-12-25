@@ -20,6 +20,12 @@ const waitForStable = async page => {
   await page.waitForTimeout(1500);
 };
 
+const waitForSelectors = async (page, selectors) => {
+  for (const selector of selectors) {
+    await page.waitForSelector(selector, { timeout: 20000 });
+  }
+};
+
 const warmScroll = async page => {
   await page.evaluate(async () => {
     const step = Math.max(200, Math.floor(window.innerHeight * 0.7));
@@ -64,12 +70,21 @@ const run = async () => {
       : `file://${path.resolve('/tmp/site-screenshot/status/index.html')}`;
 
     await capture(page, homeUrl, 'header', path.join(outputDir, 'home.png'));
-    await page.waitForSelector('.timeline-item', { timeout: 15000 });
+    await waitForSelectors(page, [
+      '.timeline-item',
+      '.education-card',
+      '.cert-card',
+      '.skill-category',
+      '.publication-card'
+    ]);
     await warmScroll(page);
-    await page.waitForSelector('.timeline-content', { timeout: 15000 });
     await waitForStable(page);
     await page.screenshot({ path: path.join(outputDir, 'home.png'), fullPage: true });
     await capture(page, statusUrl, '.status-metrics-grid', path.join(outputDir, 'status.png'));
+    await waitForSelectors(page, ['.status-metric-card', '.stat-card']);
+    await warmScroll(page);
+    await waitForStable(page);
+    await page.screenshot({ path: path.join(outputDir, 'status.png'), fullPage: true });
   } finally {
     await browser.close();
   }
