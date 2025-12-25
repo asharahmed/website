@@ -660,6 +660,23 @@
             scrollUntil = performance.now() + 200;
         }, { passive: true });
 
+        if ('IntersectionObserver' in window) {
+            const headerEl = document.querySelector('header');
+            if (headerEl) {
+                const observer = new IntersectionObserver(entries => {
+                    const visible = entries[0]?.isIntersecting;
+                    if (visible) {
+                        if (!media.reducedMotion.matches) {
+                            start();
+                        }
+                    } else {
+                        stop();
+                    }
+                }, { threshold: 0.05 });
+                observer.observe(headerEl);
+            }
+        }
+
         syncColors();
         resizeCanvas();
         createParticles();
