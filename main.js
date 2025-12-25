@@ -339,6 +339,8 @@
         const trail = [];
         const trailMax = 22;
         let burstTimer = null;
+        let scrollUntil = 0;
+        let frameSkip = false;
         let palette = {
             muted: '#94a3b8',
             accentPrimary: '#ef4444',
@@ -484,7 +486,7 @@
             });
         };
 
-        const renderParticles = now => {
+        const renderParticles = (now, lowQuality) => {
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             particles.forEach(p => {
@@ -495,6 +497,11 @@
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
             });
+
+            if (lowQuality) {
+                ctx.globalAlpha = 1;
+                return;
+            }
 
             const lineGradient = ctx.createLinearGradient(0, 0, window.innerWidth, window.innerHeight);
             lineGradient.addColorStop(0, palette.accentSecondary);
@@ -554,7 +561,15 @@
             const delta = Math.min(2, (now - lastTime) / 16.67);
             lastTime = now;
             stepParticles(delta, now);
-            renderParticles(now);
+            const lowQuality = now < scrollUntil;
+            if (lowQuality) {
+                frameSkip = !frameSkip;
+                if (frameSkip) {
+                    animationFrame = window.requestAnimationFrame(animate);
+                    return;
+                }
+            }
+            renderParticles(now, lowQuality);
             animationFrame = window.requestAnimationFrame(animate);
         };
 
@@ -641,6 +656,9 @@
                 burstTimer = null;
             }, 320);
         });
+        window.addEventListener('scroll', () => {
+            scrollUntil = performance.now() + 200;
+        }, { passive: true });
 
         syncColors();
         resizeCanvas();
