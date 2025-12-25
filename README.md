@@ -8,7 +8,12 @@ This repo contains:
 - Ops assets (systemd units, metrics script, Docker option).
 
 ## Screenshot
+Home
+
 ![Home preview](assets/screenshots/home.png)
+
+Status
+
 ![Status preview](assets/screenshots/status.png)
 
 ## Step-by-step setup (host install)
