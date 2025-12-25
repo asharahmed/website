@@ -334,13 +334,17 @@
         const grid = new Map();
         const gridSize = 140;
         let lastTime = null;
-        const pointer = { x: 0, y: 0, active: false };
+        let accumulator = 0;
+        const fixedStep = 1 / 60;
+        const maxSteps = 3;
+        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
         const bounds = { margin: 90, force: 0.00085 };
         const trail = [];
         const trailMax = 22;
         let burstTimer = null;
         let scrollUntil = 0;
         let frameSkip = false;
+        let trailSuspendUntil = 0;
         let palette = {
             muted: '#94a3b8',
             accentPrimary: '#ef4444',
@@ -438,6 +442,11 @@
             const driftY = Math.cos(t * 0.5) * 0.004;
             const maxSpeed = 1.15;
             const friction = 0.986;
+            if (pointer.active) {
+                const ease = 1 - Math.pow(0.001, delta);
+                pointer.x += (pointer.targetX - pointer.x) * ease;
+                pointer.y += (pointer.targetY - pointer.y) * ease;
+            }
             particles.forEach(p => {
                 if (pointer.active) {
                     const dx = p.x - pointer.x;
@@ -558,9 +567,21 @@
             if (lastTime === null) {
                 lastTime = now;
             }
-            const delta = Math.min(2, (now - lastTime) / 16.67);
+            const frameDelta = Math.min(0.05, (now - lastTime) / 1000);
             lastTime = now;
-            stepParticles(delta, now);
+            accumulator += frameDelta;
+            let steps = 0;
+            while (accumulator >= fixedStep && steps < maxSteps) {
+                stepParticles(1, now);
+                accumulator -= fixedStep;
+                steps += 1;
+            }
+            if (steps === 0) {
+                stepParticles(frameDelta / fixedStep, now);
+            }
+            if (steps === maxSteps) {
+                accumulator = 0;
+            }
             const lowQuality = now < scrollUntil;
             if (lowQuality) {
                 frameSkip = !frameSkip;
@@ -588,10 +609,11 @@
                 animationFrame = null;
             }
             lastTime = null;
+            accumulator = 0;
         };
 
         const renderStatic = () => {
-            renderParticles();
+            renderParticles(performance.now(), false);
         };
 
         const handleResize = () => {
@@ -605,12 +627,18 @@
         };
 
         const updatePointer = (x, y) => {
-            pointer.x = x;
-            pointer.y = y;
+            if (!pointer.active) {
+                pointer.x = x;
+                pointer.y = y;
+            }
+            pointer.targetX = x;
+            pointer.targetY = y;
             pointer.active = true;
-            trail.push({ x, y });
-            if (trail.length > trailMax) {
-                trail.shift();
+            if (performance.now() >= trailSuspendUntil) {
+                trail.push({ x, y });
+                if (trail.length > trailMax) {
+                    trail.shift();
+                }
             }
         };
 
@@ -658,6 +686,8 @@
         });
         window.addEventListener('scroll', () => {
             scrollUntil = performance.now() + 200;
+            trailSuspendUntil = scrollUntil;
+            trail.length = 0;
         }, { passive: true });
 
         if ('IntersectionObserver' in window) {
