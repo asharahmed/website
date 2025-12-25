@@ -1102,7 +1102,6 @@
         theme.set(theme.get());
         initMediaListeners();
 
-        particleController = initParticles();
         initScrollTracking();
         initCommandPalette();
         initMobileMenu();
@@ -1111,6 +1110,14 @@
         window.addEventListener('load', () => {
             if (dom.loadingOverlay) {
                 dom.loadingOverlay.classList.add('hidden');
+            }
+            const startParticles = () => {
+                particleController = initParticles();
+            };
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(startParticles, { timeout: 1200 });
+            } else {
+                window.setTimeout(startParticles, 200);
             }
             initTyping();
             initAnimations();

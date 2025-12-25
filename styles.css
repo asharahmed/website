@@ -434,7 +434,11 @@
 
         /* Main Content */
         main { padding: 80px 0; }
-        section { margin-bottom: 100px; }
+        section {
+            margin-bottom: 100px;
+            content-visibility: auto;
+            contain-intrinsic-size: 1000px;
+        }
 
         .section-header { text-align: center; margin-bottom: 50px; }
 
