@@ -90,6 +90,7 @@ On pushes to `main`, the workflow:
 - Syncs runtime files to the server via rsync (non-runtime files excluded).
 - Runs a lightweight uptime check on `/` and `/status/`.
 - Runs a server-side health check to validate `/var/www/html/status/metrics.json`.
+- Deploys to prod only after beta health checks pass.
 
 On pull requests, a dry-run rsync preview is executed.
 
