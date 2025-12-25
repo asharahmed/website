@@ -54,6 +54,22 @@ const warmScroll = async page => {
 
 const capture = async (page, url, selector, outPath) => {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.addStyleTag({
+    content: [
+      '*{animation:none !important; transition:none !important;}',
+      'html{scroll-behavior:auto !important;}',
+      'section,.timeline{content-visibility:visible !important; contain:none !important; contain-intrinsic-size:auto !important;}',
+      '.timeline-item,.education-card,.cert-card,.skill-category,.publication-card{opacity:1 !important; transform:none !important;}',
+      '.loading-overlay{display:none !important; opacity:0 !important; visibility:hidden !important;}'
+    ].join('\n')
+  });
+  await page.evaluate(() => {
+    const overlay = document.querySelector('.loading-overlay');
+    if (overlay) {
+      overlay.classList.add('hidden');
+      overlay.remove();
+    }
+  });
   await page.waitForSelector(selector, { timeout: 20000 });
   await waitForStable(page);
   await page.screenshot({ path: outPath, fullPage: true });
@@ -67,14 +83,6 @@ const run = async () => {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 
   try {
-    await page.addStyleTag({
-      content: [
-        '*{animation:none !important; transition:none !important;}',
-        'html{scroll-behavior:auto !important;}',
-        'section,.timeline{content-visibility:visible !important; contain:none !important; contain-intrinsic-size:auto !important;}',
-        '.timeline-item,.education-card,.cert-card,.skill-category,.publication-card{opacity:1 !important; transform:none !important;}'
-      ].join('\n')
-    });
     const homeUrl = mode === 'live'
       ? baseUrl
       : `file://${path.resolve('/tmp/site-screenshot/index.html')}`;
