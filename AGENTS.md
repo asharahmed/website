@@ -266,6 +266,7 @@ If running the static site in a container:
 - Do not: add new dependencies or frameworks without explicit request.
 - Do not: remove the default Nginx file unless asked.
 - Do not: change deploy hosts or secrets without explicit request.
+- Do not: commit local env/secret files (use `.env` or `/etc/website/env`).
 
 ## Useful Commands
 - List site files:

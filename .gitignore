@@ -2,6 +2,10 @@
 Thumbs.db
 *.swp
 *.tmp
+.env
+.env.*
+.secrets
+.secrets.*
 status/metrics.json
 node_modules/
 playwright-report/
