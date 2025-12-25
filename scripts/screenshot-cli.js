@@ -10,7 +10,7 @@ const baseUrl = baseUrlFlag ? baseUrlFlag.split('=')[1] : 'https://asharahmed.co
 const outputDirFlag = args.find(arg => arg.startsWith('--out-dir='));
 const outputDir = outputDirFlag ? outputDirFlag.split('=')[1] : path.resolve('assets/screenshots');
 const windowSizeFlag = args.find(arg => arg.startsWith('--window-size='));
-const windowSize = windowSizeFlag ? windowSizeFlag.split('=')[1] : '1400,9000';
+const windowSize = windowSizeFlag ? windowSizeFlag.split('=')[1] : '1400,900';
 
 const chromiumPath = process.env.CHROMIUM_BIN || chromium.executablePath();
 
