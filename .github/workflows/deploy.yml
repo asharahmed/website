@@ -245,14 +245,14 @@ jobs:
             --exclude=.stylelintignore \
             --exclude=.gitignore \
             --exclude=AGENTS.md \
-            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" ./ "${PROD_USER}@${PROD_HOST}:/home/ubuntu/website/"
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts" ./ "${PROD_USER}@${PROD_HOST}:/home/ubuntu/website/"
 
       - name: Deploy to prod web root
         env:
           PROD_HOST: 159.203.35.5
           PROD_USER: ubuntu
         run: |
-          ssh -i ~/.ssh/deploy_key "${PROD_USER}@${PROD_HOST}" "sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "sudo /usr/bin/rsync -a --delete --exclude '.git' --exclude '.github' --exclude 'scripts' --exclude 'status/metrics.json' /home/ubuntu/website/ /var/www/html/"
 
       - name: Post-deploy uptime check (prod)
         env:
