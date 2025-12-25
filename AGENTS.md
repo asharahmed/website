@@ -9,6 +9,22 @@ Detailed guidance for working in this environment.
 - A status portal lives at `/status` and pulls host metrics.
 - Deployments are gated to the `beta` branch; push to `beta` to trigger the GitHub Actions deploy.
 - `main` auto-merges into `beta` (beta wins conflicts) to keep beta updated without blocking on conflicts.
+- Beta environment: `beta.aahmed.ca`. Production environment: `asharahmed.com`.
+
+## Repository Layout
+- Root HTML: `/home/ubuntu/website/index.html`
+- Shared styles and scripts: `/home/ubuntu/website/shared.css`, `/home/ubuntu/website/shared.js`
+- Home page styles and scripts: `/home/ubuntu/website/styles.css`, `/home/ubuntu/website/main.js`
+- Status page:
+  - `/home/ubuntu/website/status/index.html`
+  - `/home/ubuntu/website/status/status.css`
+  - `/home/ubuntu/website/status/status.js`
+- Ops tooling and service setup:
+  - `/home/ubuntu/website/ops/install.sh`
+  - `/home/ubuntu/website/ops/systemd/status-metrics.timer`
+  - `/home/ubuntu/website/ops/systemd/status-metrics.service`
+  - `/home/ubuntu/website/ops/nginx/default.conf`
+- CI/CD definitions: `/home/ubuntu/website/.github/workflows/`
 
 ## Key Paths
 - Document root: `/var/www/html`
@@ -36,6 +52,10 @@ Detailed guidance for working in this environment.
   - Typing animation
   - IntersectionObserver-based animations
 - Status portal under `/status` with system and service health metrics.
+- `shared.js` applies global behaviors:
+  - Page transitions
+  - Prefetch on hover
+  - Adds `is-prod` class based on hostname for prod-only styling
 
 ## Status Portal
 - UI endpoint: `/status`
@@ -47,6 +67,10 @@ Detailed guidance for working in this environment.
   - `/etc/systemd/system/status-metrics.timer` (10-second interval)
 - Service health tracked in the UI: nginx, ssh, docker, status-metrics timer.
 - Disk usage uses a ring gauge; disk I/O uses a sparkline.
+- Metrics flow:
+  - `/usr/local/bin/status-metrics.sh` writes `/var/www/html/status/metrics.json`.
+  - `/status/status.js` polls and renders data.
+  - `scripts/health-check.sh` validates JSON payload and key presence.
 
 ## Agent Setup Checklist
 Use this to configure a new server from the repo:
@@ -67,6 +91,22 @@ location = /status/nginx {
    - `systemctl status status-metrics.timer`
 5) Open `/status` and confirm metrics + service pills update every 10 seconds.
 
+## Branching and Deployments
+- `main` is the primary development branch.
+- `beta` is the deployment branch; CI deploys run only on `beta` pushes.
+- `main` auto-merges into `beta` via workflow `.github/workflows/sync-beta.yml`.
+- Deployment workflow: `.github/workflows/deploy.yml` (beta-only).
+
+## CI/CD Workflow Summary
+- Lint jobs: HTML (`htmlhint`), CSS (`stylelint`), and vibe (`vibechck`).
+- Tests: Playwright E2E plus link checks.
+- Cache: npm + Playwright browsers for faster runs.
+- Deploy flow (beta):
+  - Sync repo to `/home/ubuntu/website` on the beta host.
+  - Rsync to `/var/www/html` (excludes `.github`, `tests`, `node_modules`, `ops`).
+  - Post-deploy uptime and health checks.
+- PRs run a dry-run rsync to validate deploy diff.
+
 ### Hybrid Docker Option
 If running the static site in a container:
 1) Run the host install first:
@@ -84,11 +124,14 @@ If running the static site in a container:
 - Preserve existing formatting and indentation style.
 - Prefer surgical edits; avoid rewriting large blocks unless required.
 - Commit messages must include a `Changelog:` footer in the description body with 1-3 short bullets.
+- Avoid adding new dependencies unless explicitly requested.
+- If editing CSS for navigation or banners, verify both light and dark themes.
 
 ## Permissions
 - Files under `/var/www/html` are owned by root and require `sudo` to modify.
 - Read access is available without escalation; writes typically require `sudo`.
 - Prefer syncing from the repo to `/var/www/html` with `sudo rsync -a`.
+- On servers, `ubuntu` may have limited sudo; validate before running system commands.
 
 ## Validation
 - Manual browser verification is the primary check.
@@ -101,17 +144,22 @@ If running the static site in a container:
   - Status portal updates metrics and service pills every 10 seconds.
 - If Nginx configuration is edited, run:
   - `sudo nginx -t`
+- If status metrics fail:
+  - Confirm `/var/www/html/status/metrics.json` exists and is non-empty.
+  - Check the systemd timer and service logs.
 
 ## Nginx Context
 - Default config path: `/etc/nginx/sites-available/default`.
 - Enabled site symlink: `/etc/nginx/sites-enabled/default`.
 - Current server is set to serve from `/var/www/html` over HTTPS.
+- Status stub endpoint should be defined at `/status/nginx`.
 
 ## Security / Hardening (Code-Level)
 - External links should include `rel="noopener noreferrer"` when `target="_blank"` is used.
 - For JS `window.open`, include `noopener` and set `win.opener = null`.
 - Favor strict referrer policy in HTML head:
   - `<meta name="referrer" content="strict-origin-when-cross-origin">`
+- Avoid inline scripts; use existing JS files instead.
 
 ## Accessibility Guidelines
 - Ensure all interactive elements have appropriate `aria-*` attributes.
@@ -127,6 +175,7 @@ If running the static site in a container:
 - Avoid heavy JS changes; animations should respect `prefers-reduced-motion`.
 - Use lazy loading for non-critical images where possible.
 - Keep assets reasonably compressed; large images should be optimized.
+- Prefer CSS-only tweaks before adding JS for layout fixes.
 
 ## Content Conventions
 - Dates are in short format (e.g., "Jan 2023 - Present").
@@ -138,6 +187,7 @@ If running the static site in a container:
 - Do: update Open Graph/Twitter meta if main branding changes.
 - Do not: add new dependencies or frameworks without explicit request.
 - Do not: remove the default Nginx file unless asked.
+- Do not: change deploy hosts or secrets without explicit request.
 
 ## Useful Commands
 - List site files:
@@ -148,3 +198,7 @@ If running the static site in a container:
   - `sudo nginx -t`
 - Check status metrics timer:
   - `systemctl status status-metrics.timer`
+- Generate a metrics snapshot manually:
+  - `sudo /usr/local/bin/status-metrics.sh`
+- Run the repo health check locally on a server:
+  - `./scripts/health-check.sh`
