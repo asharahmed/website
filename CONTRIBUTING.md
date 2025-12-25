@@ -14,6 +14,7 @@ Thanks for improving the site. This repo is a static site with lightweight tooli
 ## Commit and Push
 - Commits must include a `Changelog:` footer with 1-3 bullets.
 - Pre-commit runs lint + links. Pre-push runs E2E tests.
+- Pre-push auto-skips E2E if Playwright system deps are missing.
 - Skip hooks if needed:
   - `SKIP_HOOKS=1 git commit ...`
   - `SKIP_E2E=1 git push ...`

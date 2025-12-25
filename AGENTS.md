@@ -213,6 +213,7 @@ If running the static site in a container:
   - `npm run hooks:install`
 - Quick local checks:
   - `npm run verify:quick`
+- Pre-push skips E2E if Playwright system dependencies are missing.
 - Skip hooks temporarily:
   - `SKIP_HOOKS=1 git commit ...`
   - `SKIP_E2E=1 git push ...`
