@@ -377,8 +377,9 @@
             window.addEventListener("deviceorientation", handleOrientation, true);
           }
         })
-        .catch(() => {
+        .catch(error => {
           state.orientationEnabled = false;
+          console.error("Device orientation permission failed:", error);
         });
     } else {
       window.addEventListener("deviceorientation", handleOrientation, true);
