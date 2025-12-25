@@ -40,7 +40,7 @@ const run = async () => {
       ? baseUrl
       : `file://${path.resolve('/tmp/site-screenshot/index.html')}`;
     const statusUrl = mode === 'live'
-      ? `${baseUrl.replace(/\\/$/, '')}/status/`
+      ? `${baseUrl.replace(/\/$/, '')}/status/`
       : `file://${path.resolve('/tmp/site-screenshot/status/index.html')}`;
 
     await capture(page, homeUrl, 'header', path.join(outputDir, 'home.png'));
