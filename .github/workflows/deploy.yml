@@ -277,5 +277,5 @@ jobs:
           PROD_HOST: 159.203.35.5
           PROD_USER: ubuntu
         run: |
-          ssh -i ~/.ssh/deploy_key "${PROD_USER}@${PROD_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
-          ssh -i ~/.ssh/deploy_key "${PROD_USER}@${PROD_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
+          ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && cd /home/ubuntu/website && ./scripts/health-check.sh" || \
+          ssh -i ~/.ssh/prod_deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts "${PROD_USER}@${PROD_HOST}" "hostname && ls -l /var/www/html/status/metrics.json && sudo systemctl status status-metrics.timer status-metrics.service --no-pager"
