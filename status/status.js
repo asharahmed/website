@@ -1,6 +1,7 @@
 const statusPill = document.getElementById("overall-status");
 const statusLabel = document.getElementById("overall-label");
 const statusUpdated = document.getElementById("status-updated");
+const statusEnv = document.getElementById("status-env");
 const statusAlert = document.getElementById("status-alert");
 const refreshButton = document.getElementById("refresh-now");
 
@@ -526,4 +527,17 @@ if (poller) {
       checkStatus();
     });
   }
+}
+
+if (statusEnv) {
+  const host = window.location.hostname.toLowerCase();
+  let label = "Environment: --";
+  if (host === "beta.aahmed.ca") {
+    label = "Environment: Beta";
+  } else if (host === "asharahmed.com" || host === "www.asharahmed.com") {
+    label = "Environment: Production";
+  } else if (host) {
+    label = `Environment: ${host}`;
+  }
+  statusEnv.textContent = label;
 }
