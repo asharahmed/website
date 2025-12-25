@@ -2,6 +2,9 @@
   "name": "website",
   "private": true,
   "scripts": {
+    "hooks:install": "bash scripts/install-hooks.sh",
+    "hooks:pre-commit": "bash scripts/hooks/pre-commit",
+    "hooks:pre-push": "bash scripts/hooks/pre-push",
     "lint:html": "htmlhint \"**/*.html\"",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:vibe": "vibechck --module=laziness,security,architecture --severity=high,medium",

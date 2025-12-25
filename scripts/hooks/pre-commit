@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "${SKIP_HOOKS:-}" = "1" ]; then
+  exit 0
+fi
+
+if [ ! -f package.json ]; then
+  exit 0
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "pre-commit: npm not found; skipping."
+  exit 0
+fi
+
+npm run -s lint:html
+npm run -s lint:css
+npm run -s lint:vibe
+npm run -s test:links
