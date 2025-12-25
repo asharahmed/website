@@ -486,9 +486,14 @@
         .timeline-item {
             position: relative;
             padding-bottom: 35px;
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s ease-out;
+        }
+
+        .js-enabled .timeline-item {
             opacity: 0;
             transform: translateX(-20px);
-            transition: all 0.5s ease-out;
         }
 
         .timeline-item.animate-in { opacity: 1; transform: translateX(0); }
@@ -650,13 +655,18 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
             transition: all var(--transition-speed);
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1;
+            transform: translateY(0);
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             gap: 16px;
+        }
+
+        .js-enabled .education-card {
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .education-card.animate-in { opacity: 1; transform: translateY(0); }
@@ -734,11 +744,16 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
             transition: all var(--transition-speed);
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1;
+            transform: translateY(0);
             display: flex;
             align-items: center;
             gap: 14px;
+        }
+
+        .js-enabled .cert-card {
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .cert-card.animate-in { opacity: 1; transform: translateY(0); }
@@ -809,6 +824,11 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
             transition: all var(--transition-speed);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .js-enabled .skill-category {
             opacity: 0;
             transform: translateY(20px);
         }
@@ -1018,11 +1038,16 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
             transition: all var(--transition-speed);
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1;
+            transform: translateY(0);
             display: flex;
             gap: 20px;
             align-items: center;
+        }
+
+        .js-enabled .publication-card {
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .publication-card.animate-in { opacity: 1; transform: translateY(0); }

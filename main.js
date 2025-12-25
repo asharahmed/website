@@ -1099,6 +1099,7 @@
     };
 
     const init = () => {
+        document.documentElement.classList.add('js-enabled');
         theme.set(theme.get());
         initMediaListeners();
 
