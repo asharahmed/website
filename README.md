@@ -7,6 +7,9 @@ This repo contains:
 - A `/status` portal with system metrics and service health.
 - Ops assets (systemd units, metrics script, Docker option).
 
+## Screenshot
+![Site preview](assets/og/og-name.png)
+
 ## Step-by-step setup (host install)
 1) Clone the repo on the server.
 2) Run the ops installer:
@@ -85,12 +88,15 @@ To bypass git safety checks during deploy:
 ```
 
 ## GitHub Actions Deploy
-On pushes to `main`, the workflow:
+On pushes:
+- `beta`: deploys to the beta host only.
+- `main`: deploys to production, then attempts a clean merge into `beta`; if clean, deploys beta.
+
+The workflow:
 - Runs linting, link checks, and Playwright smoke tests.
 - Syncs runtime files to the server via rsync (non-runtime files excluded).
 - Runs a lightweight uptime check on `/` and `/status/`.
 - Runs a server-side health check to validate `/var/www/html/status/metrics.json`.
-- Deploys to prod only after beta health checks pass.
 
 Required secrets:
 - `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY_B64` (beta)
