@@ -149,6 +149,7 @@ location = /status/nginx {
 - Lint jobs: HTML (`htmlhint`), CSS (`stylelint`), and vibe (`vibechck`).
 - Tests: Playwright E2E plus link checks.
 - Cache: npm + Playwright browsers for faster runs.
+- Docs-only commits skip deploy jobs (paths-filter gate).
 - Deploy flow (prod):
   - Sync repo to `/home/ubuntu/website` on the prod host.
   - Rsync to `/var/www/html` (excludes `.github`, `tests`, `node_modules`, `ops`).
