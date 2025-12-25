@@ -87,6 +87,8 @@ const state = {
   lastRequests: null,
   lastTimestamp: null,
   lastMetricsAge: null,
+  lastMetricsData: null,
+  lastStubData: null,
   history: {
     cpu: [],
     memory: [],
@@ -98,6 +100,18 @@ const state = {
 
 const MAX_POINTS = 60;
 const IO_CAP_BPS = 100 * 1024 * 1024;
+const FETCH_TIMEOUT_MS = 4500;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
 
 function setStatus(stateLabel, text) {
   if (statusPill) {
@@ -275,7 +289,7 @@ function redrawSparklines(scale) {
 
 async function fetchStubStatus() {
   const started = performance.now();
-  const response = await fetch("/status/nginx", { cache: "no-store" });
+  const response = await fetchWithTimeout("/status/nginx", { cache: "no-store" });
   const elapsed = performance.now() - started;
 
   utils.setText(fields.httpStatus, `${response.status} ${response.statusText || ""}`.trim());
@@ -293,7 +307,7 @@ async function fetchStubStatus() {
 }
 
 async function fetchMetrics() {
-  const response = await fetch("/status/metrics.json", { cache: "no-store" });
+  const response = await fetchWithTimeout("/status/metrics.json", { cache: "no-store" });
   if (!response.ok) {
     throw new Error("metrics unavailable");
   }
@@ -436,6 +450,7 @@ async function checkStatus() {
   if (stubResult.status === "fulfilled") {
     const metrics = stubResult.value;
     stubOk = true;
+    state.lastStubData = metrics;
     utils.setText(fields.active, metrics.active ?? "--");
     utils.setText(fields.reading, metrics.reading ?? "--");
     utils.setText(fields.writing, metrics.writing ?? "--");
@@ -443,23 +458,38 @@ async function checkStatus() {
     utils.setText(fields.requests, metrics.requests ?? "--");
     updateRate(metrics.requests);
   } else {
-    utils.setText(fields.httpStatus, "--");
-    utils.setText(fields.responseTime, "--");
-    utils.setText(fields.serverTime, "--");
-    utils.setText(fields.active, "--");
-    utils.setText(fields.reading, "--");
-    utils.setText(fields.writing, "--");
-    utils.setText(fields.waiting, "--");
-    utils.setText(fields.requests, "--");
-    utils.setText(fields.requestsRate, "--");
+    if (state.lastStubData) {
+      const metrics = state.lastStubData;
+      utils.setText(fields.active, metrics.active ?? "--");
+      utils.setText(fields.reading, metrics.reading ?? "--");
+      utils.setText(fields.writing, metrics.writing ?? "--");
+      utils.setText(fields.waiting, metrics.waiting ?? "--");
+      utils.setText(fields.requests, metrics.requests ?? "--");
+      updateRate(metrics.requests);
+    } else {
+      utils.setText(fields.httpStatus, "--");
+      utils.setText(fields.responseTime, "--");
+      utils.setText(fields.serverTime, "--");
+      utils.setText(fields.active, "--");
+      utils.setText(fields.reading, "--");
+      utils.setText(fields.writing, "--");
+      utils.setText(fields.waiting, "--");
+      utils.setText(fields.requests, "--");
+      utils.setText(fields.requestsRate, "--");
+    }
   }
 
   if (metricsResult.status === "fulfilled") {
     metricsOk = true;
+    state.lastMetricsData = metricsResult.value;
     const updated = updateMetrics(metricsResult.value);
     loadScale = updated.loadScale;
   } else {
-    updateMetrics(null);
+    if (state.lastMetricsData) {
+      updateMetrics(state.lastMetricsData);
+    } else {
+      updateMetrics(null);
+    }
   }
 
   redrawSparklines(loadScale);
