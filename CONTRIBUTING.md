@@ -5,6 +5,7 @@ Thanks for improving the site. This repo is a static site with lightweight tooli
 ## Local Setup
 - Install dependencies: `npm ci`
 - Install git hooks: `npm run hooks:install`
+- Install Playwright system deps (optional): `npm run deps:playwright`
 
 ## Common Commands
 - Quick checks: `npm run verify:quick`
