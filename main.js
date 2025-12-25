@@ -400,6 +400,8 @@
                     color,
                     baseAlpha,
                     linkRange: layer === 0 ? 140 : layer === 1 ? 130 : 110,
+                    flowOffset: Math.random() * Math.PI * 2,
+                    flowStrength: layer === 0 ? 0.004 : layer === 1 ? 0.005 : 0.006,
                     twinkleSpeed: Math.random() * 1.5 + 0.6,
                     twinkleOffset: Math.random() * Math.PI * 2
                 });
@@ -440,28 +442,48 @@
             const t = now / 1000;
             const driftX = Math.sin(t * 0.6) * 0.004;
             const driftY = Math.cos(t * 0.5) * 0.004;
-            const maxSpeed = 1.15;
-            const friction = 0.986;
+            const scrollActive = now < scrollUntil;
+            const maxSpeed = scrollActive ? 0.9 : 1.15;
+            const friction = scrollActive ? 0.975 : 0.986;
+            const centerX = window.innerWidth * 0.5;
+            const centerY = window.innerHeight * 0.5;
             if (pointer.active) {
                 const ease = 1 - Math.pow(0.001, delta);
                 pointer.x += (pointer.targetX - pointer.x) * ease;
                 pointer.y += (pointer.targetY - pointer.y) * ease;
             }
             particles.forEach(p => {
+                const flowX = Math.sin((p.y + t * 60) / 140 + p.flowOffset);
+                const flowY = Math.cos((p.x + t * 50) / 160 - p.flowOffset);
+                p.vx += flowX * p.flowStrength;
+                p.vy += flowY * p.flowStrength;
+
                 if (pointer.active) {
                     const dx = p.x - pointer.x;
                     const dy = p.y - pointer.y;
                     const distSq = dx * dx + dy * dy;
                     if (distSq < 36000 && distSq > 0.01) {
                         const dist = Math.sqrt(distSq);
-                        const force = (1 - dist / 190) * 0.04;
+                        const forceScale = scrollActive ? 0.024 : 0.04;
+                        const force = (1 - dist / 190) * forceScale;
                         const nx = dx / dist;
                         const ny = dy / dist;
                         p.vx += nx * force;
                         p.vy += ny * force;
-                        const swirl = (1 - dist / 190) * 0.05;
+                        const swirlScale = scrollActive ? 0.03 : 0.05;
+                        const swirl = (1 - dist / 190) * swirlScale;
                         p.vx += -ny * swirl;
                         p.vy += nx * swirl;
+                    }
+                } else {
+                    const dx = centerX - p.x;
+                    const dy = centerY - p.y;
+                    const distSq = dx * dx + dy * dy;
+                    if (distSq > 40000) {
+                        const dist = Math.sqrt(distSq);
+                        const pull = Math.min(0.008, dist / 50000);
+                        p.vx += (dx / dist) * pull;
+                        p.vy += (dy / dist) * pull;
                     }
                 }
 
