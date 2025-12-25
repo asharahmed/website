@@ -351,7 +351,7 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(239, 68, 68, 0.12);
+    background: var(--mobile-nav-bg, rgba(239, 68, 68, 0.12));
     backdrop-filter: blur(20px);
     z-index: 1000;
     flex-direction: column;
@@ -361,12 +361,13 @@ header {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s;
+    --mobile-nav-text: #f8fafc;
 }
 
 .mobile-nav.active { display: flex; opacity: 1; visibility: visible; }
 
 .mobile-nav a {
-    color: var(--text-primary);
+    color: var(--mobile-nav-text);
     text-decoration: none;
     font-size: 1.5em;
     font-weight: 600;
@@ -382,8 +383,9 @@ header {
     pointer-events: none;
 }
 
-[data-theme="light"] .mobile-nav a {
-    color: #f8fafc;
+[data-theme="light"] .mobile-nav {
+    background: rgba(255, 255, 255, 0.92);
+    --mobile-nav-text: #1e293b;
 }
 
 @media (max-width: 768px) {
