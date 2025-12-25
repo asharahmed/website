@@ -7,6 +7,7 @@ Detailed guidance for working in this environment.
 - There is no build pipeline, bundler, or package manager in use.
 - Updates are done by editing files directly on disk.
 - A status portal lives at `/status` and pulls host metrics.
+- Deployments are gated to the `beta` branch; push to `beta` to trigger the GitHub Actions deploy.
 
 ## Key Paths
 - Document root: `/var/www/html`
