@@ -1000,7 +1000,7 @@
                 return;
             }
             running = true;
-            animate();
+            animationFrame = window.requestAnimationFrame(animate);
         };
 
         const stop = () => {
