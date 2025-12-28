@@ -365,6 +365,16 @@
             time: 0
         };
 
+        const effects = {
+            ripples: [],
+            shootingStars: [],
+            pulseWave: { active: false, radius: 0, alpha: 0, x: 0, y: 0 },
+            lastPulse: 0,
+            pulseInterval: 8000,
+            lastShootingStar: 0,
+            shootingStarInterval: 3000
+        };
+
         const readColor = (varName, fallback) => {
             const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
             return value || fallback;
@@ -597,6 +607,73 @@
                 if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
                 if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
             });
+
+            if (now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
+                effects.pulseWave = {
+                    active: true,
+                    radius: 0,
+                    alpha: 0.4,
+                    x: centerX,
+                    y: centerY
+                };
+                effects.lastPulse = now;
+            }
+
+            if (effects.pulseWave.active) {
+                effects.pulseWave.radius += 4;
+                effects.pulseWave.alpha *= 0.985;
+                if (effects.pulseWave.alpha < 0.01) {
+                    effects.pulseWave.active = false;
+                }
+
+                particles.forEach(p => {
+                    const dx = p.x - effects.pulseWave.x;
+                    const dy = p.y - effects.pulseWave.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const waveRadius = effects.pulseWave.radius;
+                    if (Math.abs(dist - waveRadius) < 40) {
+                        const force = 0.03 * effects.pulseWave.alpha;
+                        p.vx += (dx / dist) * force;
+                        p.vy += (dy / dist) * force;
+                    }
+                });
+            }
+
+            if (now - effects.lastShootingStar > effects.shootingStarInterval && qualityLevel === 2) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 8 + Math.random() * 6;
+                effects.shootingStars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight * 0.5,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed + 2,
+                    life: 1,
+                    tail: []
+                });
+                effects.lastShootingStar = now;
+                effects.shootingStarInterval = 2000 + Math.random() * 4000;
+            }
+
+            effects.shootingStars = effects.shootingStars.filter(star => {
+                star.tail.unshift({ x: star.x, y: star.y });
+                if (star.tail.length > 12) star.tail.pop();
+                star.x += star.vx;
+                star.y += star.vy;
+                star.vy += 0.05;
+                star.life -= 0.015;
+                return star.life > 0 && star.x > -50 && star.x < window.innerWidth + 50 && star.y < window.innerHeight + 50;
+            });
+
+            effects.ripples = effects.ripples.filter(ripple => {
+                ripple.radius += 3;
+                ripple.alpha *= 0.96;
+                return ripple.alpha > 0.01;
+            });
+        };
+
+        const createRipple = (x, y) => {
+            effects.ripples.push({ x, y, radius: 10, alpha: 0.5 });
+            if (effects.ripples.length > 5) effects.ripples.shift();
         };
 
         const renderNebula = (now) => {
@@ -621,10 +698,96 @@
             });
         };
 
+        const renderEffects = () => {
+            if (effects.pulseWave.active && qualityLevel >= 1) {
+                const { x, y, radius, alpha } = effects.pulseWave;
+                const rgb = palette.primaryRgb;
+                ctx.globalAlpha = alpha * 0.6;
+                ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (qualityLevel === 2) {
+                    ctx.globalAlpha = alpha * 0.2;
+                    ctx.lineWidth = 8;
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            effects.ripples.forEach(ripple => {
+                const rgb = palette.secondaryRgb;
+                ctx.globalAlpha = ripple.alpha * 0.8;
+                ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${ripple.alpha})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (qualityLevel === 2) {
+                    ctx.globalAlpha = ripple.alpha * 0.3;
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+
+            effects.shootingStars.forEach(star => {
+                if (star.tail.length < 2) return;
+
+                ctx.lineCap = 'round';
+                for (let i = 0; i < star.tail.length - 1; i++) {
+                    const a = star.tail[i];
+                    const b = star.tail[i + 1];
+                    const progress = 1 - i / star.tail.length;
+                    const alpha = progress * star.life * 0.8;
+                    const width = progress * 3;
+
+                    ctx.globalAlpha = alpha * 0.5;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.lineWidth = width + 2;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+
+                    ctx.globalAlpha = alpha;
+                    const rgb = palette.secondaryRgb;
+                    ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+                    ctx.lineWidth = width;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+
+                ctx.globalAlpha = star.life;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                const glow = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 8);
+                glow.addColorStop(0, `rgba(255, 255, 255, ${star.life * 0.6})`);
+                glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, 8, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.globalAlpha = 1;
+        };
+
         const renderParticles = (now, lowQuality) => {
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             renderNebula(now);
+            if (!lowQuality) renderEffects();
 
             const t = now / 1000;
 
@@ -919,17 +1082,30 @@
             if (burstTimer) {
                 window.clearTimeout(burstTimer);
             }
+
+            createRipple(event.clientX, event.clientY);
+
+            const burstRadius = 280;
+            const burstForce = 0.5;
             particles.forEach(p => {
                 const dx = p.x - event.clientX;
                 const dy = p.y - event.clientY;
                 const distSq = dx * dx + dy * dy;
-                if (distSq < 65000 && distSq > 1) {
+                if (distSq < burstRadius * burstRadius && distSq > 1) {
                     const dist = Math.sqrt(distSq);
-                    const force = (1 - dist / 255) * 0.35;
+                    const strength = 1 - dist / burstRadius;
+                    const force = strength * strength * burstForce;
                     p.vx += (dx / dist) * force;
                     p.vy += (dy / dist) * force;
+
+                    if (qualityLevel === 2 && strength > 0.5) {
+                        const spin = strength * 0.2;
+                        p.vx += -dy / dist * spin;
+                        p.vy += dx / dist * spin;
+                    }
                 }
             });
+
             burstTimer = window.setTimeout(() => {
                 burstTimer = null;
             }, 320);
