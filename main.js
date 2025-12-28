@@ -606,6 +606,12 @@
                 p.y += p.vy * delta * p.speed;
                 if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
                 if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
+                if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) {
+                    p.x = Math.random() * window.innerWidth;
+                    p.y = Math.random() * window.innerHeight;
+                    p.vx = 0;
+                    p.vy = 0;
+                }
             });
 
             if (now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
@@ -631,7 +637,7 @@
                     const dy = p.y - effects.pulseWave.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     const waveRadius = effects.pulseWave.radius;
-                    if (Math.abs(dist - waveRadius) < 40) {
+                    if (dist > 0.001 && Math.abs(dist - waveRadius) < 40) {
                         const force = 0.03 * effects.pulseWave.alpha;
                         p.vx += (dx / dist) * force;
                         p.vy += (dy / dist) * force;
