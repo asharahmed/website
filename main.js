@@ -34,6 +34,22 @@
     };
 
     const siteUtils = window.SiteUtils || {};
+    const isStatusPage = () => document.body && document.body.classList.contains('status-page');
+    const shouldInitParticles = () => {
+        if (isStatusPage()) {
+            return false;
+        }
+        if (media.reducedMotion.matches) {
+            return false;
+        }
+        if (navigator.connection && navigator.connection.saveData) {
+            return false;
+        }
+        if (navigator.deviceMemory && navigator.deviceMemory <= 4) {
+            return false;
+        }
+        return true;
+    };
 
     const state = {
         scrollBehavior: media.reducedMotion.matches ? 'auto' : 'smooth',
@@ -1165,6 +1181,9 @@
     };
 
     const initAnimations = () => {
+        if (isStatusPage()) {
+            return;
+        }
         const animatedItems = qsa('.timeline-item, .education-card, .cert-card, .skill-category, .publication-card');
         const statNumbers = qsa('.stat-number');
 
@@ -1473,6 +1492,9 @@
                 dom.loadingOverlay.classList.add('hidden');
             }
             const startParticles = () => {
+                if (!shouldInitParticles()) {
+                    return;
+                }
                 particleController = initParticles();
             };
             if ('requestIdleCallback' in window) {
