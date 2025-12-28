@@ -285,6 +285,9 @@
   if (!header || !hero || !grid) {
     return;
   }
+  if (document.body?.classList.contains("status-page")) {
+    return;
+  }
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (reduceMotion.matches) {
     return;
