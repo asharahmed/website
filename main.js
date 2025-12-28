@@ -374,6 +374,8 @@
             lastShootingStar: 0,
             shootingStarInterval: 3000
         };
+        const enablePulseWave = false;
+        const enableShootingStars = false;
 
         const readColor = (varName, fallback) => {
             const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
@@ -614,7 +616,7 @@
                 }
             });
 
-            if (now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
+            if (enablePulseWave && now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
                 effects.pulseWave = {
                     active: true,
                     radius: 0,
@@ -625,7 +627,7 @@
                 effects.lastPulse = now;
             }
 
-            if (effects.pulseWave.active) {
+            if (enablePulseWave && effects.pulseWave.active) {
                 effects.pulseWave.radius += 4;
                 effects.pulseWave.alpha *= 0.985;
                 if (effects.pulseWave.alpha < 0.01) {
@@ -645,7 +647,7 @@
                 });
             }
 
-            if (now - effects.lastShootingStar > effects.shootingStarInterval && qualityLevel === 2) {
+            if (enableShootingStars && now - effects.lastShootingStar > effects.shootingStarInterval && qualityLevel === 2) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 8 + Math.random() * 6;
                 effects.shootingStars.push({
@@ -660,7 +662,7 @@
                 effects.shootingStarInterval = 2000 + Math.random() * 4000;
             }
 
-            effects.shootingStars = effects.shootingStars.filter(star => {
+            effects.shootingStars = enableShootingStars ? effects.shootingStars.filter(star => {
                 star.tail.unshift({ x: star.x, y: star.y });
                 if (star.tail.length > 12) star.tail.pop();
                 star.x += star.vx;
@@ -668,7 +670,7 @@
                 star.vy += 0.05;
                 star.life -= 0.015;
                 return star.life > 0 && star.x > -50 && star.x < window.innerWidth + 50 && star.y < window.innerHeight + 50;
-            });
+            }) : [];
 
             effects.ripples = effects.ripples.filter(ripple => {
                 ripple.radius += 3;
@@ -705,7 +707,7 @@
         };
 
         const renderEffects = () => {
-            if (effects.pulseWave.active && qualityLevel >= 1) {
+            if (enablePulseWave && effects.pulseWave.active && qualityLevel >= 1) {
                 const { x, y, radius, alpha } = effects.pulseWave;
                 const rgb = palette.primaryRgb;
                 ctx.globalAlpha = alpha * 0.6;
