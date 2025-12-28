@@ -342,10 +342,10 @@
         let frameCount = 0;
         let lastFpsSample = null;
         let lastQualityChange = 0;
-        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false, velocity: { x: 0, y: 0 } };
         const bounds = { margin: 90, force: 0.00085 };
         const trail = [];
-        const trailMax = 22;
+        const trailMax = 28;
         let burstTimer = null;
         let scrollUntil = 0;
         let frameSkip = false;
@@ -356,9 +356,27 @@
             accentSecondary: '#fb7185'
         };
 
+        const cachedGradients = new Map();
+        let lastWidth = 0;
+        let lastHeight = 0;
+
+        const nebulaState = {
+            blobs: [],
+            time: 0
+        };
+
         const readColor = (varName, fallback) => {
             const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
             return value || fallback;
+        };
+
+        const hexToRgb = hex => {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 148, g: 163, b: 184 };
         };
 
         const syncColors = () => {
@@ -367,6 +385,26 @@
                 accentPrimary: readColor('--accent-primary', palette.accentPrimary),
                 accentSecondary: readColor('--accent-secondary', palette.accentSecondary)
             };
+            palette.mutedRgb = hexToRgb(palette.muted);
+            palette.primaryRgb = hexToRgb(palette.accentPrimary);
+            palette.secondaryRgb = hexToRgb(palette.accentSecondary);
+            cachedGradients.clear();
+        };
+
+        const createNebula = () => {
+            nebulaState.blobs = [];
+            const count = qualityLevel === 0 ? 2 : qualityLevel === 1 ? 3 : 4;
+            for (let i = 0; i < count; i++) {
+                nebulaState.blobs.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    radius: Math.random() * 300 + 200,
+                    vx: (Math.random() - 0.5) * 0.15,
+                    vy: (Math.random() - 0.5) * 0.15,
+                    hueShift: Math.random() * 30 - 15,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
         };
 
         const resizeCanvas = () => {
@@ -376,13 +414,23 @@
             dom.particlesCanvas.style.width = `${window.innerWidth}px`;
             dom.particlesCanvas.style.height = `${window.innerHeight}px`;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            lastWidth = window.innerWidth;
+            lastHeight = window.innerHeight;
+            cachedGradients.clear();
+        };
+
+        const getOrCreateGradient = (key, creator) => {
+            if (!cachedGradients.has(key) || lastWidth !== window.innerWidth || lastHeight !== window.innerHeight) {
+                cachedGradients.set(key, creator());
+            }
+            return cachedGradients.get(key);
         };
 
         const getParticleCount = () => {
-            const baseCount = Math.floor((window.innerWidth * window.innerHeight) / 15000);
-            const capped = Math.min(baseCount, 120);
-            const scaled = window.innerWidth < 768 ? Math.floor(capped * 0.6) : capped;
-            return Math.max(18, Math.floor(scaled * qualityScale));
+            const baseCount = Math.floor((window.innerWidth * window.innerHeight) / 14000);
+            const capped = Math.min(baseCount, 140);
+            const scaled = window.innerWidth < 768 ? Math.floor(capped * 0.55) : capped;
+            return Math.max(20, Math.floor(scaled * qualityScale));
         };
 
         const createParticles = () => {
@@ -390,26 +438,30 @@
             const count = getParticleCount();
             for (let i = 0; i < count; i++) {
                 const layer = Math.floor(Math.random() * 3);
-                const speed = layer === 0 ? 0.6 : layer === 1 ? 0.9 : 1.15;
-                const size = layer === 0 ? Math.random() * 1.6 + 0.6 : layer === 1 ? Math.random() * 1.6 + 0.9 : Math.random() * 1.8 + 1.2;
+                const speed = layer === 0 ? 0.5 : layer === 1 ? 0.85 : 1.1;
+                const size = layer === 0 ? Math.random() * 1.8 + 0.8 : layer === 1 ? Math.random() * 2 + 1.2 : Math.random() * 2.4 + 1.6;
                 const color = layer === 0 ? palette.muted : layer === 1 ? palette.accentSecondary : palette.accentPrimary;
-                const baseAlpha = layer === 0 ? 0.2 : layer === 1 ? 0.32 : 0.45;
-                const rangeBase = layer === 0 ? 140 : layer === 1 ? 130 : 110;
+                const baseAlpha = layer === 0 ? 0.25 : layer === 1 ? 0.4 : 0.55;
+                const rangeBase = layer === 0 ? 150 : layer === 1 ? 135 : 115;
+                const glowSize = layer === 0 ? size * 2.5 : layer === 1 ? size * 3 : size * 3.5;
                 particles.push({
                     x: Math.random() * window.innerWidth,
                     y: Math.random() * window.innerHeight,
-                    vx: (Math.random() - 0.5) * 0.45,
-                    vy: (Math.random() - 0.5) * 0.45,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
                     size,
+                    glowSize,
                     speed,
                     layer,
                     color,
                     baseAlpha,
-                    linkRange: rangeBase * (qualityLevel === 0 ? 0.75 : qualityLevel === 1 ? 0.9 : 1),
+                    linkRange: rangeBase * (qualityLevel === 0 ? 0.7 : qualityLevel === 1 ? 0.85 : 1),
                     flowOffset: Math.random() * Math.PI * 2,
-                    flowStrength: layer === 0 ? 0.004 : layer === 1 ? 0.005 : 0.006,
-                    twinkleSpeed: Math.random() * 1.5 + 0.6,
-                    twinkleOffset: Math.random() * Math.PI * 2
+                    flowStrength: layer === 0 ? 0.003 : layer === 1 ? 0.004 : 0.005,
+                    twinkleSpeed: Math.random() * 1.2 + 0.5,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    pulsePhase: Math.random() * Math.PI * 2,
+                    pulseSpeed: Math.random() * 0.5 + 0.3
                 });
             }
         };
@@ -446,21 +498,40 @@
 
         const stepParticles = (delta, now) => {
             const t = now / 1000;
-            const driftX = Math.sin(t * 0.6) * 0.004;
-            const driftY = Math.cos(t * 0.5) * 0.004;
+            nebulaState.time = t;
+            const driftX = Math.sin(t * 0.5) * 0.003 + Math.sin(t * 0.23) * 0.002;
+            const driftY = Math.cos(t * 0.4) * 0.003 + Math.cos(t * 0.31) * 0.002;
             const scrollActive = now < scrollUntil;
-            const maxSpeed = scrollActive ? 0.9 : 1.15;
-            const friction = scrollActive ? 0.975 : 0.986;
+            const maxSpeed = scrollActive ? 0.85 : 1.1;
+            const friction = scrollActive ? 0.972 : 0.984;
             const centerX = window.innerWidth * 0.5;
             const centerY = window.innerHeight * 0.5;
+
             if (pointer.active) {
-                const ease = 1 - Math.pow(0.001, delta);
+                const ease = 1 - Math.pow(0.0008, delta);
+                const prevX = pointer.x;
+                const prevY = pointer.y;
                 pointer.x += (pointer.targetX - pointer.x) * ease;
                 pointer.y += (pointer.targetY - pointer.y) * ease;
+                pointer.velocity.x = pointer.x - prevX;
+                pointer.velocity.y = pointer.y - prevY;
+            } else {
+                pointer.velocity.x *= 0.95;
+                pointer.velocity.y *= 0.95;
             }
+
+            nebulaState.blobs.forEach(blob => {
+                blob.x += blob.vx + Math.sin(t * 0.3 + blob.phase) * 0.2;
+                blob.y += blob.vy + Math.cos(t * 0.25 + blob.phase) * 0.2;
+                if (blob.x < -blob.radius) blob.x = window.innerWidth + blob.radius;
+                if (blob.x > window.innerWidth + blob.radius) blob.x = -blob.radius;
+                if (blob.y < -blob.radius) blob.y = window.innerHeight + blob.radius;
+                if (blob.y > window.innerHeight + blob.radius) blob.y = -blob.radius;
+            });
+
             particles.forEach(p => {
-                const flowX = Math.sin((p.y + t * 60) / 140 + p.flowOffset);
-                const flowY = Math.cos((p.x + t * 50) / 160 - p.flowOffset);
+                const flowX = Math.sin((p.y + t * 50) / 160 + p.flowOffset) + Math.sin((p.x + t * 30) / 200) * 0.5;
+                const flowY = Math.cos((p.x + t * 40) / 180 - p.flowOffset) + Math.cos((p.y + t * 25) / 220) * 0.5;
                 p.vx += flowX * p.flowStrength;
                 p.vy += flowY * p.flowStrength;
 
@@ -468,26 +539,31 @@
                     const dx = p.x - pointer.x;
                     const dy = p.y - pointer.y;
                     const distSq = dx * dx + dy * dy;
-                    if (distSq < 36000 && distSq > 0.01) {
+                    if (distSq < 50000 && distSq > 0.01) {
                         const dist = Math.sqrt(distSq);
-                        const forceScale = scrollActive ? 0.024 : 0.04;
-                        const force = (1 - dist / 190) * forceScale;
+                        const forceScale = scrollActive ? 0.02 : 0.035;
+                        const force = (1 - dist / 224) * forceScale;
                         const nx = dx / dist;
                         const ny = dy / dist;
                         p.vx += nx * force;
                         p.vy += ny * force;
-                        const swirlScale = scrollActive ? 0.03 : 0.05;
-                        const swirl = (1 - dist / 190) * swirlScale;
+
+                        const swirlScale = scrollActive ? 0.025 : 0.045;
+                        const swirl = (1 - dist / 224) * swirlScale;
                         p.vx += -ny * swirl;
                         p.vy += nx * swirl;
+
+                        const wakeForce = 0.015;
+                        p.vx += pointer.velocity.x * wakeForce * (1 - dist / 224);
+                        p.vy += pointer.velocity.y * wakeForce * (1 - dist / 224);
                     }
                 } else {
                     const dx = centerX - p.x;
                     const dy = centerY - p.y;
                     const distSq = dx * dx + dy * dy;
-                    if (distSq > 40000) {
+                    if (distSq > 35000) {
                         const dist = Math.sqrt(distSq);
-                        const pull = Math.min(0.008, dist / 50000);
+                        const pull = Math.min(0.006, dist / 60000);
                         p.vx += (dx / dist) * pull;
                         p.vy += (dy / dist) * pull;
                     }
@@ -523,16 +599,66 @@
             });
         };
 
+        const renderNebula = (now) => {
+            if (qualityLevel === 0) return;
+
+            const t = nebulaState.time;
+            nebulaState.blobs.forEach((blob, i) => {
+                const breathe = 1 + Math.sin(t * 0.4 + blob.phase) * 0.15;
+                const radius = blob.radius * breathe;
+                const rgb = i % 2 === 0 ? palette.primaryRgb : palette.secondaryRgb;
+                const alpha = qualityLevel === 2 ? 0.04 : 0.025;
+
+                const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, radius);
+                gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
+                gradient.addColorStop(0.4, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.5})`);
+                gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(blob.x, blob.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        };
+
         const renderParticles = (now, lowQuality) => {
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+            renderNebula(now);
+
+            const t = now / 1000;
+
             particles.forEach(p => {
-                const twinkle = 0.75 + Math.sin(now / 1000 * p.twinkleSpeed + p.twinkleOffset) * 0.25;
-                ctx.globalAlpha = p.baseAlpha * twinkle;
+                const twinkle = 0.7 + Math.sin(t * p.twinkleSpeed + p.twinkleOffset) * 0.3;
+                const pulse = 1 + Math.sin(t * p.pulseSpeed + p.pulsePhase) * 0.15;
+                const alpha = p.baseAlpha * twinkle;
+                const currentSize = p.size * pulse;
+
+                if (!lowQuality && qualityLevel >= 1) {
+                    const rgb = p.layer === 0 ? palette.mutedRgb : p.layer === 1 ? palette.secondaryRgb : palette.primaryRgb;
+                    const glowGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.glowSize * pulse);
+                    glowGradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.6})`);
+                    glowGradient.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.2})`);
+                    glowGradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+                    ctx.fillStyle = glowGradient;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.glowSize * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.globalAlpha = alpha;
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
                 ctx.fill();
+
+                if (!lowQuality && qualityLevel === 2 && p.layer === 2) {
+                    ctx.globalAlpha = alpha * 0.8;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(p.x - currentSize * 0.25, p.y - currentSize * 0.25, currentSize * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             });
 
             if (lowQuality) {
@@ -540,21 +666,25 @@
                 return;
             }
 
-            const lineGradient = ctx.createLinearGradient(0, 0, window.innerWidth, window.innerHeight);
-            lineGradient.addColorStop(0, palette.accentSecondary);
-            lineGradient.addColorStop(1, palette.accentPrimary);
-            ctx.strokeStyle = lineGradient;
-            ctx.lineWidth = 1;
+            const lineGradient = getOrCreateGradient('mainLine', () => {
+                const grad = ctx.createLinearGradient(0, 0, window.innerWidth, window.innerHeight);
+                grad.addColorStop(0, palette.accentSecondary);
+                grad.addColorStop(0.5, palette.accentPrimary);
+                grad.addColorStop(1, palette.accentSecondary);
+                return grad;
+            });
+
             resetGrid();
             particles.forEach((p, index) => addToGrid(p, index));
             const stride = qualityLevel === 2 ? 1 : 2;
+
+            ctx.lineCap = 'round';
+
             for (let i = 0; i < particles.length; i += stride) {
                 const p = particles[i];
                 const neighbors = getNeighborIndices(p);
                 neighbors.forEach(j => {
-                    if (j <= i) {
-                        return;
-                    }
+                    if (j <= i) return;
                     const other = particles[j];
                     const dx = p.x - other.x;
                     const dy = p.y - other.y;
@@ -562,27 +692,71 @@
                     const distSq = dx * dx + dy * dy;
                     if (distSq < range * range) {
                         const dist = Math.sqrt(distSq);
-                        ctx.globalAlpha = (1 - dist / range) * (qualityLevel === 2 ? 0.35 : 0.24);
+                        const strength = 1 - dist / range;
+                        const alpha = strength * (qualityLevel === 2 ? 0.4 : 0.28);
+                        const lineWidth = 0.5 + strength * 1.5;
+
+                        ctx.globalAlpha = alpha;
+                        ctx.strokeStyle = lineGradient;
+                        ctx.lineWidth = lineWidth;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(other.x, other.y);
                         ctx.stroke();
+
+                        if (qualityLevel === 2 && strength > 0.6) {
+                            const rgb = palette.primaryRgb;
+                            ctx.globalAlpha = alpha * 0.3;
+                            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
+                            ctx.lineWidth = lineWidth + 2;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(other.x, other.y);
+                            ctx.stroke();
+                        }
                     }
                 });
             }
 
-            if (qualityLevel > 0 && trail.length > 1) {
-                ctx.lineWidth = 2;
+            if (qualityLevel > 0 && trail.length > 2) {
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
                 for (let i = 0; i < trail.length - 1; i++) {
                     const a = trail[i];
                     const b = trail[i + 1];
-                    const alpha = i / trail.length;
-                    ctx.globalAlpha = alpha * 0.35;
-                    ctx.strokeStyle = palette.accentSecondary;
+                    const progress = i / trail.length;
+                    const alpha = progress * 0.5;
+                    const width = 1 + progress * 3;
+
+                    const rgb = palette.secondaryRgb;
+                    ctx.globalAlpha = alpha * 0.4;
+                    ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`;
+                    ctx.lineWidth = width + 4;
                     ctx.beginPath();
                     ctx.moveTo(a.x, a.y);
                     ctx.lineTo(b.x, b.y);
                     ctx.stroke();
+
+                    ctx.globalAlpha = alpha;
+                    ctx.strokeStyle = palette.accentSecondary;
+                    ctx.lineWidth = width;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+
+                if (trail.length > 0) {
+                    const last = trail[trail.length - 1];
+                    const rgb = palette.primaryRgb;
+                    const cursorGlow = ctx.createRadialGradient(last.x, last.y, 0, last.x, last.y, 20);
+                    cursorGlow.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`);
+                    cursorGlow.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+                    ctx.fillStyle = cursorGlow;
+                    ctx.beginPath();
+                    ctx.arc(last.x, last.y, 20, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
 
@@ -678,6 +852,7 @@
             resizeCanvas();
             syncColors();
             createParticles();
+            createNebula();
             trail.length = 0;
             if (media.reducedMotion.matches) {
                 renderStatic();
@@ -785,6 +960,7 @@
         syncColors();
         resizeCanvas();
         createParticles();
+        createNebula();
 
         if (media.reducedMotion.matches) {
             renderStatic();
