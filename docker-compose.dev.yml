@@ -1,0 +1,161 @@
+# Local development environment
+# Usage: docker compose -f docker-compose.dev.yml up
+#
+# This serves the site locally with mock metrics, no production deps required.
+# Access at http://localhost:8080
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: website-dev
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/usr/share/nginx/html:ro
+      - ./ops/docker/dev-nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      mock-metrics:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  mock-metrics:
+    image: alpine:latest
+    container_name: mock-metrics-init
+    volumes:
+      - ./status:/status
+    command: |
+      sh -c '
+        cat > /status/metrics.json << EOF
+        {
+          "timestamp": "'$$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+          "http": {
+            "status": 200,
+            "response_time_ms": 12
+          },
+          "cpu": {
+            "usage_percent": 15.2
+          },
+          "memory": {
+            "total_mb": 8192,
+            "used_mb": 3200,
+            "available_mb": 4992,
+            "usage_percent": 39.1
+          },
+          "swap": {
+            "total_mb": 2048,
+            "used_mb": 128,
+            "usage_percent": 6.3
+          },
+          "disk": {
+            "total_gb": 100,
+            "used_gb": 45,
+            "available_gb": 55,
+            "usage_percent": 45.0,
+            "read_kbps": 150,
+            "write_kbps": 75
+          },
+          "load": {
+            "one": 0.45,
+            "five": 0.38,
+            "fifteen": 0.32
+          },
+          "uptime": {
+            "seconds": 1234567,
+            "formatted": "14d 6h 56m"
+          },
+          "nginx": {
+            "active_connections": 5,
+            "requests_total": 12345,
+            "reading": 1,
+            "writing": 2,
+            "waiting": 2
+          },
+          "services": {
+            "nginx": "active",
+            "ssh": "active",
+            "docker": "active",
+            "status_metrics": "active"
+          }
+        }
+        EOF
+        echo "Mock metrics.json created"
+      '
+
+  # Optional: Live-reload metrics every 10 seconds (keeps container running)
+  metrics-updater:
+    image: alpine:latest
+    container_name: mock-metrics-updater
+    volumes:
+      - ./status:/status
+    depends_on:
+      mock-metrics:
+        condition: service_completed_successfully
+    command: |
+      sh -c '
+        while true; do
+          sleep 10
+          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          CPU=$$(awk "BEGIN {printf \"%.1f\", 10 + rand() * 20}")
+          MEM=$$(awk "BEGIN {printf \"%.1f\", 35 + rand() * 15}")
+          LOAD=$$(awk "BEGIN {printf \"%.2f\", 0.3 + rand() * 0.4}")
+          cat > /status/metrics.json << EOF
+        {
+          "timestamp": "$${TIMESTAMP}",
+          "http": {
+            "status": 200,
+            "response_time_ms": $$(awk "BEGIN {printf \"%d\", 8 + rand() * 15}")
+          },
+          "cpu": {
+            "usage_percent": $${CPU}
+          },
+          "memory": {
+            "total_mb": 8192,
+            "used_mb": $$(awk "BEGIN {printf \"%d\", 2800 + rand() * 800}"),
+            "available_mb": $$(awk "BEGIN {printf \"%d\", 4500 + rand() * 800}"),
+            "usage_percent": $${MEM}
+          },
+          "swap": {
+            "total_mb": 2048,
+            "used_mb": $$(awk "BEGIN {printf \"%d\", 100 + rand() * 100}"),
+            "usage_percent": $$(awk "BEGIN {printf \"%.1f\", 5 + rand() * 5}")
+          },
+          "disk": {
+            "total_gb": 100,
+            "used_gb": 45,
+            "available_gb": 55,
+            "usage_percent": 45.0,
+            "read_kbps": $$(awk "BEGIN {printf \"%d\", 100 + rand() * 200}"),
+            "write_kbps": $$(awk "BEGIN {printf \"%d\", 50 + rand() * 100}")
+          },
+          "load": {
+            "one": $${LOAD},
+            "five": $$(awk "BEGIN {printf \"%.2f\", 0.3 + rand() * 0.3}"),
+            "fifteen": $$(awk "BEGIN {printf \"%.2f\", 0.25 + rand() * 0.2}")
+          },
+          "uptime": {
+            "seconds": 1234567,
+            "formatted": "14d 6h 56m"
+          },
+          "nginx": {
+            "active_connections": $$(awk "BEGIN {printf \"%d\", 3 + rand() * 10}"),
+            "requests_total": 12345,
+            "reading": $$(awk "BEGIN {printf \"%d\", rand() * 3}"),
+            "writing": $$(awk "BEGIN {printf \"%d\", 1 + rand() * 3}"),
+            "waiting": $$(awk "BEGIN {printf \"%d\", 1 + rand() * 5}")
+          },
+          "services": {
+            "nginx": "active",
+            "ssh": "active",
+            "docker": "active",
+            "status_metrics": "active"
+          }
+        }
+        EOF
+        done
+      '
+    profiles:
+      - live

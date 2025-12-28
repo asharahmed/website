@@ -118,7 +118,36 @@ Use GitHub branch protection on `main` with required status checks for:
 
 This prevents untested changes from reaching deploy.
 
-## Local Tests
+## Local Development
+
+### Quick Start (Docker)
+
+Run the site locally with mock metrics (no production dependencies required):
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
+Access at http://localhost:8080
+
+For live-updating mock metrics (simulates real server behavior):
+
+```bash
+docker compose -f docker-compose.dev.yml --profile live up
+```
+
+### Quick Start (Python)
+
+Serve files directly without Docker:
+
+```bash
+python3 -m http.server 8080
+```
+
+Note: Status page metrics won't update without the metrics generator.
+
+### Running Tests
+
 Install dev tooling:
 
 ```bash
