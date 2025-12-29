@@ -4,42 +4,33 @@ const { chromium } = require('@playwright/test');
 const { execFileSync } = require('node:child_process');
 const path = require('path');
 
-const args = process.argv.slice(2);
-const baseUrlFlag = args.find(arg => arg.startsWith('--base-url='));
-const baseUrl = baseUrlFlag ? baseUrlFlag.split('=')[1] : 'https://asharahmed.com';
-const outputDirFlag = args.find(arg => arg.startsWith('--out-dir='));
-const outputDir = outputDirFlag ? outputDirFlag.split('=')[1] : path.resolve('assets/screenshots');
-const windowSizeFlag = args.find(arg => arg.startsWith('--window-size='));
-const windowSize = windowSizeFlag ? windowSizeFlag.split('=')[1] : '1280,720';
-const resizeFlag = args.find(arg => arg.startsWith('--resize='));
-const resize = resizeFlag ? resizeFlag.split('=')[1] : '1280x720';
+const parseArgument = (argumentList, prefix, fallback) => {
+  const match = argumentList.find(item => item.startsWith(prefix));
+  return match ? match.split('=')[1] : fallback;
+};
 
-const chromiumPath = process.env.CHROMIUM_BIN || chromium.executablePath();
+const cliArguments = process.argv.slice(2);
+const baseUrl = parseArgument(cliArguments, '--base-url=', 'https://asharahmed.com');
+const outputDirectory = parseArgument(cliArguments, '--out-dir=', path.resolve('assets/screenshots'));
+const browserWindowSize = parseArgument(cliArguments, '--window-size=', '1280,720');
+const targetDimensions = parseArgument(cliArguments, '--resize=', '1280x720');
+const browserExecutable = process.env.CHROMIUM_BIN || chromium.executablePath();
 
-const resizeImage = outputPath => {
-  if (!resize) {
-    return;
-  }
-  const [width, height] = resize.split('x').map(Number);
-  if (!Number.isFinite(width) || !Number.isFinite(height)) {
-    return;
-  }
-  const script = `
-from PIL import Image
-path = r"${outputPath}"
-img = Image.open(path)
-img = img.resize((${width}, ${height}), Image.LANCZOS)
-img.save(path)
-`;
+const resizeOutputImage = (imagePath, dimensions) => {
+  if (!dimensions) return;
+  const [targetWidth, targetHeight] = dimensions.split('x').map(Number);
+  if (!Number.isFinite(targetWidth) || !Number.isFinite(targetHeight)) return;
+
   try {
-    execFileSync('python3', ['-c', script], { stdio: 'ignore' });
+    const resizeScript = path.join(__dirname, 'resize-image.py');
+    execFileSync('python3', [resizeScript, imagePath, String(targetWidth), String(targetHeight)], { stdio: 'ignore' });
   } catch (error) {
     console.warn('screenshot: resize skipped (Pillow missing).');
   }
 };
 
-const runShot = (url, outputPath) => {
-  execFileSync(chromiumPath, [
+const capturePageScreenshot = (pageUrl, outputPath) => {
+  execFileSync(browserExecutable, [
     '--headless=new',
     '--disable-gpu',
     '--hide-scrollbars',
@@ -48,18 +39,16 @@ const runShot = (url, outputPath) => {
     '--disable-setuid-sandbox',
     '--force-device-scale-factor=1',
     '--run-all-compositor-stages-before-draw',
-    `--window-size=${windowSize}`,
+    `--window-size=${browserWindowSize}`,
     '--virtual-time-budget=12000',
     `--screenshot=${outputPath}`,
-    url
+    pageUrl
   ], { stdio: 'inherit' });
-  resizeImage(outputPath);
+  resizeOutputImage(outputPath, targetDimensions);
 };
 
-const normalizeUrl = url => url.replace(/\/$/, '');
+const stripTrailingSlash = (urlString) => urlString.replace(/\/$/, '');
+const siteBaseUrl = stripTrailingSlash(baseUrl);
 
-const homeUrl = `${normalizeUrl(baseUrl)}/?screenshot=1`;
-const statusUrl = `${normalizeUrl(baseUrl)}/status/?screenshot=1`;
-
-runShot(homeUrl, path.join(outputDir, 'home.png'));
-runShot(statusUrl, path.join(outputDir, 'status.png'));
+capturePageScreenshot(`${siteBaseUrl}/?screenshot=1`, path.join(outputDirectory, 'home.png'));
+capturePageScreenshot(`${siteBaseUrl}/status/?screenshot=1`, path.join(outputDirectory, 'status.png'));

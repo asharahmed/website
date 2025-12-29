@@ -94,7 +94,7 @@ body.is-prod {
     display: none;
     opacity: 0;
     visibility: hidden;
-    transition: all var(--transition-speed);
+    transition: opacity var(--transition-speed), visibility var(--transition-speed);
     width: min(100%, var(--nav-max-width, 920px));
     max-width: calc(100vw - 32px);
 }
@@ -165,7 +165,7 @@ body.is-prod {
     border-radius: 25px;
     font-size: 0.85em;
     font-weight: 500;
-    transition: all var(--transition-speed);
+    transition: color var(--transition-speed), background var(--transition-speed);
     white-space: nowrap;
 }
 
@@ -186,7 +186,7 @@ body.is-prod {
     font-size: 0.75em;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all var(--transition-speed);
+    transition: background var(--transition-speed), color var(--transition-speed);
 }
 
 .nav-cmd:hover {
@@ -248,8 +248,6 @@ header::before {
         linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
     background-size: 60px 60px;
-    will-change: transform;
-    animation: gridFloat 40s linear infinite;
     mask-image: radial-gradient(ellipse at center, black 20%, transparent 65%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 65%);
     opacity: 0.7;
@@ -359,8 +357,7 @@ header::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: fadeInUp 0.8s ease-out 0.2s both, titleShimmer 8s ease-in-out infinite 1s;
-    text-shadow: 0 0 40px rgba(239,68,68,0.3);
-    filter: drop-shadow(0 0 20px rgba(239,68,68,0.2));
+    text-shadow: 0 0 40px rgba(239,68,68,0.3), 0 0 20px rgba(239,68,68,0.2);
 }
 
 @keyframes titleShimmer {
@@ -423,7 +420,7 @@ header::before {
     height: 2px;
     background: var(--text-primary);
     border-radius: 2px;
-    transition: all 0.3s;
+    transition: transform 0.3s, opacity 0.3s;
 }
 
 .mobile-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
@@ -446,7 +443,7 @@ header::before {
     gap: 20px;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s;
+    transition: opacity 0.3s, visibility 0.3s;
     --mobile-nav-text: #f8fafc;
 }
 
@@ -459,7 +456,7 @@ header::before {
     font-weight: 600;
     padding: 10px 30px;
     border-radius: 10px;
-    transition: all 0.3s;
+    transition: background 0.3s, color 0.3s;
 }
 
 .mobile-nav a:hover { background: var(--accent-light); color: var(--accent-primary); }

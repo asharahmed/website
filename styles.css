@@ -110,7 +110,7 @@
             padding-top: 20vh;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.2s;
+            transition: opacity 0.2s, visibility 0.2s;
         }
 
         .command-palette.active {
@@ -225,7 +225,7 @@
             justify-content: center;
             font-size: 1.2em;
             color: var(--text-primary);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
             box-shadow: var(--card-shadow);
         }
 
@@ -274,7 +274,7 @@
             border-radius: 6px;
             font-size: 0.8em;
             color: #e2e8f0;
-            transition: all var(--transition-speed);
+            transition: background var(--transition-speed), transform var(--transition-speed);
         }
 
         .cert-badge:hover {
@@ -313,7 +313,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px;
             font-size: 0.9em;
-            transition: all var(--transition-speed);
+            transition: background var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
         }
 
         button.contact-link {
@@ -371,7 +371,7 @@
             font-weight: 600;
             font-size: 0.95em;
             text-decoration: none;
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
             cursor: pointer;
             border: none;
         }
@@ -514,7 +514,7 @@
             padding-bottom: 35px;
             opacity: 1;
             transform: translateX(0);
-            transition: all 0.5s ease-out;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
 
         .js-enabled .timeline-item {
@@ -533,7 +533,7 @@
             background: var(--accent-primary);
             border: 3px solid var(--bg-primary);
             border-radius: 50%;
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
         }
 
         .timeline-item:hover .timeline-dot {
@@ -547,7 +547,7 @@
             padding: 22px 26px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
         }
 
         .timeline-content:hover {
@@ -638,7 +638,7 @@
             position: relative;
             color: var(--text-secondary);
             font-size: 0.9em;
-            transition: all var(--transition-speed);
+            transition: color var(--transition-speed), padding-left var(--transition-speed);
         }
 
         .timeline-details li::before {
@@ -679,7 +679,7 @@
             padding: 24px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), opacity var(--transition-speed);
             opacity: 1;
             transform: translateY(0);
             position: relative;
@@ -767,7 +767,7 @@
             padding: 18px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), opacity var(--transition-speed);
             opacity: 1;
             transform: translateY(0);
             display: flex;
@@ -846,7 +846,7 @@
             padding: 22px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), opacity var(--transition-speed);
             opacity: 1;
             transform: translateY(0);
         }
@@ -899,7 +899,7 @@
             border-radius: 6px;
             font-size: 0.8em;
             font-weight: 500;
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), border-color var(--transition-speed), background var(--transition-speed);
             border: 1px solid transparent;
         }
 
@@ -925,7 +925,7 @@
             padding: 22px;
             border: 1px solid var(--card-border);
             box-shadow: var(--card-shadow);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
             display: flex;
             flex-direction: column;
             gap: 14px;
@@ -1024,7 +1024,7 @@
             padding: 22px;
             border: 1px solid var(--card-border);
             box-shadow: var(--card-shadow);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
             display: grid;
             gap: 16px;
         }
@@ -1059,7 +1059,7 @@
             padding: 28px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), opacity var(--transition-speed);
             opacity: 1;
             transform: translateY(0);
             display: flex;
@@ -1137,7 +1137,7 @@
             text-align: center;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--card-border);
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
         }
 
         .stat-card:hover {
@@ -1214,7 +1214,7 @@
             font-weight: 600;
             font-size: 0.95em;
             text-decoration: none;
-            transition: all var(--transition-speed);
+            transition: transform var(--transition-speed), background var(--transition-speed);
         }
 
         .contact-btn svg { width: 18px; height: 18px; }
@@ -1292,7 +1292,7 @@
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
-            transition: all var(--transition-speed);
+            transition: opacity var(--transition-speed), visibility var(--transition-speed), transform var(--transition-speed);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1394,7 +1394,7 @@
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.2s;
+            transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
             z-index: 100;
             pointer-events: none;
         }

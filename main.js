@@ -368,16 +368,18 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const target = Number(entry.target.dataset.target || 0);
-                        let current = 0;
-                        const timer = setInterval(() => {
-                            current += target / 30;
-                            if (current >= target) {
-                                entry.target.textContent = target;
-                                clearInterval(timer);
+                        const duration = 1000;
+                        const start = performance.now();
+                        const animate = now => {
+                            const progress = Math.min((now - start) / duration, 1);
+                            entry.target.textContent = Math.floor(target * progress);
+                            if (progress < 1) {
+                                requestAnimationFrame(animate);
                             } else {
-                                entry.target.textContent = Math.floor(current);
+                                entry.target.textContent = target;
                             }
-                        }, 30);
+                        };
+                        requestAnimationFrame(animate);
                         obs.unobserve(entry.target);
                     }
                 });
