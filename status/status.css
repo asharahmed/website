@@ -171,9 +171,11 @@
 .metric-bar span {
     display: block;
     height: 100%;
-    width: 0%;
+    width: 100%;
     background: var(--accent-gradient);
-    transition: width 0.6s ease;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s ease;
 }
 
 .sparkline {

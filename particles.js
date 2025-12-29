@@ -194,17 +194,7 @@
             return neighbors;
         };
 
-        const stepParticles = (delta, now) => {
-            const t = now / 1000;
-            nebulaState.time = t;
-            const driftX = Math.sin(t * 0.5) * 0.003 + Math.sin(t * 0.23) * 0.002;
-            const driftY = Math.cos(t * 0.4) * 0.003 + Math.cos(t * 0.31) * 0.002;
-            const scrollActive = now < scrollUntil;
-            const maxSpeed = scrollActive ? 0.85 : 1.1;
-            const friction = scrollActive ? 0.972 : 0.984;
-            const centerX = window.innerWidth * 0.5;
-            const centerY = window.innerHeight * 0.5;
-
+        const updatePointer = delta => {
             if (pointer.active) {
                 const ease = 1 - Math.pow(0.0008, delta);
                 const prevX = pointer.x;
@@ -217,7 +207,9 @@
                 pointer.velocity.x *= 0.95;
                 pointer.velocity.y *= 0.95;
             }
+        };
 
+        const updateNebulaBlobs = t => {
             nebulaState.blobs.forEach(blob => {
                 blob.x += blob.vx + Math.sin(t * 0.3 + blob.phase) * 0.2;
                 blob.y += blob.vy + Math.cos(t * 0.25 + blob.phase) * 0.2;
@@ -226,6 +218,62 @@
                 if (blob.y < -blob.radius) blob.y = window.innerHeight + blob.radius;
                 if (blob.y > window.innerHeight + blob.radius) blob.y = -blob.radius;
             });
+        };
+
+        const applyPointerForces = (p, scrollActive) => {
+            const dx = p.x - pointer.x;
+            const dy = p.y - pointer.y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < 50000 && distSq > 0.01) {
+                const dist = Math.sqrt(distSq);
+                const forceScale = scrollActive ? 0.02 : 0.035;
+                const force = (1 - dist / 224) * forceScale;
+                const nx = dx / dist;
+                const ny = dy / dist;
+                p.vx += nx * force;
+                p.vy += ny * force;
+
+                const swirlScale = scrollActive ? 0.025 : 0.045;
+                const swirl = (1 - dist / 224) * swirlScale;
+                p.vx += -ny * swirl;
+                p.vy += nx * swirl;
+
+                const wakeForce = 0.015;
+                p.vx += pointer.velocity.x * wakeForce * (1 - dist / 224);
+                p.vy += pointer.velocity.y * wakeForce * (1 - dist / 224);
+            }
+        };
+
+        const applyCenterPull = (p, centerX, centerY) => {
+            const dx = centerX - p.x;
+            const dy = centerY - p.y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq > 35000) {
+                const dist = Math.sqrt(distSq);
+                const pull = Math.min(0.006, dist / 60000);
+                p.vx += (dx / dist) * pull;
+                p.vy += (dy / dist) * pull;
+            }
+        };
+
+        const applyBoundsForce = p => {
+            if (p.x < bounds.margin) {
+                p.vx += (bounds.margin - p.x) * bounds.force;
+            } else if (p.x > window.innerWidth - bounds.margin) {
+                p.vx -= (p.x - (window.innerWidth - bounds.margin)) * bounds.force;
+            }
+            if (p.y < bounds.margin) {
+                p.vy += (bounds.margin - p.y) * bounds.force;
+            } else if (p.y > window.innerHeight - bounds.margin) {
+                p.vy -= (p.y - (window.innerHeight - bounds.margin)) * bounds.force;
+            }
+        };
+
+        const updateParticlePhysics = (delta, t, scrollActive, driftX, driftY) => {
+            const maxSpeed = scrollActive ? 0.85 : 1.1;
+            const friction = scrollActive ? 0.972 : 0.984;
+            const centerX = window.innerWidth * 0.5;
+            const centerY = window.innerHeight * 0.5;
 
             particles.forEach(p => {
                 const flowX = Math.sin((p.y + t * 50) / 160 + p.flowOffset) + Math.sin((p.x + t * 30) / 200) * 0.5;
@@ -234,37 +282,9 @@
                 p.vy += flowY * p.flowStrength;
 
                 if (pointer.active) {
-                    const dx = p.x - pointer.x;
-                    const dy = p.y - pointer.y;
-                    const distSq = dx * dx + dy * dy;
-                    if (distSq < 50000 && distSq > 0.01) {
-                        const dist = Math.sqrt(distSq);
-                        const forceScale = scrollActive ? 0.02 : 0.035;
-                        const force = (1 - dist / 224) * forceScale;
-                        const nx = dx / dist;
-                        const ny = dy / dist;
-                        p.vx += nx * force;
-                        p.vy += ny * force;
-
-                        const swirlScale = scrollActive ? 0.025 : 0.045;
-                        const swirl = (1 - dist / 224) * swirlScale;
-                        p.vx += -ny * swirl;
-                        p.vy += nx * swirl;
-
-                        const wakeForce = 0.015;
-                        p.vx += pointer.velocity.x * wakeForce * (1 - dist / 224);
-                        p.vy += pointer.velocity.y * wakeForce * (1 - dist / 224);
-                    }
+                    applyPointerForces(p, scrollActive);
                 } else {
-                    const dx = centerX - p.x;
-                    const dy = centerY - p.y;
-                    const distSq = dx * dx + dy * dy;
-                    if (distSq > 35000) {
-                        const dist = Math.sqrt(distSq);
-                        const pull = Math.min(0.006, dist / 60000);
-                        p.vx += (dx / dist) * pull;
-                        p.vy += (dy / dist) * pull;
-                    }
+                    applyCenterPull(p, centerX, centerY);
                 }
 
                 p.vx += driftX;
@@ -272,16 +292,7 @@
                 p.vx *= friction;
                 p.vy *= friction;
 
-                if (p.x < bounds.margin) {
-                    p.vx += (bounds.margin - p.x) * bounds.force;
-                } else if (p.x > window.innerWidth - bounds.margin) {
-                    p.vx -= (p.x - (window.innerWidth - bounds.margin)) * bounds.force;
-                }
-                if (p.y < bounds.margin) {
-                    p.vy += (bounds.margin - p.y) * bounds.force;
-                } else if (p.y > window.innerHeight - bounds.margin) {
-                    p.vy -= (p.y - (window.innerHeight - bounds.margin)) * bounds.force;
-                }
+                applyBoundsForce(p);
 
                 const speedSq = p.vx * p.vx + p.vy * p.vy;
                 if (speedSq > maxSpeed * maxSpeed) {
@@ -301,30 +312,30 @@
                     p.vy = 0;
                 }
             });
+        };
 
-            if (enablePulseWave && now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
-                effects.pulseWave = {
-                    active: true,
-                    radius: 0,
-                    alpha: 0.4,
-                    x: centerX,
-                    y: centerY
-                };
+        const updatePulseWave = now => {
+            if (!enablePulseWave) return;
+            const centerX = window.innerWidth * 0.5;
+            const centerY = window.innerHeight * 0.5;
+
+            if (now - effects.lastPulse > effects.pulseInterval && !effects.pulseWave.active && qualityLevel >= 1) {
+                effects.pulseWave = { active: true, radius: 0, alpha: 0.4, x: centerX, y: centerY };
                 effects.lastPulse = now;
             }
 
-            if (enablePulseWave && effects.pulseWave.active) {
+            if (effects.pulseWave.active) {
                 effects.pulseWave.radius += 4;
                 effects.pulseWave.alpha *= 0.985;
                 if (effects.pulseWave.alpha < 0.01) {
                     effects.pulseWave.active = false;
+                    return;
                 }
-
+                const waveRadius = effects.pulseWave.radius;
                 particles.forEach(p => {
                     const dx = p.x - effects.pulseWave.x;
                     const dy = p.y - effects.pulseWave.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    const waveRadius = effects.pulseWave.radius;
                     if (dist > 0.001 && Math.abs(dist - waveRadius) < 40) {
                         const force = 0.03 * effects.pulseWave.alpha;
                         p.vx += (dx / dist) * force;
@@ -332,8 +343,15 @@
                     }
                 });
             }
+        };
 
-            if (enableShootingStars && now - effects.lastShootingStar > effects.shootingStarInterval && qualityLevel === 2) {
+        const updateShootingStars = now => {
+            if (!enableShootingStars) {
+                effects.shootingStars = [];
+                return;
+            }
+
+            if (now - effects.lastShootingStar > effects.shootingStarInterval && qualityLevel === 2) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 8 + Math.random() * 6;
                 effects.shootingStars.push({
@@ -348,7 +366,7 @@
                 effects.shootingStarInterval = 2000 + Math.random() * 4000;
             }
 
-            effects.shootingStars = enableShootingStars ? effects.shootingStars.filter(star => {
+            effects.shootingStars = effects.shootingStars.filter(star => {
                 star.tail.unshift({ x: star.x, y: star.y });
                 if (star.tail.length > 12) star.tail.pop();
                 star.x += star.vx;
@@ -356,13 +374,30 @@
                 star.vy += 0.05;
                 star.life -= 0.015;
                 return star.life > 0 && star.x > -50 && star.x < window.innerWidth + 50 && star.y < window.innerHeight + 50;
-            }) : [];
+            });
+        };
 
+        const updateRipples = () => {
             effects.ripples = effects.ripples.filter(ripple => {
                 ripple.radius += 3;
                 ripple.alpha *= 0.96;
                 return ripple.alpha > 0.01;
             });
+        };
+
+        const stepParticles = (delta, now) => {
+            const t = now / 1000;
+            nebulaState.time = t;
+            const driftX = Math.sin(t * 0.5) * 0.003 + Math.sin(t * 0.23) * 0.002;
+            const driftY = Math.cos(t * 0.4) * 0.003 + Math.cos(t * 0.31) * 0.002;
+            const scrollActive = now < scrollUntil;
+
+            updatePointer(delta);
+            updateNebulaBlobs(t);
+            updateParticlePhysics(delta, t, scrollActive, driftX, driftY);
+            updatePulseWave(now);
+            updateShootingStars(now);
+            updateRipples();
         };
 
         const createRipple = (x, y) => {
@@ -493,14 +528,23 @@
 
                 if (!lowQuality && qualityLevel >= 1) {
                     const rgb = p.layer === 0 ? palette.mutedRgb : p.layer === 1 ? palette.secondaryRgb : palette.primaryRgb;
-                    const glowGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.glowSize * pulse);
-                    glowGradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.6})`);
-                    glowGradient.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.2})`);
-                    glowGradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+                    const glowRadius = p.glowSize * pulse;
+                    const cacheKey = `glow-${p.layer}-${Math.round(glowRadius)}`;
+                    const glowGradient = getOrCreateGradient(cacheKey, () => {
+                        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, glowRadius);
+                        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`);
+                        grad.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`);
+                        grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+                        return grad;
+                    });
+                    ctx.save();
+                    ctx.globalAlpha = alpha;
+                    ctx.translate(p.x, p.y);
                     ctx.fillStyle = glowGradient;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.glowSize * pulse, 0, Math.PI * 2);
+                    ctx.arc(0, 0, glowRadius, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.restore();
                 }
 
                 ctx.globalAlpha = alpha;
