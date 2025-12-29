@@ -1,0 +1,4 @@
+ignoreRules:
+  mixed-naming:
+    - "scripts/**"
+    - "**/screenshot-cli.js"
