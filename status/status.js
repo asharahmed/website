@@ -180,7 +180,7 @@ function setBar(element, value) {
     return;
   }
   const percent = utils.clampPercent(value);
-  element.style.width = `${percent}%`;
+  element.style.transform = `scaleX(${percent / 100})`;
 }
 
 function setDiskRing(value) {
@@ -534,8 +534,10 @@ async function checkStatus() {
   }
 }
 
+let resizeTimeout;
 window.addEventListener("resize", () => {
-  redrawSparklines();
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(redrawSparklines, 150);
 });
 
 const poller = siteUtils.createPoller ? siteUtils.createPoller(checkStatus, 10000) : null;
