@@ -123,12 +123,27 @@
                 <span class="typing-text" id="typingText"></span>
             </div>
 
-            <div class="hero-certs">
-                <span class="cert-badge aws tooltip" data-tooltip="AWS Developer & Solutions Architect"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>AWS x2</span>
-                <span class="cert-badge isc2 tooltip" data-tooltip="(ISC)² Systems Security Certified Professional"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>SSCP (Systems Security)</span>
-                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Cybersecurity Analyst"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>CySA+</span>
-                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Penetration Tester"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>PenTest+</span>
-                <span class="cert-badge csa tooltip" data-tooltip="Cloud Security Alliance Zero-Trust Certificate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>Zero Trust</span>
+            <div class="hero-certs" aria-label="Key certifications">
+                <span class="cert-badge aws tooltip" data-tooltip="AWS Developer & Solutions Architect">
+                    <span class="cert-badge-kicker">AWS</span>
+                    <span class="cert-badge-text">Developer + SA x2</span>
+                </span>
+                <span class="cert-badge isc2 tooltip" data-tooltip="(ISC)² Systems Security Certified Professional">
+                    <span class="cert-badge-kicker">ISC2</span>
+                    <span class="cert-badge-text">SSCP</span>
+                </span>
+                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Cybersecurity Analyst">
+                    <span class="cert-badge-kicker">CompTIA</span>
+                    <span class="cert-badge-text">CySA+</span>
+                </span>
+                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Penetration Tester">
+                    <span class="cert-badge-kicker">CompTIA</span>
+                    <span class="cert-badge-text">PenTest+</span>
+                </span>
+                <span class="cert-badge csa tooltip" data-tooltip="Cloud Security Alliance Zero-Trust Certificate">
+                    <span class="cert-badge-kicker">CSA</span>
+                    <span class="cert-badge-text">Zero Trust</span>
+                </span>
             </div>
 
             <div class="contact-row">
@@ -175,12 +190,12 @@
                                 <span class="timeline-title">Cyber Security Advisor</span>
                                 <span class="timeline-date">Jan 2023 - Present</span>
                             </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-med" aria-label="Medical practice"><img src="/assets/logos/medical.svg" alt="Medical practice logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Dr. Shariq Mumtaz Medicine Professional Corporation</span></div>
+                            <div class="timeline-company"><span class="org-badge org-badge-med" aria-label="Medical practice"><img src="https://files.aahmed.ca/36FF9254-96A6-4BEC-9115-7C56F95D669C_1_102_o.jpeg" alt="Dr. Shariq Mumtaz Medicine Professional Corporation logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Dr. Shariq Mumtaz Medicine Professional Corporation</span></div>
                             <ul class="timeline-details">
-                                <li>Launched an enterprise security policy focused on confidentiality, integrity, and availability</li>
-                                <li>Rolled out <span class="highlight">zero-trust</span> safeguards via MFA, macOS pilot, and continuous monitoring</li>
-                                <li>Guided compliance planning aligned with <span class="highlight">PHIPA</span> and <span class="highlight">PIPEDA</span></li>
-                                <li>Translated risk updates into clear stakeholder guidance and best-practice recommendations</li>
+                                <li>Built and own the full security program for a 4-person medical practice, including risk register, remediation SLAs, KPI reporting, and a prioritized roadmap</li>
+                                <li>Instrumented identity, endpoint, and network telemetry with correlation-driven triage, cutting <span class="highlight">MTTD</span> from days to under 1 hour</li>
+                                <li>Deployed fleet-wide <span class="highlight">MDM</span>, <span class="highlight">MFA</span>, <span class="highlight">FileVault</span>, DNS filtering, and patch cadences; standardized baselines reduced spam and unsolicited traffic by <span class="highlight">80%</span></li>
+                                <li>Authored incident response playbooks and <span class="highlight">HIPAA</span>-oriented audit evidence; supported external IT vendors through vulnerability closure and compliance reviews</li>
                             </ul>
                         </div>
                     </div>
@@ -194,9 +209,10 @@
                             </div>
                             <div class="timeline-company"><span class="org-badge org-badge-cds" aria-label="Canadian Digital Service"><img src="/assets/logos/cds.png" alt="Canadian Digital Service logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Canadian Digital Service</span></div>
                             <ul class="timeline-details">
-                                <li>Built reusable artifacts to help federal teams ship accessible, reliable services</li>
-                                <li>Automated AWS workflows with <span class="highlight">Terraform</span> for faster, safer releases</li>
-                                <li>Strengthened reliability and accessibility using <span class="highlight">Python</span> and <span class="highlight">Flask</span></li>
+                                <li>Eliminated bot-driven abuse by designing and deploying passive request validation, removing user friction while increasing detection coverage across form endpoints</li>
+                                <li>Implemented CI quality gates and automated testing, increasing code coverage from <span class="highlight">~20%</span> to <span class="highlight">85%</span></li>
+                                <li>Reduced client-reported data incidents from <span class="highlight">4-5</span> to <span class="highlight">1-2</span> per cycle through stronger quality controls</li>
+                                <li>Produced security runbooks and incident-support documentation adopted org-wide</li>
                             </ul>
                         </div>
                     </div>
@@ -210,11 +226,9 @@
                             </div>
                             <div class="timeline-company"><span class="org-badge org-badge-ised" aria-label="Government of Canada"><img src="/assets/logos/goc.png" alt="Government of Canada logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Innovation, Science and Economic Development Canada</span></div>
                             <ul class="timeline-details">
-                                <li>Modernized web apps with micro-services, cutting load times by <span class="highlight">65%</span></li>
-                                <li>Recognized with the <span class="highlight">Directors General Award of Merit</span> for impact</li>
-                                <li>Built ES2015 JavaScript experiences to visualize open data clearly</li>
-                                <li>Simplified UX feedback loops using Spin.js and Google Cloud Platform</li>
-                                <li>Measured gains through unit and integration testing</li>
+                                <li>Engineered secure AWS infrastructure across <span class="highlight">IAM</span>, <span class="highlight">S3</span>, <span class="highlight">DynamoDB</span>, and <span class="highlight">CloudWatch</span> using <span class="highlight">Terraform</span> and <span class="highlight">Terragrunt</span></li>
+                                <li>Enforced policy-as-code scanning with <span class="highlight">Checkov</span> across infrastructure workflows</li>
+                                <li>Awarded the <span class="highlight">Directors General Award of Merit</span> for delivery impact on national spectrum operations</li>
                             </ul>
                         </div>
                     </div>
@@ -228,9 +242,8 @@
                             </div>
                             <div class="timeline-company"><span class="org-badge org-badge-nrc" aria-label="Government of Canada"><img src="/assets/logos/goc.png" alt="Government of Canada logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">National Research Council of Canada</span></div>
                             <ul class="timeline-details">
-                                <li>Built Oracle Platform apps with HTML5, JavaScript, and CSS</li>
-                                <li>Maintained Oracle SQL with PL/SQL scripts to keep CRUD workflows stable</li>
-                                <li>Integrated apps with CMS to make information easier to find and access</li>
+                                <li>Developed full-stack Oracle Database applications powering research data pipelines across multiple NRC divisions</li>
+                                <li>Engineered <span class="highlight">PL/SQL</span> stored procedures and SQL-based automation to replace manual workflows, eliminating <span class="highlight">~10 hrs/week</span> of manual processing</li>
                             </ul>
                         </div>
                     </div>
