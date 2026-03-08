@@ -2,21 +2,32 @@
 
 /* Beta Banner */
 .beta-banner {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
     z-index: 1003;
     background: #2a0d0d;
-    border-bottom: 1px solid rgba(239, 68, 68, 0.25);
+    border-top: 1px solid rgba(239, 68, 68, 0.25);
+    border-bottom: 0;
     color: #e2e8f0;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .is-prod .beta-banner {
     display: none;
 }
 
+body:not(.is-prod) {
+    --beta-banner-offset: calc(48px + env(safe-area-inset-bottom));
+    padding-bottom: var(--beta-banner-offset);
+}
+
 html.is-prod,
 body.is-prod {
     --sticky-top: 20px;
+    --beta-banner-offset: 0px;
 }
 
 .beta-banner__content {

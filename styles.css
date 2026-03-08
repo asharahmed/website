@@ -1297,7 +1297,7 @@
         /* Back to Top & Progress */
         .back-to-top {
             position: fixed;
-            bottom: 25px;
+            bottom: calc(25px + var(--beta-banner-offset, 0px));
             right: 25px;
             width: 46px;
             height: 46px;
@@ -1390,7 +1390,7 @@
             }
             .publication-card { flex-direction: column; align-items: center; text-align: center; }
             section { margin-bottom: 70px; }
-            .back-to-top { bottom: 20px; right: 20px; width: 42px; height: 42px; }
+            .back-to-top { bottom: calc(20px + var(--beta-banner-offset, 0px)); right: 20px; width: 42px; height: 42px; }
             .contact-section { padding: 40px 20px; }
             .command-palette-box { margin: 0 15px; }
         }
