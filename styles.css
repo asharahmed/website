@@ -1919,10 +1919,12 @@
 
         .timeline {
             --timeline-rail-x: 11px;
+            --timeline-item-offset: 42px;
+            --timeline-connector-gap: 8px;
             --timeline-marker-size: 14px;
             --timeline-marker-center-y: 37px;
             --timeline-marker-core-size: 4px;
-            padding-left: 42px;
+            padding-left: 0;
         }
 
         .timeline::before {
@@ -1930,6 +1932,7 @@
         }
 
         .timeline-item {
+            padding-left: var(--timeline-item-offset);
             padding-bottom: 24px;
         }
 
@@ -1938,7 +1941,7 @@
             position: absolute;
             left: calc(var(--timeline-rail-x) + 1px);
             top: calc(var(--timeline-marker-center-y) - 0.5px);
-            width: 18px;
+            width: calc(var(--timeline-item-offset) - var(--timeline-rail-x) - var(--timeline-connector-gap));
             height: 1px;
             background: color-mix(in srgb, var(--border-color) 78%, var(--text-muted));
             transform: translateY(-0.5px);
@@ -2323,15 +2326,12 @@
 
             .timeline {
                 --timeline-rail-x: 9px;
+                --timeline-item-offset: 34px;
+                --timeline-connector-gap: 7px;
                 --timeline-marker-size: 12px;
                 --timeline-marker-center-y: 36px;
                 --timeline-marker-core-size: 3px;
-                padding-left: 34px;
-            }
-
-            .timeline-item::before {
-                left: calc(var(--timeline-rail-x) + 1px);
-                width: 14px;
+                padding-left: 0;
             }
 
             .timeline-dot {
