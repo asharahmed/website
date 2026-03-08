@@ -368,3 +368,182 @@
         justify-self: start;
     }
 }
+
+/* stylelint-disable no-duplicate-selectors */
+
+/* Enrol-inspired status page refinements */
+
+.status-page header {
+    min-height: auto;
+}
+
+.status-page .hero-avatar.status-avatar {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.status-hero-badge,
+.status-hero-badge[data-state="up"],
+.status-hero-badge[data-state="partial"],
+.status-hero-badge[data-state="down"] {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.status-hero-badge[data-state="up"] {
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 40%, var(--border-color));
+}
+
+.status-hero-badge[data-state="partial"] {
+    color: #a16207;
+    border-color: color-mix(in srgb, #a16207 40%, var(--border-color));
+}
+
+.status-hero-badge[data-state="down"] {
+    color: var(--accent-primary);
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--border-color));
+}
+
+.status-hero-badge .dot,
+.status-hero-badge[data-state="down"] .dot {
+    background: currentColor;
+    box-shadow: none;
+}
+
+.status-meta {
+    justify-content: flex-start;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+
+.status-meta span,
+.status-refresh,
+.status-alert {
+    border-radius: 6px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.status-refresh:hover {
+    background: var(--bg-secondary);
+    border-color: var(--text-muted);
+}
+
+.status-alert {
+    margin-bottom: 0;
+}
+
+.status-alert[data-state="ok"] {
+    color: var(--success);
+    background: var(--bg-primary);
+    border-color: color-mix(in srgb, var(--success) 40%, var(--border-color));
+}
+
+.status-alert[data-state="warn"] {
+    color: #a16207;
+    background: var(--bg-primary);
+    border-color: color-mix(in srgb, #a16207 40%, var(--border-color));
+}
+
+.status-alert[data-state="error"] {
+    color: var(--accent-primary);
+    background: var(--bg-primary);
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--border-color));
+}
+
+.status-page #overview .stats-grid,
+.status-metrics-grid,
+.services-grid {
+    gap: 14px;
+}
+
+.status-page #overview .stat-card,
+.status-metric-card,
+.service-card {
+    overflow: hidden;
+}
+
+.status-page #overview .stat-card {
+    padding: 18px 16px 16px 18px;
+}
+
+.status-page #overview .stat-number,
+.status-metric-card .status-value {
+    font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    color: var(--text-primary);
+}
+
+.status-metric-card {
+    padding: 18px 18px 16px 20px;
+}
+
+.status-metric-card .stat-label,
+.service-meta,
+.stat-meta {
+    color: var(--text-muted);
+}
+
+.metric-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+}
+
+.metric-bar span {
+    background: var(--accent-primary);
+}
+
+.sparkline {
+    margin-top: 10px;
+}
+
+.disk-ring {
+    width: 104px;
+    height: 104px;
+    background: conic-gradient(var(--accent-primary) var(--disk-percent), var(--bg-secondary) 0deg);
+}
+
+.disk-ring::after {
+    background: var(--bg-primary);
+}
+
+.disk-ring span {
+    color: var(--text-secondary);
+}
+
+.service-pill {
+    letter-spacing: 0.06em;
+}
+
+.service-pill[data-state="active"] {
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 40%, var(--border-color));
+    background: var(--bg-primary);
+}
+
+.service-pill[data-state="inactive"],
+.service-pill[data-state="failed"],
+.service-pill[data-state="deactivating"] {
+    color: var(--accent-primary);
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--border-color));
+    background: var(--bg-primary);
+}
+
+.service-pill[data-state="activating"],
+.service-pill[data-state="reloading"] {
+    color: #a16207;
+    border-color: color-mix(in srgb, #a16207 40%, var(--border-color));
+    background: var(--bg-primary);
+}
+
+@media (max-width: 720px) {
+    .status-meta {
+        justify-content: flex-start;
+    }
+}
+
+/* stylelint-enable no-duplicate-selectors */

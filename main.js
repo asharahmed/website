@@ -135,7 +135,7 @@
             }
             const themeMeta = qs('meta[name="theme-color"]');
             if (themeMeta) {
-                themeMeta.setAttribute('content', value === 'dark' ? '#0f172a' : '#f8fafc');
+                themeMeta.setAttribute('content', value === 'dark' ? '#0a0a08' : '#faf9f6');
             }
             if (particleController && particleController.syncColors) {
                 particleController.syncColors();
