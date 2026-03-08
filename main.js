@@ -176,6 +176,13 @@
     let heroOutOfView = true;
     let hasHeroObserver = false;
     const hero = qs('header');
+    const getHeroRevealOffset = () => Math.max(48, Math.min(96, window.innerHeight * 0.14));
+    const computeHeroOutOfView = () => {
+        if (!hero) {
+            return true;
+        }
+        return hero.getBoundingClientRect().bottom <= getHeroRevealOffset();
+    };
 
     const updateNavVisibility = () => {
         if (dom.nav) {
@@ -191,8 +198,8 @@
         if (dom.scrollProgress) {
             dom.scrollProgress.style.width = `${progress}%`;
         }
-        if (hero && !hasHeroObserver) {
-            heroOutOfView = hero.getBoundingClientRect().bottom <= 0;
+        if (hero) {
+            heroOutOfView = computeHeroOutOfView();
         }
         updateNavVisibility();
         if (dom.backToTop) {
@@ -289,7 +296,7 @@
 
         if (hero && 'IntersectionObserver' in window) {
             const observer = new IntersectionObserver(entries => {
-                heroOutOfView = !entries[0].isIntersecting;
+                heroOutOfView = computeHeroOutOfView();
                 updateNavVisibility();
             }, {
                 threshold: 0.1
@@ -304,7 +311,10 @@
         if (dom.navScroller) {
             dom.navScroller.addEventListener('scroll', updateNavFade, { passive: true });
         }
-        window.addEventListener('resize', updateNavFade, { passive: true });
+        window.addEventListener('resize', () => {
+            updateScroll(cache);
+            updateNavFade();
+        }, { passive: true });
     };
 
     const initTyping = () => {
