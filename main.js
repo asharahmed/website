@@ -411,7 +411,7 @@
         { icon: '&#128231;', title: 'Contact', desc: 'Get in touch', action: () => handlers.scrollToSection('contact') },
         { icon: '&#128421;', title: 'Status', desc: 'View server status', action: () => { window.location.href = '/status/'; } },
         { icon: '&#127769;', title: 'Toggle Theme', desc: 'Switch light/dark mode', action: handlers.toggleTheme },
-        { icon: '&#128196;', title: 'Download Resume', desc: 'Get PDF resume', action: () => handlers.openExternal('https://files.aahmed.ca/resume.pdf') },
+        { icon: '&#128196;', title: 'Download Resume', desc: 'Get PDF resume', action: () => handlers.openExternal('/resume.pdf') },
         { icon: '&#128195;', title: 'Download CV', desc: 'Get full CV', action: () => handlers.openExternal('https://files.aahmed.ca/cv.pdf') }
     ];
 
