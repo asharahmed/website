@@ -2075,26 +2075,20 @@
         }
 
         .timeline-details li {
-            padding-left: 18px;
+            padding-left: 16px;
         }
 
         .timeline-details li::before {
-            width: 8px;
-            height: 1px;
-            top: 15px;
-            border-radius: 999px;
-            background: color-mix(in srgb, var(--text-muted) 70%, var(--accent-primary));
+            width: 4px;
+            height: 4px;
+            top: 0.86em;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            background: color-mix(in srgb, var(--accent-primary) 78%, var(--text-muted));
         }
 
         .timeline-details li::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 13px;
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background: var(--accent-primary);
+            content: none;
         }
 
         .project-highlights li::before {
@@ -2102,7 +2096,7 @@
         }
 
         .timeline-details li:hover {
-            padding-left: 18px;
+            padding-left: 16px;
         }
 
         .highlight,
