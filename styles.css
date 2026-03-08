@@ -1919,21 +1919,14 @@
 
         .timeline {
             --timeline-rail-x: 11px;
+            --timeline-marker-size: 14px;
+            --timeline-marker-center-y: 28px;
+            --timeline-marker-core-size: 4px;
             padding-left: 42px;
         }
 
         .timeline::before {
-            left: var(--timeline-rail-x);
-            width: 1px;
-            top: 18px;
-            bottom: 18px;
-            background: linear-gradient(
-                180deg,
-                transparent 0,
-                color-mix(in srgb, var(--border-color) 84%, var(--text-muted)) 6%,
-                color-mix(in srgb, var(--border-color) 84%, var(--text-muted)) 94%,
-                transparent 100%
-            );
+            content: none;
         }
 
         .timeline-item {
@@ -1943,28 +1936,42 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: calc(var(--timeline-rail-x) + 12px);
-            top: 26px;
+            left: calc(var(--timeline-rail-x) + 1px);
+            top: calc(var(--timeline-marker-center-y) - 0.5px);
             width: 18px;
             height: 1px;
             background: color-mix(in srgb, var(--border-color) 78%, var(--text-muted));
+            transform: translateY(-0.5px);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: var(--timeline-rail-x);
+            top: var(--timeline-marker-center-y);
+            bottom: 0;
+            width: 1px;
+            transform: translateX(-0.5px);
+            background: linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--border-color) 84%, var(--text-muted)) 0,
+                color-mix(in srgb, var(--border-color) 84%, var(--text-muted)) 90%,
+                transparent 100%
+            );
         }
 
         .timeline-item:last-child::after {
-            content: '';
-            position: absolute;
-            left: calc(var(--timeline-rail-x) - 1px);
-            bottom: 0;
-            width: 3px;
-            height: 18px;
-            background: var(--bg-primary);
+            display: none;
         }
 
         .timeline-dot {
-            left: calc(var(--timeline-rail-x) - 7px);
-            top: 19px;
-            width: 14px;
-            height: 14px;
+            left: calc(var(--timeline-rail-x) - (var(--timeline-marker-size) / 2));
+            top: calc(var(--timeline-marker-center-y) - (var(--timeline-marker-size) / 2));
+            width: var(--timeline-marker-size);
+            height: var(--timeline-marker-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 1px solid color-mix(in srgb, var(--text-muted) 35%, var(--border-color));
             background: var(--bg-primary);
             border-radius: 50%;
@@ -1973,8 +1980,8 @@
 
         .timeline-dot::before {
             content: '';
-            position: absolute;
-            inset: 3px;
+            width: var(--timeline-marker-core-size);
+            height: var(--timeline-marker-core-size);
             border-radius: 50%;
             background: color-mix(in srgb, var(--accent-primary) 82%, var(--accent-secondary));
         }
@@ -2306,24 +2313,24 @@
 
             .timeline {
                 --timeline-rail-x: 9px;
+                --timeline-marker-size: 12px;
+                --timeline-marker-center-y: 26px;
+                --timeline-marker-core-size: 3px;
                 padding-left: 34px;
             }
 
             .timeline-item::before {
-                left: calc(var(--timeline-rail-x) + 10px);
+                left: calc(var(--timeline-rail-x) + 1px);
                 width: 14px;
             }
 
             .timeline-dot {
-                left: calc(var(--timeline-rail-x) - 6px);
-                top: 19px;
-                width: 12px;
-                height: 12px;
                 box-shadow: 0 0 0 3px var(--bg-primary);
             }
 
             .timeline-dot::before {
-                inset: 3px;
+                width: var(--timeline-marker-core-size);
+                height: var(--timeline-marker-core-size);
             }
 
             .timeline-header {
