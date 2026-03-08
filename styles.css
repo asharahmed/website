@@ -1586,6 +1586,23 @@
             background: var(--text-primary);
         }
 
+        .theme-toggle {
+            top: calc(var(--sticky-top) + env(safe-area-inset-top));
+            right: 20px;
+            left: auto;
+            bottom: auto;
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .theme-toggle:hover {
+            transform: none;
+            background: var(--bg-secondary);
+            border-color: var(--text-muted);
+        }
+
         .nav {
             border-radius: 999px;
             height: 46px;
@@ -1672,7 +1689,7 @@
         header {
             min-height: auto;
             justify-content: flex-start;
-            padding: clamp(7rem, 12vw, 9rem) 0 clamp(3.5rem, 8vw, 5rem);
+            padding: clamp(5.8rem, 10vw, 7.25rem) 0 clamp(2.8rem, 6vw, 4rem);
             background: transparent;
             border-bottom: 1px solid var(--border-color);
             perspective: none;
@@ -1693,9 +1710,9 @@
         }
 
         .hero-avatar {
-            width: 104px;
-            height: 104px;
-            margin-bottom: 20px;
+            width: 112px;
+            height: 112px;
+            margin-bottom: 18px;
             border-radius: 18px;
             border: 1px solid var(--border-color);
             box-shadow: none;
@@ -1749,7 +1766,7 @@
 
         .hero-subtitle {
             max-width: 40rem;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             color: var(--text-secondary);
             font-size: clamp(1rem, 2vw, 1.12rem);
             text-shadow: none;
@@ -1816,17 +1833,7 @@
         }
 
         .scroll-indicator {
-            left: auto;
-            right: 20px;
-            bottom: 24px;
-            transform: none;
-            animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
-        }
-
-        .scroll-indicator svg {
-            width: 22px;
-            height: 22px;
-            color: var(--text-muted);
+            display: none;
         }
 
         main {
@@ -1990,6 +1997,10 @@
             padding: 18px 18px 18px 20px;
         }
 
+        .publication-card {
+            align-items: flex-start;
+        }
+
         .education-card::before,
         .contact-section::before {
             display: none;
@@ -2126,6 +2137,13 @@
                 justify-content: center;
                 gap: 8px;
                 font-size: 0.72rem;
+            }
+
+            .theme-toggle {
+                right: 16px;
+                top: calc(var(--sticky-top) + env(safe-area-inset-top));
+                width: 42px;
+                height: 42px;
             }
 
             .nav {
