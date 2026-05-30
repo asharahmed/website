@@ -1,483 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashar S. Ahmed | Software Developer & Cyber Security Professional</title>
-    <meta name="description" content="Ashar S. Ahmed - Software Developer and Cyber Security Professional with experience at Canadian Digital Service, ISED, and NRC. Published author in Canadian Military Journal.">
-    <meta name="keywords" content="Software Developer, Cyber Security, AWS, Python, JavaScript, Canadian Government, SSCP, CySA+">
-    <meta name="author" content="Ashar S. Ahmed">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#faf9f6">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Ashar S. Ahmed | Software Developer & Cyber Security Professional">
-    <meta property="og:description" content="Building secure, scalable solutions for regulated environments. AWS Certified, SSCP (Systems Security), CySA+, PenTest+ certified professional.">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="en_CA">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ashar S. Ahmed | Software Developer & Cyber Security Professional">
-    <meta name="twitter:description" content="Building secure, scalable solutions for regulated environments.">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#f6f2e8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f1a2e" media="(prefers-color-scheme: dark)" />
+<title>Ashar S. Ahmed — Security &amp; Software Engineer · CISSP</title>
+<meta name="description" content="Ashar S. Ahmed — software engineer and cyber security advisor with 4+ years across SecOps, GRC, and DevSecOps. CISSP, SSCP, AWS-certified, MSc Cybersecurity. U.S. Citizen, available for senior security and platform engineering roles." />
+<meta name="author" content="Ashar S. Ahmed" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<link rel="canonical" href="https://aahmed.org/" />
 
-    <link rel="canonical" href="https://aahmed.ca/">
-    <script type="application/ld+json">
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content="Ashar S. Ahmed" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content="Ashar S. Ahmed — Security &amp; Software Engineer · CISSP" />
+<meta property="og:description" content="Software engineer and cyber security advisor with 4+ years across SecOps, GRC, and DevSecOps. CISSP, SSCP, AWS-certified, MSc Cybersecurity." />
+<meta property="og:url" content="https://aahmed.org/" />
+<meta property="og:image" content="https://aahmed.org/assets/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Ashar S. Ahmed — Security &amp; Software Engineer · CISSP, SSCP, AWS, MSc Cybersecurity" />
+<meta property="profile:first_name" content="Ashar" />
+<meta property="profile:last_name" content="Ahmed" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Ashar S. Ahmed — Security &amp; Software Engineer · CISSP" />
+<meta name="twitter:description" content="Software engineer and cyber security advisor. CISSP, SSCP, AWS-certified, MSc Cybersecurity." />
+<meta name="twitter:image" content="https://aahmed.org/assets/og-image.png" />
+<meta name="twitter:image:alt" content="Ashar S. Ahmed — Security &amp; Software Engineer" />
+
+<!-- Inline SVG favicon: navy field, accent monogram — no extra request, no 404 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23223052'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='19' font-weight='700' text-anchor='middle' fill='%23f6f2e8'%3EA%3C/text%3E%3Ccircle cx='25' cy='9' r='3' fill='%23b23a2f'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Libre+Franklin:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<script>
+  (function () {
+    try {
+      var s = localStorage.getItem('theme');
+      if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://aahmed.org/#person",
+      "name": "Ashar S. Ahmed",
+      "givenName": "Ashar",
+      "familyName": "Ahmed",
+      "jobTitle": ["Software Engineer", "Cyber Security Advisor"],
+      "description": "Software engineer and cyber security advisor with 4+ years across security operations, governance and risk, and DevSecOps. CISSP, SSCP, AWS-certified, MSc Cybersecurity.",
+      "url": "https://aahmed.org/",
+      "image": "https://aahmed.org/assets/og-image.png",
+      "email": "mailto:ashar@aahmed.org",
+      "nationality": "American",
+      "knowsLanguage": "en",
+      "address": { "@type": "PostalAddress", "addressCountry": "US" },
+      "sameAs": [
+        "https://github.com/asharahmed",
+        "https://linkedin.com/in/asharsahmed"
+      ],
+      "worksFor": [
+        { "@type": "Organization", "name": "Mercor Intelligence" },
+        { "@type": "Organization", "name": "Dr. Shariq Mumtaz Medicine Professional Corporation" }
+      ],
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "Western Governors University" },
+        { "@type": "CollegeOrUniversity", "name": "Dalhousie University" }
+      ],
+      "hasCredential": [
         {
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "Ashar S. Ahmed",
-            "jobTitle": "Software Developer & Cyber Security Professional",
-            "url": "https://aahmed.ca/",
-            "image": "https://files.aahmed.ca/headshot.jpeg",
-            "sameAs": [
-                "https://linkedin.com/in/asharsahmed",
-                "https://github.com/asharahmed"
-            ]
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "certification",
+          "name": "CISSP — Certified Information Systems Security Professional",
+          "recognizedBy": { "@type": "Organization", "name": "(ISC)²" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "certification",
+          "name": "SSCP — Systems Security Certified Practitioner",
+          "recognizedBy": { "@type": "Organization", "name": "(ISC)²" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "certification",
+          "name": "AWS Certified Solutions Architect & Developer – Associate",
+          "recognizedBy": { "@type": "Organization", "name": "Amazon Web Services" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "degree",
+          "name": "MSc Cybersecurity & Information Assurance"
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "degree",
+          "name": "BCompSci, Computer Science"
         }
-    </script>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="/assets/favicon-headshot.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-headshot-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-headshot-16.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-headshot-192.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-headshot-180.png">
-    
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="preload" as="image" href="/headshot.jpeg">
-    <link rel="prefetch" href="/status/">
-    
-    <link rel="stylesheet" href="/shared.css?v=20260308b">
-    <link rel="stylesheet" href="/styles.css?v=20260308b">
-    <noscript><style>.loading-overlay{display:none}</style></noscript>
+      ],
+      "knowsAbout": [
+        "Security Operations", "SIEM", "Detection Engineering", "MITRE ATT&CK",
+        "Governance Risk and Compliance", "NIST CSF", "CIS Controls v8", "ISO 27001", "Zero Trust",
+        "DevSecOps", "Secure SDLC", "Threat Modeling",
+        "AWS", "Terraform", "Terragrunt", "Docker", "Kubernetes",
+        "Python", "TypeScript", "PowerShell", "Bash", "SQL",
+        "CI/CD", "GitHub Actions", "Policy as Code", "Checkov",
+        "Prometheus", "Grafana", "Loki"
+      ],
+      "seeks": {
+        "@type": "Demand",
+        "name": "Senior security and platform engineering roles"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aahmed.org/#website",
+      "url": "https://aahmed.org/",
+      "name": "Ashar S. Ahmed",
+      "inLanguage": "en",
+      "about": { "@id": "https://aahmed.org/#person" }
+    },
+    {
+      "@type": "ProfilePage",
+      "url": "https://aahmed.org/",
+      "name": "Ashar S. Ahmed — Security & Software Engineer",
+      "mainEntity": { "@id": "https://aahmed.org/#person" },
+      "isPartOf": { "@id": "https://aahmed.org/#website" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
-    <div class="beta-banner" role="status" aria-label="Beta notice">
-        <div class="beta-banner__content">
-            <span class="beta-banner__tag">Beta</span>
-            <span class="beta-banner__text">This website is in beta. Content and features may change.</span>
-        </div>
+
+  <a class="skip-link" href="#top">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-bar"></span></div>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a href="#top" class="brand"><span class="dot"></span> Ashar&nbsp;Ahmed</a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#expertise">Expertise</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#credentials">Credentials</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"><span class="knob"></span></button>
+        <a href="assets/Ashar-Ahmed-CV.pdf" target="_blank" rel="noopener noreferrer" class="btn ghost">Download CV</a>
+        <a href="#contact" class="btn">Get in touch</a>
+      </div>
     </div>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Nav menu" aria-controls="mobileNav" aria-expanded="false">
-        <span></span><span></span><span></span>
-    </button>
+  </header>
 
-    <nav class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Nav menu">
-        <a href="/status/" class="mobile-link">Status</a>
-    </nav>
-
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-
-    <div class="loading-overlay"><div class="loader"></div></div>
-    <div class="scroll-progress" id="scrollProgress"></div>
-
-    <!-- Command Palette -->
-    <div class="command-palette" id="commandPalette" role="dialog" aria-modal="true" aria-hidden="true">
-        <div class="command-palette-box">
-            <input type="text" class="command-input" id="commandInput" placeholder="Type a command or search..." aria-label="Command palette" autocomplete="off" autocapitalize="none" spellcheck="false">
-            <div class="command-list" id="commandList"></div>
+  <!-- ===================== HERO ===================== -->
+  <main id="top" tabindex="-1">
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <div class="hero-layout">
+        <div class="hero-main">
+          <span class="status reveal"><span class="live"></span> <span class="st">Available for senior roles</span> <span class="sep"></span> <span class="st">U.S. Citizen</span></span>
+          <h1 class="hero-grid reveal" data-reveal="mask" data-d="1">Ashar S.<br />Ahmed</h1>
+          <p class="role reveal" data-d="2">Software Engineer&nbsp;&nbsp;·&nbsp;&nbsp;<b>Cyber Security Advisor</b>&nbsp;&nbsp;·&nbsp;&nbsp;CISSP</p>
+          <p class="lede reveal" data-d="3">I build and secure production systems for regulated environments: secure cloud infrastructure, detection pipelines, and compliance programs aligned to NIST CSF, CIS Controls v8, and ISO 27001. Engineering depth applied to defensible security outcomes.</p>
+          <div class="hero-cta reveal" data-d="4">
+            <a href="#work" class="btn">View selected work</a>
+            <a href="#contact" class="btn ghost">Contact</a>
+          </div>
         </div>
+      </div>
+
+      <!-- stats -->
+      <div class="hero-stats reveal" data-d="3">
+        <div class="stat"><div class="n">4<span class="u">+</span></div><div class="l">Years eng + security</div></div>
+        <div class="stat"><div class="n">&lt;1<span class="u">h</span></div><div class="l">MTTD, down from days</div></div>
+        <div class="stat"><div class="n">85<span class="u">%</span></div><div class="l">CI/CD code coverage</div></div>
+        <div class="stat"><div class="n">CISSP</div><div class="l">+ AWS · SSCP</div></div>
+      </div>
     </div>
+  </section>
 
-    <nav class="nav" id="nav" aria-label="Primary">
-        <div class="nav-scroller">
-            <a href="#experience">Experience</a>
-            <a href="#education">Education</a>
-            <a href="#certifications">Certs</a>
-            <a href="#skills">Skills</a>
-            <a href="#publications">Publications</a>
-            <a href="/status/">Status</a>
-            <button type="button" class="nav-cmd" aria-label="Open command palette" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false">⌘K</button>
+  <!-- ===================== ABOUT ===================== -->
+  <section class="about section-pad" id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>From software engineering<br />to security assurance.</h2>
+      </div>
+      <div class="about-grid">
+        <p class="big reveal">I bring an engineer's discipline to security: <em>building the controls, instrumenting the telemetry, and shipping the tooling</em> that proves a program is working.</p>
+        <div class="body reveal" data-d="1">
+          <p>I spent my early career building cloud infrastructure, backend services, and developer tooling: production systems on AWS with Terraform and Terragrunt, CI/CD pipelines, and automation across Python, TypeScript, PowerShell, and Bash.</p>
+          <p>That foundation is what makes the security work hold up. I do not just write the policy. I script the controls, instrument the telemetry, and maintain the tooling that demonstrates compliance. I work where security operations, governance and risk, and DevSecOps meet.</p>
+          <div class="about-meta">
+            <div class="row"><div class="k">Citizenship</div><div class="v">U.S. Citizen · Clearance-eligible</div></div>
+            <div class="row"><div class="k">Focus</div><div class="v">Security Ops · GRC · DevSecOps</div></div>
+            <div class="row"><div class="k">Education</div><div class="v">MSc Cybersecurity · BCompSci</div></div>
+            <div class="row"><div class="k">Availability</div><div class="v">Senior roles · Remote-friendly</div></div>
+          </div>
         </div>
-    </nav>
+      </div>
+    </div>
+  </section>
 
-    <button class="theme-toggle" aria-label="Toggle theme" aria-pressed="false">
-        <span id="themeIcon">&#9790;</span>
-    </button>
+  <!-- ===================== EXPERTISE ===================== -->
+  <section class="expertise section-pad" id="expertise">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Capabilities</h2>
+      </div>
 
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
-
-    <header>
-        <canvas id="particles-canvas" aria-hidden="true"></canvas>
-        <div class="grid-pattern"></div>
-        
-        <div class="hero-content">
-            <div class="hero-avatar"><img src="/headshot.jpeg" alt="Ashar S. Ahmed" width="120" height="120" loading="eager" decoding="async" fetchpriority="high"></div>
-            
-            <div class="hero-badge">
-                <span class="dot"></span>
-                Open to opportunities
+      <div class="exp-grid">
+        <div class="exp-card reveal">
+          <h3>Security Operations &amp; Detection</h3>
+          <p>Correlation-driven log pipelines across identity, endpoint, and network telemetry, engineered to cut detection time from days to under an hour.</p>
+          <div class="card-foot">
+            <span class="micro">Key areas</span>
+            <div class="keyline">
+              <span>SIEM pipelines</span> · <span>MITRE ATT&amp;CK</span> · <span>Telemetry</span> · <span>Alerting</span> · <span>MTTD under 1h</span>
             </div>
-            
-            <h1 class="hero-title gradient-text">Ashar S. Ahmed</h1>
-            <p class="hero-subtitle">Building secure, scalable solutions for regulated environments</p>
-            
-            <div class="typing-container">
-                <span class="typing-text" id="typingText"></span>
-            </div>
-
-            <div class="hero-certs" aria-label="Key certifications">
-                <span class="cert-badge aws tooltip" data-tooltip="AWS Developer & Solutions Architect">
-                    <span class="cert-badge-kicker">AWS</span>
-                    <span class="cert-badge-text">Developer + SA x2</span>
-                </span>
-                <span class="cert-badge isc2 tooltip" data-tooltip="(ISC)² Systems Security Certified Professional">
-                    <span class="cert-badge-kicker">ISC2</span>
-                    <span class="cert-badge-text">SSCP</span>
-                </span>
-                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Cybersecurity Analyst">
-                    <span class="cert-badge-kicker">CompTIA</span>
-                    <span class="cert-badge-text">CySA+</span>
-                </span>
-                <span class="cert-badge comptia tooltip" data-tooltip="CompTIA Penetration Tester">
-                    <span class="cert-badge-kicker">CompTIA</span>
-                    <span class="cert-badge-text">PenTest+</span>
-                </span>
-                <span class="cert-badge csa tooltip" data-tooltip="Cloud Security Alliance Zero-Trust Certificate">
-                    <span class="cert-badge-kicker">CSA</span>
-                    <span class="cert-badge-text">Zero Trust</span>
-                </span>
-            </div>
-
-            <div class="contact-row">
-                <a href="mailto:ashar@aahmed.ca" class="contact-link">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span class="btn-text">ashar@aahmed.ca</span>
-                </a>
-                <a href="https://linkedin.com/in/asharsahmed" target="_blank" rel="noopener noreferrer" class="contact-link">
-                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                    <span class="btn-text">LinkedIn</span>
-                </a>
-                <a href="https://github.com/asharahmed" target="_blank" rel="noopener noreferrer" class="contact-link">
-                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    <span class="btn-text">GitHub</span>
-                </a>
-                <a href="/Ashar-S-Ahmed-Resume-20260308.pdf" class="contact-link" target="_blank" rel="noopener noreferrer">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span class="btn-text">Resume</span>
-                </a>
-            </div>
-            <div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
-
+          </div>
         </div>
-
-        <button class="scroll-indicator" id="scrollIndicator" type="button" aria-label="Scroll to main content">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-        </button>
-    </header>
-
-    <main id="main-content">
-        <div class="container">
-            <section id="experience">
-                <div class="section-header">
-                    <span class="section-label">Career</span>
-                    <h2 class="section-title">Professional Experience</h2>
-                    <p class="section-subtitle">Building impactful solutions across regulated environments</p>
-                </div>
-
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <span class="timeline-title">Cyber Security Advisor</span>
-                                <span class="timeline-date">Jan 2023 - Present</span>
-                            </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-med" aria-label="Medical practice"><img src="https://files.aahmed.ca/36FF9254-96A6-4BEC-9115-7C56F95D669C_1_102_o.jpeg" alt="Dr. Shariq Mumtaz Medicine Professional Corporation logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Dr. Shariq Mumtaz Medicine Professional Corporation</span></div>
-                            <ul class="timeline-details">
-                                <li>Built and own the full security program for a medical practice, including risk register, remediation SLAs, KPI reporting, and a prioritized roadmap</li>
-                                <li>Instrumented identity, endpoint, and network telemetry with correlation-driven triage, cutting <span class="highlight">MTTD</span> from days to under 1 hour</li>
-                                <li>Deployed fleet-wide <span class="highlight">MDM</span>, <span class="highlight">MFA</span>, <span class="highlight">FileVault</span>, DNS filtering, and patch cadences; standardized baselines reduced spam and unsolicited traffic by <span class="highlight">80%</span></li>
-                                <li>Authored incident response playbooks and <span class="highlight">HIPAA</span>-oriented audit evidence; supported external IT vendors through vulnerability closure and compliance reviews</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <span class="timeline-title">Associate Software Developer</span>
-                                <span class="timeline-date">Oct 2021 - Jan 2022</span>
-                            </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-cds" aria-label="Canadian Digital Service"><img src="/assets/logos/cds.png" alt="Canadian Digital Service logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Canadian Digital Service</span></div>
-                            <ul class="timeline-details">
-                                <li>Eliminated bot-driven abuse by designing and deploying passive request validation, removing user friction while increasing detection coverage across form endpoints</li>
-                                <li>Implemented CI quality gates and automated testing, increasing code coverage from <span class="highlight">~20%</span> to <span class="highlight">85%</span></li>
-                                <li>Reduced client-reported data incidents from <span class="highlight">4-5</span> to <span class="highlight">1-2</span> per cycle through stronger quality controls</li>
-                                <li>Produced security runbooks and incident-support documentation adopted org-wide</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <span class="timeline-title">Software Developer</span>
-                                <span class="timeline-date">Feb 2021 - Oct 2021</span>
-                            </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-ised" aria-label="Government of Canada"><img src="/assets/logos/goc.png" alt="Government of Canada logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Innovation, Science and Economic Development Canada</span></div>
-                            <ul class="timeline-details">
-                                <li>Engineered secure AWS infrastructure across <span class="highlight">IAM</span>, <span class="highlight">S3</span>, <span class="highlight">DynamoDB</span>, and <span class="highlight">CloudWatch</span> using <span class="highlight">Terraform</span> and <span class="highlight">Terragrunt</span></li>
-                                <li>Enforced policy-as-code scanning with <span class="highlight">Checkov</span> across infrastructure workflows</li>
-                                <li>Awarded the <span class="highlight">Directors General Award of Merit</span> for delivery impact on national spectrum operations</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <span class="timeline-title">Software Developer Intern (Co-op)</span>
-                                <span class="timeline-date">Sep 2020 - Dec 2020</span>
-                            </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-nrc" aria-label="Government of Canada"><img src="/assets/logos/goc.png" alt="Government of Canada logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">National Research Council of Canada</span></div>
-                            <ul class="timeline-details">
-                                <li>Developed full-stack Oracle Database applications powering research data pipelines across multiple NRC divisions</li>
-                                <li>Engineered <span class="highlight">PL/SQL</span> stored procedures and SQL-based automation to replace manual workflows, eliminating <span class="highlight">~10 hrs/week</span> of manual processing</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <span class="timeline-title">Call Centre Agent Intern (FSWEP)</span>
-                                <span class="timeline-date">Jul 2020 - Sep 2020</span>
-                            </div>
-                            <div class="timeline-company"><span class="org-badge org-badge-esdc" aria-label="Government of Canada"><img src="/assets/logos/goc.png" alt="Government of Canada logo" width="200" height="200" loading="lazy" decoding="async"></span><span class="company-name">Employment and Social Development Canada</span></div>
-                            <ul class="timeline-details">
-                                <li>Helped Canadians resolve inquiries on the Canadian Emergency Response Benefit payments during the COVID-19 pandemic</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="education">
-                <div class="section-header">
-                    <span class="section-label">Background</span>
-                    <h2 class="section-title">Education</h2>
-                    <p class="section-subtitle">Academic foundation in CS, cyber security, and public administration</p>
-                </div>
-
-                <div class="education-grid">
-                    <div class="education-card">
-                        <div class="education-icon"><img src="/assets/logos/uob.png" alt="University of Birmingham seal" width="1026" height="1200" loading="lazy" decoding="async"></div>
-                        <div class="education-details">
-                            <div class="education-degree">Master of Public Administration</div>
-                            <div class="education-school">University of Birmingham</div>
-                            <div class="education-date">Jan 2025 - Present</div>
-                        </div>
-                    </div>
-                    <div class="education-card">
-                        <div class="education-icon"><img class="logo-wgu" src="/assets/logos/wgu.png" alt="Western Governors University seal" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="education-details">
-                            <div class="education-degree">Master of Science in Cyber Security and Information Assurance</div>
-                            <div class="education-school">Western Governors University</div>
-                            <div class="education-date">Issued 2024</div>
-                        </div>
-                    </div>
-                    <div class="education-card">
-                        <div class="education-icon"><img src="/assets/logos/dal.png" alt="Dalhousie University seal" width="1200" height="1200" loading="lazy" decoding="async"></div>
-                        <div class="education-details">
-                            <div class="education-degree">Bachelor of Computer Science</div>
-                            <div class="education-school">Dalhousie University</div>
-                            <div class="education-date">Issued 2024</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="certifications">
-                <div class="section-header">
-                    <span class="section-label">Credentials</span>
-                    <h2 class="section-title">Certifications</h2>
-                    <p class="section-subtitle">Industry-recognized credentials in cloud and security</p>
-                </div>
-
-                <div class="certs-grid">
-                    <div class="cert-card">
-                        <div class="cert-icon"><img src="/assets/logos/certs/comptia-cysa.png" alt="CompTIA CySA+ badge" width="601" height="601" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">CompTIA CySA+</div><div class="cert-issuer">CompTIA</div></div>
-                        <span class="cert-year">2024</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img src="/assets/logos/certs/comptia-pentest.png" alt="CompTIA PenTest+ badge" width="601" height="601" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">CompTIA PenTest+</div><div class="cert-issuer">CompTIA</div></div>
-                        <span class="cert-year">2024</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img src="/assets/logos/certs/csa-cczt.png" alt="Certificate of Competence in Zero Trust badge" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">Zero-Trust Certificate</div><div class="cert-issuer">Cloud Security Alliance</div></div>
-                        <span class="cert-year">2023</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img class="cert-invert-dark" src="/assets/logos/certs/isc2-sscp.png" alt="(ISC)2 SSCP badge" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">Systems Security Certified Professional</div><div class="cert-issuer">(ISC)²</div></div>
-                        <span class="cert-year">2022</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img class="cert-invert-dark" src="/assets/logos/certs/isc2-cc.png" alt="(ISC)2 Certified in Cybersecurity badge" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">Certified in Cybersecurity</div><div class="cert-issuer">(ISC)²</div></div>
-                        <span class="cert-year">2022</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img src="/assets/logos/certs/aws-dev-assoc.png" alt="AWS Certified Developer - Associate badge" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">AWS Certified Developer - Associate</div><div class="cert-issuer">Amazon Web Services</div></div>
-                        <span class="cert-year">2022</span>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-icon"><img src="/assets/logos/certs/aws-sa-assoc.png" alt="AWS Certified Solutions Architect - Associate badge" width="600" height="600" loading="lazy" decoding="async"></div>
-                        <div class="cert-info"><div class="cert-name">AWS Certified Solutions Architect - Associate</div><div class="cert-issuer">Amazon Web Services</div></div>
-                        <span class="cert-year">2022</span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="skills">
-                <div class="section-header">
-                    <span class="section-label">Technical Focus</span>
-                    <h2 class="section-title">Skills & Technologies</h2>
-                    <p class="section-subtitle">Software engineering, cloud infrastructure, and cyber security for regulated environments</p>
-                </div>
-
-                <div class="skills-grid">
-                    <div class="skill-category">
-                        <div class="skill-category-header">
-                            <div class="skill-category-icon">&#60;/&#62;</div>
-                            <span class="skill-category-title">Software Engineering</span>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">JavaScript</span>
-                            <span class="skill-tag">TypeScript</span>
-                            <span class="skill-tag">Python</span>
-                            <span class="skill-tag">SQL</span>
-                            <span class="skill-tag">PL/SQL</span>
-                            <span class="skill-tag">Node.js</span>
-                            <span class="skill-tag">Bash</span>
-                            <span class="skill-tag">Git</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="skill-category-header">
-                            <div class="skill-category-icon">&#9729;</div>
-                            <span class="skill-category-title">Cloud & Infrastructure</span>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">AWS IAM</span>
-                            <span class="skill-tag">AWS S3</span>
-                            <span class="skill-tag">DynamoDB</span>
-                            <span class="skill-tag">CloudWatch</span>
-                            <span class="skill-tag">CloudTrail</span>
-                            <span class="skill-tag">Terraform</span>
-                            <span class="skill-tag">Terragrunt</span>
-                            <span class="skill-tag">Docker</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="skill-category-header">
-                            <div class="skill-category-icon">&#128274;</div>
-                            <span class="skill-category-title">Security Operations</span>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">SIEM Triage</span>
-                            <span class="skill-tag">EDR Investigation</span>
-                            <span class="skill-tag">Log Correlation</span>
-                            <span class="skill-tag">Alert Tuning</span>
-                            <span class="skill-tag">Vulnerability Triage</span>
-                            <span class="skill-tag">Threat Modeling</span>
-                            <span class="skill-tag">Incident Response</span>
-                            <span class="skill-tag">Zero Trust</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="skill-category-header">
-                            <div class="skill-category-icon">&#128273;</div>
-                            <span class="skill-category-title">Endpoint Controls</span>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">MFA</span>
-                            <span class="skill-tag">MDM</span>
-                            <span class="skill-tag">FileVault</span>
-                            <span class="skill-tag">Patch Compliance</span>
-                            <span class="skill-tag">DNS Filtering</span>
-                            <span class="skill-tag">Endpoint Baselines</span>
-                            <span class="skill-tag">macOS/Windows Hardening</span>
-                            <span class="skill-tag">Linux</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-number" data-target="5">0</div><div class="stat-label">Years Experience</div></div>
-                    <div class="stat-card"><div class="stat-number" data-target="4">0</div><div class="stat-label">Federal Agencies</div></div>
-                    <div class="stat-card"><div class="stat-number" data-target="3">0</div><div class="stat-label">Degrees</div></div>
-                    <div class="stat-card"><div class="stat-number" data-target="7">0</div><div class="stat-label">Certifications</div></div>
-                    <div class="stat-card"><div class="stat-number" data-target="1">0</div><div class="stat-label">Publication</div></div>
-                </div>
-            </section>
-
-            <section id="publications">
-                <div class="section-header">
-                    <span class="section-label">Research</span>
-                    <h2 class="section-title">Publications</h2>
-                    <p class="section-subtitle">Contributing to national cyber security discourse</p>
-                </div>
-
-                <div class="publication-card">
-                    <div class="publication-icon publication-icon--journal" aria-hidden="true">
-                        <img src="/assets/logos/cmj-maple-leaf.svg" alt="" width="64" height="64" loading="lazy" decoding="async">
-                    </div>
-                    <div class="publication-content">
-                        <div class="publication-title">The Cyber Centre and Its Technologies - An Analysis</div>
-                        <div class="publication-venue">Canadian Military Journal</div>
-                        <div class="publication-date">November 2022</div>
-                        <span class="publication-badge">Accepted</span>
-                    </div>
-                </div>
-            </section>
-
-
-            
-<section id="contact">
-                <div class="contact-section">
-                    <h2 class="contact-title">Let's Connect</h2>
-                    <p class="contact-text">Interested in collaboration or have a question? I'd love to hear from you.</p>
-                    <div class="contact-buttons">
-                        <a href="mailto:ashar@aahmed.ca" class="contact-btn contact-btn-primary">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            Send Email
-                        </a>
-                        <a href="https://linkedin.com/in/asharsahmed" target="_blank" rel="noopener noreferrer" class="contact-btn contact-btn-secondary">
-                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                            LinkedIn
-                        </a>
-                    </div>
-                </div>
-            </section>
+        <div class="exp-card reveal" data-d="1">
+          <h3>Governance, Risk &amp; Compliance</h3>
+          <p>Risk tracking, remediation SLAs, and KPI dashboards built on recognized frameworks, turning compliance into something measurable and prioritized.</p>
+          <div class="card-foot">
+            <span class="micro">Key areas</span>
+            <div class="keyline">
+              <span>NIST CSF</span> · <span>CIS Controls v8</span> · <span>ISO 27001</span> · <span>Zero Trust (SP 800-207)</span> · <span>Remediation SLAs</span>
+            </div>
+          </div>
         </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p class="footer-text">Crafted with care in Canada.</p>
-            <p class="footer-copyright">&copy; 2025 Ashar S. Ahmed</p>
+        <div class="exp-card reveal" data-d="2">
+          <h3>Secure Software &amp; Cloud</h3>
+          <p>Production AWS infrastructure with policy-as-code, CI/CD quality gates, and secure SDLC practices baked into every module and pipeline.</p>
+          <div class="card-foot">
+            <span class="micro">Key areas</span>
+            <div class="keyline">
+              <span>AWS</span> · <span>Terraform / Terragrunt</span> · <span>Checkov policy-as-code</span> · <span>CI/CD quality gates</span> · <span>Docker &amp; Kubernetes</span>
+            </div>
+          </div>
         </div>
-    </footer>
+      </div>
 
-    <script src="/shared.js?v=20260308b" defer></script>
-    <script src="/particles.js?v=20260308a" defer></script>
-    <script src="/main.js?v=20260308b" defer></script>
+      <div class="spec">
+        <div class="spec-cap reveal"><span class="micro">Stack &amp; methods</span></div>
+        <div class="spec-row reveal"><span class="ix">01</span><span class="k">Languages</span><div class="keyline">
+          <span>Python</span> · <span>TypeScript</span> · <span>PowerShell</span> · <span>Bash</span> · <span>SQL</span> · <span>PL/SQL</span>
+        </div></div>
+        <div class="spec-row reveal"><span class="ix">02</span><span class="k">Cloud &amp; Infrastructure</span><div class="keyline">
+          <span>AWS (IAM, S3, DynamoDB)</span> · <span>CloudWatch &amp; CloudTrail</span> · <span>Azure</span> · <span>Terraform</span> · <span>Terragrunt</span> · <span>Docker</span> · <span>Kubernetes</span>
+        </div></div>
+        <div class="spec-row reveal"><span class="ix">03</span><span class="k">CI/CD &amp; Tooling</span><div class="keyline">
+          <span>GitHub Actions</span> · <span>Automated testing</span> · <span>Checkov</span> · <span>Coverage gates</span>
+        </div></div>
+        <div class="spec-row reveal"><span class="ix">04</span><span class="k">Observability</span><div class="keyline">
+          <span>Prometheus</span> · <span>Grafana</span> · <span>Loki</span> · <span>Alertmanager</span> · <span>Structured logging</span>
+        </div></div>
+        <div class="spec-row reveal"><span class="ix">05</span><span class="k">Security &amp; Compliance</span><div class="keyline">
+          <span>Secure SDLC</span> · <span>Threat modeling</span> · <span>NIST CSF</span> · <span>CIS Controls v8</span> · <span>ISO 27001</span> · <span>MITRE ATT&amp;CK</span> · <span>Zero Trust</span>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EXPERIENCE ===================== -->
+  <section class="experience section-pad" id="experience">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Experience</h2>
+      </div>
+      <div class="timeline">
+
+        <article class="job reveal">
+          <div class="when">May 2026 – <span class="now">Present</span></div>
+          <div class="detail">
+            <h3>Technical Contractor</h3>
+            <p class="org"><b>Mercor Intelligence</b> · San Francisco, CA</p>
+            <ul>
+              <li>Provide technical expertise and structured feedback to a frontier AI lab, supporting the <b>training and evaluation of large language models</b>.</li>
+              <li>Assess model outputs for accuracy, reasoning quality, and specification adherence across technical and general-knowledge domains.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job reveal">
+          <div class="when">Jan 2023 – <span class="now">Present</span></div>
+          <div class="detail">
+            <h3>Cyber Security Advisor</h3>
+            <p class="org"><b>Dr. Shariq Mumtaz Medicine Professional Corp.</b></p>
+            <ul>
+              <li>Scripted end-to-end automation in Python, PowerShell, and Bash for endpoint configuration, telemetry collection, and compliance reporting across a fleet of <b>macOS and Windows devices</b>.</li>
+              <li>Built correlation-driven log pipelines instrumenting identity, endpoint, and network telemetry; cut <b>Mean Time to Detect from days to under 1 hour</b>.</li>
+              <li>Automated MDM policy deployment, patch cadences, and DNS filtering; standardized baselines <b>reduced spam and unsolicited traffic by 80%</b>.</li>
+              <li>Designed internal tooling for risk tracking, remediation SLAs, and KPI dashboards, enabling data-driven prioritization across the security program.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job reveal">
+          <div class="when">Feb 2021 – Jan 2022</div>
+          <div class="detail">
+            <h3>Software Developer</h3>
+            <p class="org"><b>Department of Industry</b> &amp; <b>Canadian Digital Service</b></p>
+            <ul>
+              <li>Engineered secure AWS infrastructure (IAM, S3, DynamoDB, CloudWatch) via Terraform/Terragrunt; enforced <b>policy-as-code scanning with Checkov</b> across all modules.</li>
+              <li>Designed passive request validation to eliminate bot-driven abuse, removing user friction while increasing detection coverage across all form endpoints.</li>
+              <li>Implemented CI/CD quality gates and automated testing, raising code coverage from <b>~20% to 85%</b> and cutting client-reported incidents from 4–5 to 1–2 per cycle.</li>
+              <li>Awarded the <b>Directors' General Award of Merit</b> for delivery impact on national spectrum operations.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="job reveal">
+          <div class="when">Sep 2020 – Dec 2020</div>
+          <div class="detail">
+            <h3>Software Developer Intern</h3>
+            <p class="org"><b>National Research Council of Canada</b></p>
+            <ul>
+              <li>Developed full-stack Oracle Database applications powering research data pipelines across multiple NRC divisions.</li>
+              <li>Engineered PL/SQL stored procedures and SQL-based automation to replace manual workflows, eliminating <b>~10 hrs/week</b> of manual processing.</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORK / PROJECTS ===================== -->
+  <section class="work section-pad" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Selected work</h2>
+      </div>
+      <div class="proj-grid">
+        <article class="proj reveal">
+          <div class="top">
+            <span class="kind">Open source · CLI</span>
+            <a href="https://qr-cli.dev" target="_blank" rel="noopener noreferrer" class="link">qr-cli.dev</a>
+          </div>
+          <h3>QR-CLI</h3>
+          <p>A cross-platform Node.js CLI that generates QR codes as ASCII art with PNG export. Fully offline, MIT-licensed, distributed via npm and GitHub.</p>
+          <div class="foot">
+            <span class="micro">Built with</span>
+            <div class="keyline">
+              <span>Node.js</span> · <span>npm</span> · <span>Offline-first</span> · <span>MIT licensed</span>
+            </div>
+          </div>
+        </article>
+        <article class="proj reveal" data-d="1">
+          <div class="top">
+            <span class="kind">iOS · Privacy-first</span>
+            <a href="https://tally.aahmed.ca" target="_blank" rel="noopener noreferrer" class="link">tally.aahmed.ca</a>
+          </div>
+          <h3>Tally Habit Tracker</h3>
+          <p>A privacy-first iOS habit tracker: three habit types, flexible scheduling, streak heatmaps, and CloudKit sync. Zero telemetry, no third-party SDKs.</p>
+          <div class="foot">
+            <span class="micro">Built with</span>
+            <div class="keyline">
+              <span>Swift / SwiftUI</span> · <span>SwiftData</span> · <span>WidgetKit</span> · <span>CloudKit</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CREDENTIALS ===================== -->
+  <section class="credentials section-pad" id="credentials">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Credentials</h2>
+      </div>
+      <div class="cred-grid">
+        <div class="reveal">
+          <p class="eyebrow" style="margin-bottom:24px;">Certifications</p>
+          <div class="cred-list">
+            <div class="cred">
+              <div><div class="name">CISSP</div><div class="sub">Certified Information Systems Security Professional · (ISC)²</div></div>
+              <div class="yr">2026</div>
+            </div>
+            <div class="cred">
+              <div><div class="name">SSCP</div><div class="sub">Systems Security Certified Practitioner · (ISC)²</div></div>
+              <div class="yr">2023</div>
+            </div>
+            <div class="cred">
+              <div><div class="name">AWS Solutions Architect &amp; Developer</div><div class="sub">Associate · Amazon Web Services</div></div>
+              <div class="yr">2022</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal" data-d="1">
+          <p class="eyebrow" style="margin-bottom:24px;">Education</p>
+          <div class="cred-list">
+            <div class="cred">
+              <div><div class="name">MSc Cybersecurity &amp; Information Assurance</div><div class="sub">Western Governors University</div></div>
+              <div class="yr">2024</div>
+            </div>
+            <div class="cred">
+              <div><div class="name">BCompSci, Computer Science</div><div class="sub">Dalhousie University</div></div>
+              <div class="yr">2024</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ===================== CONTACT / FOOTER ===================== -->
+  <footer class="contact section-pad" id="contact">
+    <div class="wrap">
+      <p class="eyebrow reveal">Available for senior roles</p>
+      <h2 class="reveal" data-reveal="mask" data-d="1">Get in<br />touch.</h2>
+      <p class="reveal" data-d="2" style="font-size:19px;color:oklch(0.78 0.012 264);max-width:52ch;margin-top:20px;">
+        Hiring for a senior security or platform engineering role, or staffing a contract? I respond to direct inquiries at
+        <a href="mailto:ashar@aahmed.org" class="mail">ashar@aahmed.org</a>.
+      </p>
+      <div class="contact-links reveal" data-d="3">
+        <a href="mailto:ashar@aahmed.org" class="btn">Email me</a>
+        <a href="https://github.com/asharahmed" target="_blank" rel="noopener noreferrer" class="btn ghost">GitHub</a>
+        <a href="https://linkedin.com/in/asharsahmed" target="_blank" rel="noopener noreferrer" class="btn ghost">LinkedIn</a>
+        <a href="assets/Ashar-Ahmed-CV.pdf" target="_blank" rel="noopener noreferrer" class="btn ghost">Download CV</a>
+      </div>
+      <div class="foot-bar">
+        <span>© 2026 Ashar S. Ahmed</span>
+        <span>U.S. Citizen · CISSP · Clearance-eligible</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,12 +1,12 @@
+# Build output (assembled by build.sh, regenerated on deploy)
+/dist/
+
+# Cloudflare Wrangler local cache/tmp
+/.wrangler/
+
+# macOS / stray files
 .DS_Store
-Thumbs.db
-*.swp
-*.tmp
-.env
-.env.*
-.secrets
-.secrets.*
-status/metrics.json
-node_modules/
-playwright-report/
-test-results/
+.thumbnail
+
+# Node
+/node_modules/

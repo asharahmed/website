@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Block nothing — this is a public portfolio meant to be indexed.
+Sitemap: https://aahmed.org/sitemap.xml

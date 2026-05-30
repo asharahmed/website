@@ -1,0 +1,58 @@
+Ashar S. Ahmed
+Software Developer | U.S. Citizen | ashar@aahmed.org | GitHub
+SUMMARY
+Software developer with 4+ years building cloud infrastructure, backend services, and developer tooling. Experienced shipping production
+systems on AWS with Terraform/Terragrunt, building CI/CD pipelines, and writing Python, TypeScript, PowerShell, and Bash automation.
+Strong foundation in secure software design from DevSecOps and compliance-aligned work, including ISO 27001-aligned controls. Holds
+AWS Solutions Architect & Developer certifications and a CISSP.
+TECHNICAL SKILLS
+Languages: Python, JavaScript/TypeScript, PowerShell, Bash, SQL, PL/SQL
+Cloud / Infrastructure: AWS (IAM, S3, DynamoDB, CloudWatch, CloudTrail), Azure, Terraform, Terragrunt, Docker, Kubernetes
+CI/CD / Tooling: GitHub Actions, automated testing, policy-as-code (Checkov), linting, code coverage gates
+Databases: DynamoDB, Oracle Database, SQL Server
+Observability: Prometheus, Grafana, Loki, Alertmanager, structured logging, metric instrumentation
+Security / Compliance: Secure SDLC, threat modeling, dependency scanning, NIST CSF, CIS Controls v8, ISO 27001-aligned controls,
+MITRE ATT&CK, Zero Trust (SP 800-207)
+PROFESSIONAL EXPERIENCE
+Technical Contractor, Mercor Intelligence, San Francisco, CA May 2026 – Present
+• Provide technical expertise and structured feedback to a frontier artificial intelligence lab, supporting the training and evaluation of large
+language models
+• Assess model outputs for accuracy, reasoning quality, and specification adherence across technical and general-knowledge domains
+Cyber Security Advisor, Dr. Shariq Mumtaz Medicine Professional Corporation Jan. 2023 – Present
+• Scripted end-to-end automation in Python, PowerShell, and Bash for endpoint configuration, telemetry collection, and compliance
+reporting across a fleet of macOS and Windows devices
+• Built correlation-driven log pipelines instrumenting identity, endpoint, and network telemetry; cut Mean Time to Detect (MTTD) from days
+to under 1 hour
+• Automated MDM policy deployment, patch cadences, and DNS filtering configuration; standardized baselines reduced spam and
+unsolicited traffic by 80%
+• Designed and maintained internal tooling for risk tracking, remediation SLAs, and KPI dashboards, enabling data-driven prioritization
+across the security program
+Software Developer, Department of Industry, Canadian Digital Service Feb. 2021 – Jan. 2022
+• Engineered secure AWS infrastructure (IAM, S3, DynamoDB, CloudWatch) via Terraform/Terragrunt; enforced policy-as-code scanning
+with Checkov across all modules
+• Designed and deployed passive request validation to eliminate bot-driven abuse, removing user friction while increasing detection
+coverage across all form endpoints
+• Implemented CI/CD quality gates and automated testing, increasing code coverage from ~20% to 85%; reduced client-reported data
+incidents from 4–5 to 1–2 per cycle
+• Awarded the Directors’ General Award of Merit for delivery impact on national spectrum operations
+Software Developer Intern, National Research Council of Canada (NRC) Sept. 2020 – Dec. 2020
+• Developed full-stack Oracle Database applications powering research data pipelines across multiple NRC divisions
+• Engineered PL/SQL stored procedures and SQL-based automation to replace manual workflows, eliminating ~10 hrs/week of manual
+processing
+PROJECTS & PUBLICATIONS
+QR-CLI | qr-cli.dev
+• Built and published a cross-platform Node.js CLI that generates QR codes as ASCII art with PNG export; fully offline, MIT-licensed,
+distributed via npm and GitHub
+Tally Habit Tracker | tally.aahmed.ca
+• Built and published a privacy-first iOS habit tracker (Swift/SwiftUI, SwiftData, WidgetKit, Live Activities, CloudKit sync) with three habit
+types, flexible scheduling, streak heatmaps, inline notification actions, and Google Reminders import; zero telemetry, no third-party SDKs
+EDUCATION
+Master of Science (M.S.) Cybersecurity & Information Assurance | Western Governors University Awarded 2024
+Bachelor of Computer Science (BCompSci) | Dalhousie University Awarded 2024
+CERTIFICATIONS
+Certified Information Systems Security Professional (CISSP) Awarded 2026
+Systems Security Certified Professional (SSCP) Awarded 2023
+AWS Certified Solutions Architect & Developer - Associate Awarded 2022
+
+-- 1 of 1 --
+
